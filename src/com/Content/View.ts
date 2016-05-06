@@ -13,7 +13,7 @@ module Content {
         
         Init():void{
             //交互区
-            this.Test();
+            //this.Test();
             //顶层Bar
             this.core=new Content.Core();
             //this.core.start();

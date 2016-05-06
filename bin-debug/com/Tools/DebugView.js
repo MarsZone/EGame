@@ -107,3 +107,4 @@ var Tools;
     Tools.DebugView = DebugView;
     egret.registerClass(DebugView,'Tools.DebugView');
 })(Tools || (Tools = {}));
+//# sourceMappingURL=DebugView.js.map

@@ -23,3 +23,4 @@ var Unit;
     Unit.SqTextures = SqTextures;
     egret.registerClass(SqTextures,'Unit.SqTextures');
 })(Unit || (Unit = {}));
+//# sourceMappingURL=SqTextures.js.map

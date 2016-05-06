@@ -135,3 +135,4 @@ var Tools;
     Tools.Map = Map;
     egret.registerClass(Map,'Tools.Map');
 })(Tools || (Tools = {}));
+//# sourceMappingURL=HashMap.js.map

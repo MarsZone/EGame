@@ -14,7 +14,7 @@ var Content;
         var d = __define,c=View,p=c.prototype;
         p.Init = function () {
             //交互区
-            this.Test();
+            //this.Test();
             //顶层Bar
             this.core = new Content.Core();
             //this.core.start();
@@ -55,3 +55,4 @@ var Content;
     Content.View = View;
     egret.registerClass(View,'Content.View');
 })(Content || (Content = {}));
+//# sourceMappingURL=View.js.map

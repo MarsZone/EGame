@@ -14,3 +14,4 @@ var Common;
     Common.UI = UI;
     egret.registerClass(UI,'Common.UI');
 })(Common || (Common = {}));
+//# sourceMappingURL=UI.js.map

@@ -35,3 +35,4 @@ var Content;
     Content.Core = Core;
     egret.registerClass(Core,'Content.Core');
 })(Content || (Content = {}));
+//# sourceMappingURL=Core.js.map
