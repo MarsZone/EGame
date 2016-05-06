@@ -1,0 +1,17 @@
+{
+   "version": "0.2.0",
+   "configurations": [
+      {
+         "name": "Launch index.html",
+         "type": "chrome",
+         "request": "launch",
+         "file": "index.html",
+         "runtimeExecutable": "${execPath}",
+         "useBuildInServer": true,
+         "sourceMaps": true,
+         "webRoot": "${workspaceRoot}",
+         "preLaunchTask": "build",
+         "port": 5412
+      }
+   ]
+}
