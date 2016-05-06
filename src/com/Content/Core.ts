@@ -8,8 +8,10 @@ module Content {
 		
     	public constructor() {
             super();
+            //this.view = v;
 		}
         private time:number = 0;
+        //view:Content.View;
         
         start(){
             egret.startTick(this.update,this);

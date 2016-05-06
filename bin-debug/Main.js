@@ -110,9 +110,9 @@ var Main = (function (_super) {
         this.gameLayer.graphics.drawRect(0, 0, Main.StageWidth, Main.StageHeight);
         this.gameLayer.graphics.endFill();
         this.addChild(this.gameLayer);
-        this.view = new Content.View();
+        this.game = new Content.Game();
         //游戏内容
-        this.gameLayer.addChild(this.view);
+        this.gameLayer.addChild(this.game);
         //UI层
         //开始结束菜单
         //调试面板放在顶层

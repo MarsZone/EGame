@@ -106,7 +106,7 @@ class Main extends egret.DisplayObjectContainer {
 
     private textfield:egret.TextField;
     private gameLayer: egret.Sprite;
-    view: Content.View;
+    game: Content.Game;
     /**
      * 创建游戏场景
      * Create a game scene
@@ -129,9 +129,9 @@ class Main extends egret.DisplayObjectContainer {
         this.gameLayer.graphics.endFill();
         
         this.addChild(this.gameLayer);
-        this.view = new Content.View();
+        this.game = new Content.Game();
         //游戏内容
-        this.gameLayer.addChild(this.view);
+        this.gameLayer.addChild(this.game);
         
         //UI层
         

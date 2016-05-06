@@ -11,6 +11,7 @@ var game_file_list = [
 	"bin-debug/com/AssetsSrc/SqTextures.js",
 	"bin-debug/com/Common/UI.js",
 	"bin-debug/com/Content/Core.js",
+	"bin-debug/com/Content/Game.js",
 	"bin-debug/com/Content/View.js",
 	"bin-debug/com/Tools/DebugView.js",
 	"bin-debug/com/Tools/HashMap.js",
