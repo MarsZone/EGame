@@ -1,7 +1,7 @@
 module Unit {
 	/**
 	 *
-	 * @author 
+	 * @author mars
 	 *
 	 */
 	export class SqTextures {

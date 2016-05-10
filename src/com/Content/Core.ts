@@ -1,17 +1,16 @@
 module Content {
 	/**
 	 *
-	 * @author 
+	 * @author mars
 	 *
 	 */
 	export class Core extends egret.DisplayObjectContainer{
-		
-    	public constructor() {
+		public constructor(view:Content.View) {
             super();
-            //this.view = v;
+            this._view = view;
 		}
+        _view:Content.View;
         private time:number = 0;
-        //view:Content.View;
         
         start(){
             egret.startTick(this.update,this);
@@ -22,6 +21,7 @@ module Content {
             var pass = now - time;
             //console.log("moveStar: ",(1000 / pass).toFixed(5));
             this.time = now;
+            this._view.update();
             return true;
         }
         pause(){

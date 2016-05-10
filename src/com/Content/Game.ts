@@ -1,7 +1,7 @@
 module Content {
 	/**
 	 *
-	 * @author 
+	 * @author mars
 	 *
 	 */
 	export class Game extends egret.Sprite{
@@ -10,17 +10,15 @@ module Content {
             this.Init();
 		}
         private core:Content.Core;
-        
+        private view:Content.View;
         Init():void{
             //交互区
-            //this.Test();
             //顶层Bar
-            this.core=new Content.Core();
-            //this.core.start();
+            this.view = new Content.View();
+            this.core=new Content.Core(this.view);
             
+            this.core.start();
             //底层Bar
-            
         }
-        //circle: egret.Sprite;
 	}
 }

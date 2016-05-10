@@ -1,7 +1,7 @@
 module Common {
 	/**
 	 *
-	 * @author 
+	 * @author mars
 	 *
 	 */
 	export class UI {
