@@ -4,9 +4,14 @@ module Assets {
 	 * @author mars
 	 *
 	 */
-	export class Animation {
+    export interface Animation{
+        init(name, length, row, width, height):void;
+        reset();
+    }
+    
+    
+	export class RoleAnimation implements Assets.Animation{
 		public constructor() {
-            
 		}
         name:string;
         length:number;
