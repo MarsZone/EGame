@@ -36,7 +36,7 @@ module Tools {
             this.visible = false;
          }
         drawBG(w:number,h:number): void { 
-            this.graphics.beginFill(0x666666,0.8);
+            this.graphics.beginFill(0x300bc4,0.5);
             this.graphics.drawRect(0,0,w,h);
             this.graphics.endFill();
         }

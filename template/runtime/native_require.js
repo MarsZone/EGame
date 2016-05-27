@@ -8,6 +8,8 @@ var game_file_list = [
 	"libs/modules/game/game.native.js",
 	"libs/modules/tween/tween.js",
 	"libs/modules/res/res.js",
+	"libs/modules/greensock/greensock.js",
+	"bin-debug/com/AssetsSrc/Animation.js",
 	"bin-debug/com/AssetsSrc/SqTextures.js",
 	"bin-debug/com/Common/UI.js",
 	"bin-debug/com/Content/Core.js",
@@ -45,10 +47,10 @@ egret_native.egretStart = function () {
         //以下为自动修改，请勿修改
         //----auto option start----
 		entryClassName: "Main",
-		frameRate: 30,
+		frameRate: 60,
 		scaleMode: "fixedWidth",
-		contentWidth: 450,
-		contentHeight: 800,
+		contentWidth: 1280,
+		contentHeight: 720,
 		showPaintRect: false,
 		showFPS: false,
 		fpsStyles: "x:0,y:0,size:30,textColor:0x00c200,bgAlpha:0.9",
