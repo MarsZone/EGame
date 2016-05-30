@@ -12,13 +12,12 @@ module Content {
         private core:Content.Core;
         private view:Content.View;
         Init():void{
-            //交互区
-            //顶层Bar
+            //init view
             this.view = new Content.View();
+            this.addChild(this.view);
+            //init core
             this.core=new Content.Core(this.view);
-            
             this.core.start();
-            //底层Bar
         }
 	}
 }

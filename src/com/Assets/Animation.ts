@@ -4,24 +4,31 @@ module Assets {
 	 * @author mars
 	 *
 	 */
-    export interface Animation{
-        init(name, length, row, width, height):void;
+    export interface Animation {
+        name: string;
+        length: number;
+        row: number;
+        width: number;
+        height: number;
+        lastCallCounter: number;
+        currentFrame:number;
+        init(name, length, row, width, height): void;
         reset();
     }
-    
-    
-	export class RoleAnimation implements Assets.Animation{
-		public constructor() {
-		}
-        name:string;
-        length:number;
-        row:number;
-        width:number;
-        height:number;
-        lastTime:number;
-        currentFrame;
-        
-		init(name, length, row, width, height):void {
+
+
+    export class RoleAnimation implements Assets.Animation {
+        public constructor() {
+        }
+        name: string;
+        length: number;
+        row: number;
+        width: number;
+        height: number;
+        lastCallCounter: number;
+        currentFrame:number;
+
+        init(name, length, row, width, height): void {
             this.name = name;
             this.length = length;
             this.row = row;
@@ -30,9 +37,9 @@ module Assets {
             this.reset();
         }
         
-        reset() {
-            this.lastTime = 0;
-            this.currentFrame = { index: 0, x: 0, y: this.row * this.height };
+        reset()  {
+            this.lastCallCounter = 0;
+            this.currentFrame = 0;
         }
-	}
+    }
 }

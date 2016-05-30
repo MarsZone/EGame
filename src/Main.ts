@@ -115,6 +115,8 @@ class Main extends egret.DisplayObjectContainer {
     //    sp.graphics.beginFill(0xFFF111,1);
     //    sp.graphics.drawRect(0,0,100,100);
     //    sp.graphics.endFill();
+        //修改为30帧
+        //this.stage.frameRate = 30;//能被60整除的数
         this.stage.scaleMode = egret.StageScaleMode.FIXED_WIDTH;
         this.stage.orientation = egret.OrientationMode.LANDSCAPE;
         Main.StageWidth = egret.MainContext.instance.stage.stageWidth;
@@ -137,17 +139,6 @@ class Main extends egret.DisplayObjectContainer {
         //游戏内容
         this.gameLayer.addChild(this.game);
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));
-        var texture_total:egret.Texture = RES.getRes("leatherarmor_png");
-        var sprites:egret.SpriteSheet = new egret.SpriteSheet(texture_total);
-        sprites.createTexture("part1", 0, 0, 64,64);
-        var bitimg:egret.Bitmap = new egret.Bitmap(sprites.getTexture("part1"));
-        bitimg.scaleX=-1;
-        bitimg.x += 64;
-        Main.debugView.addLog(""+bitimg.width);
-        this.addChild(bitimg);
-        
-        //var role:Assets.Role = new Assets.Role();
-        
         
         //UI层
         

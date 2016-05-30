@@ -9,8 +9,6 @@ var game_file_list = [
 	"libs/modules/tween/tween.js",
 	"libs/modules/res/res.js",
 	"libs/modules/greensock/greensock.js",
-	"bin-debug/LoadingUI.js",
-	"bin-debug/Main.js",
 	"bin-debug/com/Assets/Animation.js",
 	"bin-debug/com/Assets/Entity.js",
 	"bin-debug/com/Assets/Role.js",
@@ -20,6 +18,8 @@ var game_file_list = [
 	"bin-debug/com/Content/View.js",
 	"bin-debug/com/Tools/DebugView.js",
 	"bin-debug/com/Tools/HashMap.js",
+	"bin-debug/LoadingUI.js",
+	"bin-debug/Main.js",
 	//----auto game_file_list end----
 ];
 
