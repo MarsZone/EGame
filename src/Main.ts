@@ -40,8 +40,6 @@ class Main extends egret.DisplayObjectContainer {
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
-        Main.StageWidth = egret.MainContext.instance.stage.stageWidth;
-        Main.StageHeight = egret.MainContext.instance.stage.stageHeight;
     }
 
     private onAddToStage(event:egret.Event) {
@@ -49,7 +47,7 @@ class Main extends egret.DisplayObjectContainer {
         //Config to load process interface
         this.loadingView = new LoadingUI();
         this.stage.addChild(this.loadingView);
-
+        
         //初始化Resource资源加载库
         //initiate Resource loading library
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
@@ -106,20 +104,28 @@ class Main extends egret.DisplayObjectContainer {
 
     private textfield:egret.TextField;
     private gameLayer: egret.Sprite;
-    view: Content.View;
+    game: Content.Game;
     /**
      * 创建游戏场景
      * Create a game scene
      */
     private createGameScene():void {
-//        var sp: egret.Sprite = new egret.Sprite();
-//        this.addChild(sp);
-//        sp.graphics.beginFill(0xFFF111,1);
-//        sp.graphics.drawRect(0,0,100,100);
-//        sp.graphics.endFill();
+    //    var sp: egret.Sprite = new egret.Sprite();
+    //    this.addChild(sp);
+    //    sp.graphics.beginFill(0xFFF111,1);
+    //    sp.graphics.drawRect(0,0,100,100);
+    //    sp.graphics.endFill();
+        //修改为30帧
+        //this.stage.frameRate = 30;//能被60整除的数
+        this.stage.scaleMode = egret.StageScaleMode.FIXED_WIDTH;
+        this.stage.orientation = egret.OrientationMode.LANDSCAPE;
+        Main.StageWidth = egret.MainContext.instance.stage.stageWidth;
+        Main.StageHeight = egret.MainContext.instance.stage.stageHeight;
+        
         //调试面板先实例化
         Main.debugView = new Tools.DebugView();
         Main.debugView.init(Main.StageWidth,Main.StageHeight);
+        Main.debugView.addLog("Start: StageWidth:"+Main.StageWidth+"_ StageHeight:"+Main.StageHeight);
         this.gameLayer = new egret.Sprite();
         this.gameLayer.touchEnabled = true;
         this.gameLayer.width = Main.StageWidth;
@@ -129,16 +135,17 @@ class Main extends egret.DisplayObjectContainer {
         this.gameLayer.graphics.endFill();
         
         this.addChild(this.gameLayer);
-        this.view = new Content.View();
+        this.game = new Content.Game();
         //游戏内容
-        this.gameLayer.addChild(this.view);
+        this.gameLayer.addChild(this.game);
+        //this.addChild(Main.createBitmapByName("leatherarmor_png"));
         
         //UI层
         
         //开始结束菜单
         
         //调试面板放在顶层
-        this.addChild(Main.debugView);
+        //this.addChild(Main.debugView);
         //Main.debugView.visible=false;
     }
 
@@ -146,10 +153,11 @@ class Main extends egret.DisplayObjectContainer {
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
      * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
      */
-    private createBitmapByName(name:string):egret.Bitmap {
+    public static createBitmapByName(name:string):egret.Bitmap {
         var result:egret.Bitmap = new egret.Bitmap();
         var texture:egret.Texture = RES.getRes(name);
         result.texture = texture;
+        egret.MovieClip
         return result;
     }
 

@@ -28,6 +28,7 @@
 	<script egret="lib" src="libs/modules/game/game.web.js" src-release="libs/modules/game/game.web.min.js"></script>
 	<script egret="lib" src="libs/modules/tween/tween.js" src-release="libs/modules/tween/tween.min.js"></script>
 	<script egret="lib" src="libs/modules/res/res.js" src-release="libs/modules/res/res.min.js"></script>
+	<script egret="lib" src="libs/modules/greensock/greensock.js" src-release="libs/modules/greensock/greensock.min.js"></script>
 	<!--modules_files_end-->
 
     <!--这个标签为不通过egret提供的第三方库的方式使用的 javascript 文件，请将这些文件放在libs下，但不要放在modules下面。-->
@@ -36,9 +37,12 @@
 
     <!--这个标签会被替换为项目中所有的 javascript 文件。删除 game_files 标签后，项目文件加载列表将不会变化，请谨慎操作！-->
     <!--game_files_start-->
-	<script egret="game" src="bin-debug/com/AssetsSrc/SqTextures.js"></script>
+	<script egret="game" src="bin-debug/com/Assets/Animation.js"></script>
+	<script egret="game" src="bin-debug/com/Assets/Entity.js"></script>
+	<script egret="game" src="bin-debug/com/Assets/Role.js"></script>
 	<script egret="game" src="bin-debug/com/Common/UI.js"></script>
 	<script egret="game" src="bin-debug/com/Content/Core.js"></script>
+	<script egret="game" src="bin-debug/com/Content/Game.js"></script>
 	<script egret="game" src="bin-debug/com/Content/View.js"></script>
 	<script egret="game" src="bin-debug/com/Tools/DebugView.js"></script>
 	<script egret="game" src="bin-debug/com/Tools/HashMap.js"></script>
@@ -52,9 +56,9 @@
          data-entry-class="Main"
          data-orientation="auto"
          data-scale-mode="fixedWidth"
-         data-frame-rate="30"
-         data-content-width="450"
-         data-content-height="800"
+         data-frame-rate="60"
+         data-content-width="1280"
+         data-content-height="720"
          data-show-paint-rect="false"
          data-multi-fingered="2"
          data-show-fps="false" data-show-log="true"

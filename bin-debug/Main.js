@@ -31,8 +31,6 @@ var Main = (function (_super) {
     function Main() {
         _super.call(this);
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
-        Main.StageWidth = egret.MainContext.instance.stage.stageWidth;
-        Main.StageHeight = egret.MainContext.instance.stage.stageHeight;
     }
     var d = __define,c=Main,p=c.prototype;
     p.onAddToStage = function (event) {
@@ -94,14 +92,21 @@ var Main = (function (_super) {
      * Create a game scene
      */
     p.createGameScene = function () {
-        //        var sp: egret.Sprite = new egret.Sprite();
-        //        this.addChild(sp);
-        //        sp.graphics.beginFill(0xFFF111,1);
-        //        sp.graphics.drawRect(0,0,100,100);
-        //        sp.graphics.endFill();
+        //    var sp: egret.Sprite = new egret.Sprite();
+        //    this.addChild(sp);
+        //    sp.graphics.beginFill(0xFFF111,1);
+        //    sp.graphics.drawRect(0,0,100,100);
+        //    sp.graphics.endFill();
+        //修改为30帧
+        //this.stage.frameRate = 30;//能被60整除的数
+        this.stage.scaleMode = egret.StageScaleMode.FIXED_WIDTH;
+        this.stage.orientation = egret.OrientationMode.LANDSCAPE;
+        Main.StageWidth = egret.MainContext.instance.stage.stageWidth;
+        Main.StageHeight = egret.MainContext.instance.stage.stageHeight;
         //调试面板先实例化
         Main.debugView = new Tools.DebugView();
         Main.debugView.init(Main.StageWidth, Main.StageHeight);
+        Main.debugView.addLog("Start: StageWidth:" + Main.StageWidth + "_ StageHeight:" + Main.StageHeight);
         this.gameLayer = new egret.Sprite();
         this.gameLayer.touchEnabled = true;
         this.gameLayer.width = Main.StageWidth;
@@ -110,23 +115,25 @@ var Main = (function (_super) {
         this.gameLayer.graphics.drawRect(0, 0, Main.StageWidth, Main.StageHeight);
         this.gameLayer.graphics.endFill();
         this.addChild(this.gameLayer);
-        this.view = new Content.View();
+        this.game = new Content.Game();
         //游戏内容
-        this.gameLayer.addChild(this.view);
+        this.gameLayer.addChild(this.game);
+        //this.addChild(Main.createBitmapByName("leatherarmor_png"));
         //UI层
         //开始结束菜单
         //调试面板放在顶层
-        this.addChild(Main.debugView);
+        //this.addChild(Main.debugView);
         //Main.debugView.visible=false;
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
      * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
      */
-    p.createBitmapByName = function (name) {
+    Main.createBitmapByName = function (name) {
         var result = new egret.Bitmap();
         var texture = RES.getRes(name);
         result.texture = texture;
+        egret.MovieClip;
         return result;
     };
     /**
