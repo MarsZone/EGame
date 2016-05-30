@@ -120,11 +120,12 @@ var Main = (function (_super) {
         var texture_total = RES.getRes("leatherarmor_png");
         var sprites = new egret.SpriteSheet(texture_total);
         sprites.createTexture("part1", 0, 0, 64, 64);
-        this.addChild(new egret.Bitmap(sprites.getTexture("part1")));
-        var myjson = RES.getRes("leatherarmor_json");
-        for (var animate in myjson.animations) {
-            Main.debugView.addLog("" + animate);
-        }
+        var bitimg = new egret.Bitmap(sprites.getTexture("part1"));
+        bitimg.scaleX = -1;
+        bitimg.x += 64;
+        Main.debugView.addLog("" + bitimg.width);
+        this.addChild(bitimg);
+        //var role:Assets.Role = new Assets.Role();
         //UI层
         //开始结束菜单
         //调试面板放在顶层

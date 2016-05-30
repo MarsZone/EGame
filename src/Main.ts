@@ -140,13 +140,14 @@ class Main extends egret.DisplayObjectContainer {
         var texture_total:egret.Texture = RES.getRes("leatherarmor_png");
         var sprites:egret.SpriteSheet = new egret.SpriteSheet(texture_total);
         sprites.createTexture("part1", 0, 0, 64,64);
-        this.addChild(new egret.Bitmap(sprites.getTexture("part1")));
+        var bitimg:egret.Bitmap = new egret.Bitmap(sprites.getTexture("part1"));
+        bitimg.scaleX=-1;
+        bitimg.x += 64;
+        Main.debugView.addLog(""+bitimg.width);
+        this.addChild(bitimg);
         
-        var myjson = RES.getRes("leatherarmor_json");
-        for(var animate in myjson.animations)
-        {
-            Main.debugView.addLog(""+animate);
-        }
+        //var role:Assets.Role = new Assets.Role();
+        
         
         //UI层
         

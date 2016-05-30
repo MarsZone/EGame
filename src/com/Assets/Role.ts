@@ -7,10 +7,11 @@ module Assets {
 	export class Role extends Assets.Entity{
     	public constructor() {
     	    super();
+            this.init(0,"demo");
 		}
         animiations:Array<Assets.Animation>;
         display:egret.Bitmap;
-        textures:Tools.Map;
+        textures:Array<egret.Texture>;
         
         init(id:number, kind:string):void{
             super.init(id,kind);
@@ -22,8 +23,7 @@ module Assets {
             for(var animate_json in imgJson.animations)
             {
                 Main.debugView.addLog(""+animate_json);
-                var animate:Assets.Animation = new Assets.RoleAnimation;
-                
+                var animate:Assets.Animation = new Assets.RoleAnimation();
             }
         }
 	}
