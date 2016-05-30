@@ -62,7 +62,7 @@ module Assets {
             //set cur Animation
             this.setCurAnimation("walk_right");
             this.setDisplayTexture(this.getCurAnimationTexture());
-            this.setTrunLeft(true);
+            //this.setTrunLeft(true);
             //add bitmap
             this.addChild(this.display);
             

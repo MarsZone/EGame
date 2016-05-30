@@ -1,33 +1,35 @@
 {
-	"groups":[{
-			"keys":"bgImage,egretIcon,leatherarmor_png,leatherarmor_json",
-			"name":"preload"
-		}],
-	"resources":[
+	"groups": [
 		{
-			"name":"bgImage",
-			"type":"image",
-			"url":"assets/bg.jpg"
+			"keys": "bgImage,egretIcon,leatherarmor_png,leatherarmor_json",
+			"name": "preload"
+		}
+	],
+	"resources": [
+		{
+			"name": "bgImage",
+			"type": "image",
+			"url": "assets/bg.jpg"
 		},
 		{
-			"name":"egretIcon",
-			"type":"image",
-			"url":"assets/egret_icon.png"
+			"name": "egretIcon",
+			"type": "image",
+			"url": "assets/egret_icon.png"
 		},
 		{
-			"name":"description",
-			"type":"sound",
-			"url":"config/description.json"
+			"name": "description",
+			"type": "sound",
+			"url": "config/description.json"
 		},
 		{
-			"name":"leatherarmor_json",
-			"type":"json",
-			"url":"assets/leatherarmor.json"
+			"name": "leatherarmor_json",
+			"type": "json",
+			"url": "assets/leatherarmor.json"
 		},
 		{
-			"name":"leatherarmor_png",
-			"type":"image",
-			"url":"assets/leatherarmor.png"
+			"name": "leatherarmor_png",
+			"type": "image",
+			"url": "assets/leatherarmor.png"
 		}
 	]
 }
