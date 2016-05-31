@@ -41,7 +41,7 @@ var Main = (function (_super) {
         //初始化Resource资源加载库
         //initiate Resource loading library
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
-        RES.loadConfig("resource/resource.json", "resource/");
+        RES.loadConfig("resource/default.res.json", "resource/");
     };
     /**
      * 配置文件加载完成,开始预加载preload资源组。
@@ -52,14 +52,17 @@ var Main = (function (_super) {
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-        RES.loadGroup("preload");
+        RES.loadGroup("preload", 3);
+        RES.loadGroup("image", 2);
+        RES.loadGroup("json", 1);
     };
     /**
      * preload资源组加载完成
      * Preload resource group is loaded
      */
     p.onResourceLoadComplete = function (event) {
-        if (event.groupName == "preload") {
+        egret.log("Load Finish:" + event.groupName);
+        if (event.groupName == "json") {
             this.stage.removeChild(this.loadingView);
             RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
             RES.removeEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);

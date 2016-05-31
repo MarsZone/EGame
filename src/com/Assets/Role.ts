@@ -38,7 +38,7 @@ module Assets {
 
             //add all animation To animations
             for (var animate_json in imgJson.animations) {
-                Main.debugView.addLog(animate_json, "Role");
+                //Main.debugView.addLog(animate_json, "Role");
                 var ob = imgJson.animations[animate_json];
                 var animate: Assets.Animation = new Assets.RoleAnimation();
                 animate.init(animate_json, ob.length, ob.row, Role.BitMapSize, Role.BitMapSize);
