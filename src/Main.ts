@@ -144,6 +144,8 @@ class Main extends egret.DisplayObjectContainer {
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));
         
         //UI层
+        var ui:Common.UI = new Common.UI();
+        this.addChild(ui);
         
         //开始结束菜单
         
@@ -160,7 +162,6 @@ class Main extends egret.DisplayObjectContainer {
         var result:egret.Bitmap = new egret.Bitmap();
         var texture:egret.Texture = RES.getRes(name);
         result.texture = texture;
-        egret.MovieClip
         return result;
     }
 

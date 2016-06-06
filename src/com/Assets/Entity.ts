@@ -6,9 +6,9 @@ module Assets{
         constructor() {
             super();
         }
-        id:number;
+        id:string;
         kind:string;
-        init(id:number, kind:string):void{
+        init(id:string, kind:string):void{
             this.id=id;
             this.kind=kind;
         }

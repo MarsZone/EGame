@@ -23,8 +23,15 @@
 			"name": "res"
 		},
 		{
+			"name": "socket"
+		},
+		{
 			"name": "greensock",
-			"path": "../libsrc"
+			"path": "../libsrc/greensock"
+		},
+		{
+			"name": "socket.io",
+			"path": "../libsrc/socket.io"
 		}
 	]
 }

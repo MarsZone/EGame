@@ -97,11 +97,6 @@ module Tools {
             this.LineHeightGap = this.tf.textHeight / this.tf.maxScrollV;
             this.tf.scrollV = parseInt(((this.tf.textHeight- Main.StageHeight) / this.LineHeightGap).toString()) ;
             this.MaxScrollV = this.tf.scrollV;
-            //console.log(" Main.StageHeight"+ Main.StageHeight);
-            //console.log("maxScrollV"+this.tf.maxScrollV);
-            //console.log("scrollV"+this.tf.scrollV);
-            //console.log("textHeight"+this.tf.textHeight);
-            //this.tf.scrollV = this.tf.maxScrollV;
             
             if (this.tf.numLines>500)
             {

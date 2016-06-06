@@ -1,7 +1,7 @@
 {
 	"groups":[
 		{
-			"keys":"bgImage,egretIcon",
+			"keys":"bgImage,egretIcon,ic_keyboard_arrow_right_48px_png",
 			"name":"preload"
 		},
 		{
@@ -768,6 +768,11 @@
 			"name":"wizard_json",
 			"type":"json",
 			"url":"assets/sprites/wizard.json"
+		},
+		{
+			"name":"ic_keyboard_arrow_right_48px_png",
+			"type":"image",
+			"url":"assets/common/ic_keyboard_arrow_right_48px.png"
 		}
 	]
 }
