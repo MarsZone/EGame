@@ -28,7 +28,9 @@
 	<script egret="lib" src="libs/modules/game/game.web.js" src-release="libs/modules/game/game.web.min.js"></script>
 	<script egret="lib" src="libs/modules/tween/tween.js" src-release="libs/modules/tween/tween.min.js"></script>
 	<script egret="lib" src="libs/modules/res/res.js" src-release="libs/modules/res/res.min.js"></script>
+	<script egret="lib" src="libs/modules/socket/socket.js" src-release="libs/modules/socket/socket.min.js"></script>
 	<script egret="lib" src="libs/modules/greensock/greensock.js" src-release="libs/modules/greensock/greensock.min.js"></script>
+	<script egret="lib" src="libs/modules/socket.io/socket.io.js" src-release="libs/modules/socket.io/socket.io.min.js"></script>
 	<!--modules_files_end-->
 
     <!--这个标签为不通过egret提供的第三方库的方式使用的 javascript 文件，请将这些文件放在libs下，但不要放在modules下面。-->
@@ -44,8 +46,16 @@
 	<script egret="game" src="bin-debug/com/Content/Core.js"></script>
 	<script egret="game" src="bin-debug/com/Content/Game.js"></script>
 	<script egret="game" src="bin-debug/com/Content/View.js"></script>
+	<script egret="game" src="bin-debug/com/Event/GameEvent.js"></script>
+	<script egret="game" src="bin-debug/com/Event/NetWorkEventHandler.js"></script>
+	<script egret="game" src="bin-debug/com/Event/UIEventHandler.js"></script>
+	<script egret="game" src="bin-debug/com/Event/ViewEvent.js"></script>
+	<script egret="game" src="bin-debug/com/NetWork/Net.js"></script>
+	<script egret="game" src="bin-debug/com/NetWork/NetManager.js"></script>
+	<script egret="game" src="bin-debug/com/NetWork/NetPackageHandler.js"></script>
 	<script egret="game" src="bin-debug/com/Tools/DebugView.js"></script>
 	<script egret="game" src="bin-debug/com/Tools/HashMap.js"></script>
+	<script egret="game" src="bin-debug/com/Types/gameTypes.js"></script>
 	<script egret="game" src="bin-debug/LoadingUI.js"></script>
 	<script egret="game" src="bin-debug/Main.js"></script>
 	<!--game_files_end-->
@@ -61,7 +71,7 @@
          data-content-height="720"
          data-show-paint-rect="false"
          data-multi-fingered="2"
-         data-show-fps="false" data-show-log="true"
+         data-show-fps="false" data-show-log="false"
          data-log-filter="" data-show-fps-style="x:0,y:0,size:30,textColor:0x00c200,bgAlpha:0.9">
     </div>
     <script>

@@ -7,9 +7,9 @@ module Assets {
     export class Role extends Assets.Entity {
         public static BitMapSize=64;
         public static FramesNextTexture=5;
-        public constructor() {
+        public constructor(id:string,kind:string) {
             super();
-            this.init(0, "demo");
+            this.init(id,kind);
         }
         animations: Array<Assets.Animation>;
         textures: Array<egret.Texture>;
@@ -19,18 +19,20 @@ module Assets {
         ifLeft:boolean=false;
         curAnimation:string="";
 
-        init(id: number, kind: string): void {
+        init(id: string, kind: string): void {
             super.init(id, kind);
             this.id = id;
             this.kind = kind;
             this.display=new egret.Bitmap();
             
+            var imgPath = id+"_png";
+            var dataPath = id+"_json";
             //set Texture
-            this.bigTexture = RES.getRes("leatherarmor_png");
+            this.bigTexture = RES.getRes(imgPath);
             this.sprites= new egret.SpriteSheet(this.bigTexture);
             
             //load json
-            var imgJson = RES.getRes("leatherarmor_json");
+            var imgJson = RES.getRes(dataPath);
 
             //init array
             this.animations = new Array<Assets.Animation>();
@@ -38,7 +40,7 @@ module Assets {
 
             //add all animation To animations
             for (var animate_json in imgJson.animations) {
-                Main.debugView.addLog(animate_json, "Role");
+                //Main.debugView.addLog(animate_json, "Role");
                 var ob = imgJson.animations[animate_json];
                 var animate: Assets.Animation = new Assets.RoleAnimation();
                 animate.init(animate_json, ob.length, ob.row, Role.BitMapSize, Role.BitMapSize);
@@ -60,15 +62,22 @@ module Assets {
             }
             
             //set cur Animation
-            this.setCurAnimation("walk_right");
-            this.setDisplayTexture(this.getCurAnimationTexture());
+            this.setCurAnimation("idle_down");
             //this.setTrunLeft(true);
             //add bitmap
             this.addChild(this.display);
             
         }
-        setCurAnimation(animation):void{
+        setCurAnimation(animation,flag=false):void{
             this.curAnimation = animation;
+            this.setDisplayTexture(this.getCurAnimationTexture());
+            this.setTrunLeft(flag);
+            //this.resetAnimation();
+        }
+        resetAnimation():void{
+            var clip:Assets.Animation = this.getClip(this.curAnimation);
+            clip.currentFrame=0;
+            clip.lastCallCounter=0;
         }
         getClip(animation):Assets.Animation{
             //Find Clip

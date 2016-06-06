@@ -44,3 +44,4 @@ sqGroup: egret.Sprite;
         bitimg.x += 64;
         Main.debugView.addLog(""+bitimg.width);
         //this.addChild(bitimg);
+        
