@@ -11,10 +11,10 @@ module NetWork{
         
         public constructor() {
             super();
-            this.commands = new NetWork.Commands;
+            this.commands = new NetWork.Commands();
         }
         connection;
-        commands;
+        commands:NetWork.Commands;
         Init(): void {
             var self = this;
             this.connection = io('http://127.0.0.1:8000/');
@@ -50,11 +50,7 @@ module NetWork{
             this.connection.on('disconnect', function() {
                 Main.debugView.addLog("Connection closed");
             });
-            //this.socket.emit("message", msg);
-            // this.webSocket.addEventListener( egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this );
-            // this.webSocket.addEventListener( egret.Event.CONNECT, this.onSocketOpen, this );
-            // this.webSocket.connect("localhost", 9003);
-            //this.webSocket.connect("119.29.66.119", 8001);
+            this.enable();
         }
         isListening:boolean=true;
         enable():void {
@@ -83,20 +79,21 @@ module NetWork{
         }
         receiveAction(data) {
             var action = data[0];
-            if(this.handlers[action] && _.isFunction(this.handlers[action])) {
-                this.handlers[action].call(this, data);
-            }
-            else {
+            if(this.commands.CommandMap.get(action) &&typeof(this.commands.CommandMap.get(action))=="function")
+            {
+                var fun = this.commands.CommandMap.get(action);
+                new fun();
+            }else{
                 Main.debugView.addLog("Unknown action : " + action);
             }
         }
 
         receiveActionBatch(actions) {
             var self = this;
-
-            _.each(actions, function(action) {
+            for(var action in actions)
+            {
                 self.receiveAction(action);
-            });
+            }
         }
         sendMessage(json) {
             var data;
