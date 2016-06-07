@@ -107,6 +107,7 @@ class Main extends egret.DisplayObjectContainer {
 
     private textfield:egret.TextField;
     private gameLayer: egret.Sprite;
+    private net:NetWork.Net;
     game: Content.Game;
     /**
      * 创建游戏场景
@@ -129,6 +130,12 @@ class Main extends egret.DisplayObjectContainer {
         Main.debugView = new Tools.DebugView();
         Main.debugView.init(Main.StageWidth,Main.StageHeight);
         Main.debugView.addLog("Start: StageWidth:"+Main.StageWidth+"_ StageHeight:"+Main.StageHeight);
+        
+        //网络初始化
+        this.net = new NetWork.Net();
+        this.net.Init();
+        
+        //游戏层
         this.gameLayer = new egret.Sprite();
         this.gameLayer.touchEnabled = true;
         this.gameLayer.width = Main.StageWidth;

@@ -22,6 +22,8 @@ var game_file_list = [
 	"bin-debug/com/Event/NetWorkEventHandler.js",
 	"bin-debug/com/Event/UIEventHandler.js",
 	"bin-debug/com/Event/ViewEvent.js",
+	"bin-debug/com/Model/ModelBase.js",
+	"bin-debug/com/Model/User.js",
 	"bin-debug/com/NetWork/Net.js",
 	"bin-debug/com/NetWork/NetManager.js",
 	"bin-debug/com/NetWork/NetPackageHandler.js",

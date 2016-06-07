@@ -4,9 +4,15 @@
  *
  */
 class NetWorkEventHandler extends egret.EventDispatcher{
-    public static instance: NetWorkEventHandler;
+    protected static _instance: NetWorkEventHandler;
     public constructor() {
         super();
-        NetWorkEventHandler.instance = this;
-	}
+    }
+    public static get instance():NetWorkEventHandler{
+        if(!this._instance)
+        {
+            this._instance=new NetWorkEventHandler();
+        }
+        return this._instance;
+    }
 }
