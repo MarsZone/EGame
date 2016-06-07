@@ -11,7 +11,7 @@ module NetWork{
         
         public constructor() {
             super();
-            commands = new NetWork.Commands;
+            this.commands = new NetWork.Commands;
         }
         connection;
         commands;
