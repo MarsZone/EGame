@@ -84,13 +84,13 @@ module NetWork{
                 var fun = this.commands.CommandMap.get(action);
                 new fun();
             }else{
-                Main.debugView.addLog("Unknown action : " + action);
+                Main.debugView.addLog("Unknown action : " + action); 
             }
         }
 
         receiveActionBatch(actions) {
             var self = this;
-            for(var action in actions)
+            for(var action of actions)
             {
                 self.receiveAction(action);
             }

@@ -36,16 +36,16 @@ module NetWork{
             return this.CMDHashMap;
         }
         receiveWelcome(data) {
-             var id = data[1],
-                name = data[2],
-                x = data[3],
-                y = data[4],
-                hp = data[5],
-                armor = data[6],
-                weapon = data[7],
-                avatar = data[8],
-                weaponAvatar = data[9],
-                experience = data[10];
+            //  var id = data[1],
+            //     name = data[2],
+            //     x = data[3],
+            //     y = data[4],
+            //     hp = data[5],
+            //     armor = data[6],
+            //     weapon = data[7],
+            //     avatar = data[8],
+            //     weaponAvatar = data[9],
+            //     experience = data[10];
             
             Main.debugView.addLog("Calling receiveWelcome");
         }
