@@ -4,14 +4,22 @@ module Content {
 	 * @author mars
 	 *
 	 */
-	export class View extends egret.Sprite {
+	export class Render extends egret.Sprite {
 		public constructor() {
 			super();
 			this.init();
 		}
 		role: Assets.Role;
+        backGound:egret.Sprite;
 		init(): void {
-			
+			//add BG
+			this.backGound=new egret.Sprite();
+
+			this.addRole();
+		}
+		//AddRole_test
+		addRole():void{
+			//ForTest AddRole
 			this.role = new Assets.Role("leatherarmor", "character");
 			this.role.x += 100;
 			this.role.y += 100;

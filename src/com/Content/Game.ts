@@ -10,13 +10,13 @@ module Content {
             this.Init();
 		}
         private core:Content.Core;
-        private view:Content.View;
+        private render:Content.Render;
         Init():void{
             //init view
-            this.view = new Content.View();
-            this.addChild(this.view);
+            this.render = new Content.Render();
+            this.addChild(this.render);
             //init core
-            this.core=new Content.Core(this.view);
+            this.core=new Content.Core(this.render);
             this.core.start();
         }
 	}

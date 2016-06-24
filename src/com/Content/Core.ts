@@ -5,11 +5,11 @@ module Content {
 	 *
 	 */
 	export class Core extends egret.DisplayObjectContainer{
-		public constructor(view:Content.View) {
+		public constructor(render:Content.Render) {
             super();
-            this._view = view;
+            this._render = render;
 		}
-        _view:Content.View;
+        _render:Content.Render;
         index=0;
         frameControler:boolean=true;
         private time:number = 0;
@@ -27,7 +27,7 @@ module Content {
             //Every 30 frame.update.
             if(this.frameControler)
             {
-                this._view.update();
+                this._render.update();
             }
             this.frameControler=!this.frameControler;
             this.index++;

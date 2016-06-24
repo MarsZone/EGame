@@ -1,778 +1,783 @@
 {
-	"groups":[
+	"groups": [
 		{
-			"keys":"bgImage,egretIcon,ic_keyboard_arrow_right_48px_png",
-			"name":"preload"
+			"keys": "bgImage,egretIcon,ic_keyboard_arrow_right_48px_png",
+			"name": "preload"
 		},
 		{
-			"keys":"talk_png,wood3_png,bgImage,villager_png,villagegirl_png,egretIcon,wizard_png,achievements_png,agent_png,axe_png,barsheet_png,bat_png,beachnpc_png,bluesword_png,border_png,boss_png,chest_png,clotharmor_png,coder_png,crab_png,death_png,deathknight_png,desertnpc_png,eye_png,firefox_png,forestnpc_png,goblin_png,goldenarmor_png,goldensword_png,guard_png,hand_png,item-axe_png,item-bluesword_png,item-burger_png,item-cake_png,item-clotharmor_png,item-firepotion_png,item-flask_png,item-goldenarmor_png,item-goldensword_png,item-leatherarmor_png,item-mailarmor_png,item-morningstar_png,item-platearmor_png,item-redarmor_png,item-redsword_png,item-sword1_png,item-sword2_png,king_png,lavanpc_png,leatherarmor_png,loot_png,mailarmor_png,morningstar_png,nyan_png,octocat_png,ogre_png,platearmor_png,priest_png,rat_png,redarmor_png,redsword_png,rick_png,scientist_png,shadow16_png,skeleton_png,skeleton2_png,snake_png,sorcerer_png,sparks_png,spectre_png,spritesheet_png,target_png,tilesheet_png,sword2_png,sword_png,wood2_png,wood_png,sword1_png",
-			"name":"image"
+			"keys": "talk_png,wood3_png,bgImage,villager_png,villagegirl_png,egretIcon,wizard_png,achievements_png,agent_png,axe_png,barsheet_png,bat_png,beachnpc_png,bluesword_png,border_png,boss_png,chest_png,clotharmor_png,coder_png,crab_png,death_png,deathknight_png,desertnpc_png,eye_png,firefox_png,forestnpc_png,goblin_png,goldenarmor_png,goldensword_png,guard_png,hand_png,item-axe_png,item-bluesword_png,item-burger_png,item-cake_png,item-clotharmor_png,item-firepotion_png,item-flask_png,item-goldenarmor_png,item-goldensword_png,item-leatherarmor_png,item-mailarmor_png,item-morningstar_png,item-platearmor_png,item-redarmor_png,item-redsword_png,item-sword1_png,item-sword2_png,king_png,lavanpc_png,leatherarmor_png,loot_png,mailarmor_png,morningstar_png,nyan_png,octocat_png,ogre_png,platearmor_png,priest_png,rat_png,redarmor_png,redsword_png,rick_png,scientist_png,shadow16_png,skeleton_png,skeleton2_png,snake_png,sorcerer_png,sparks_png,spectre_png,spritesheet_png,target_png,tilesheet_png,sword2_png,sword_png,wood2_png,wood_png,sword1_png",
+			"name": "image"
 		},
 		{
-			"keys":"item-mailarmor_json,agent_json,arrow_json,axe_json,bat_json,beachnpc_json,bluesword_json,boss_json,chest_json,clotharmor_json,coder_json,crab_json,death_json,deathknight_json,desertnpc_json,eye_json,firefox_json,forestnpc_json,goblin_json,goldenarmor_json,goldensword_json,guard_json,hand_json,impact_json,item-axe_json,item-bluesword_json,item-burger_json,item-cake_json,item-clotharmor_json,item-firepotion_json,item-flask_json,item-goldenarmor_json,item-goldensword_json,item-leatherarmor_json,redarmor_json,item-morningstar_json,item-platearmor_json,item-redarmor_json,item-redsword_json,item-sword1_json,item-sword2_json,king_json,lavanpc_json,leatherarmor_json,loot_json,mailarmor_json,morningstar_json,nyan_json,octocat_json,ogre_json,platearmor_json,priest_json,rat_json,sparks_json,redsword_json,rick_json,scientist_json,shadow16_json,skeleton_json,skeleton2_json,snake_json,sorcerer_json,talk_json,spectre_json,sword_json,sword1_json,sword2_json,villagegirl_json,target_json,villager_json,wizard_json",
-			"name":"json"
+			"keys": "item-mailarmor_json,agent_json,arrow_json,axe_json,bat_json,beachnpc_json,bluesword_json,boss_json,chest_json,clotharmor_json,coder_json,crab_json,death_json,deathknight_json,desertnpc_json,eye_json,firefox_json,forestnpc_json,goblin_json,goldenarmor_json,goldensword_json,guard_json,hand_json,impact_json,item-axe_json,item-bluesword_json,item-burger_json,item-cake_json,item-clotharmor_json,item-firepotion_json,item-flask_json,item-goldenarmor_json,item-goldensword_json,item-leatherarmor_json,redarmor_json,item-morningstar_json,item-platearmor_json,item-redarmor_json,item-redsword_json,item-sword1_json,item-sword2_json,king_json,lavanpc_json,leatherarmor_json,loot_json,mailarmor_json,morningstar_json,nyan_json,octocat_json,ogre_json,platearmor_json,priest_json,rat_json,sparks_json,redsword_json,rick_json,scientist_json,shadow16_json,skeleton_json,skeleton2_json,snake_json,sorcerer_json,talk_json,spectre_json,sword_json,sword1_json,sword2_json,villagegirl_json,target_json,villager_json,wizard_json,world_client_json",
+			"name": "json"
 		}
 	],
-	"resources":[
+	"resources": [
 		{
-			"name":"bgImage",
-			"type":"image",
-			"url":"assets/bg.jpg"
+			"url": "assets/bg.jpg",
+			"type": "image",
+			"name": "bgImage"
 		},
 		{
-			"name":"egretIcon",
-			"type":"image",
-			"url":"assets/egret_icon.png"
+			"url": "assets/egret_icon.png",
+			"type": "image",
+			"name": "egretIcon"
 		},
 		{
-			"name":"description",
-			"type":"sound",
-			"url":"config/description.json"
+			"url": "config/description.json",
+			"type": "sound",
+			"name": "description"
 		},
 		{
-			"name":"achievements_png",
-			"type":"image",
-			"url":"assets/64/achievements.png"
+			"url": "assets/64/achievements.png",
+			"type": "image",
+			"name": "achievements_png"
 		},
 		{
-			"name":"agent_png",
-			"type":"image",
-			"url":"assets/64/agent.png"
+			"url": "assets/64/agent.png",
+			"type": "image",
+			"name": "agent_png"
 		},
 		{
-			"name":"axe_png",
-			"type":"image",
-			"url":"assets/64/axe.png"
+			"url": "assets/64/axe.png",
+			"type": "image",
+			"name": "axe_png"
 		},
 		{
-			"name":"barsheet_png",
-			"type":"image",
-			"url":"assets/64/barsheet.png"
+			"url": "assets/64/barsheet.png",
+			"type": "image",
+			"name": "barsheet_png"
 		},
 		{
-			"name":"bat_png",
-			"type":"image",
-			"url":"assets/64/bat.png"
+			"url": "assets/64/bat.png",
+			"type": "image",
+			"name": "bat_png"
 		},
 		{
-			"name":"beachnpc_png",
-			"type":"image",
-			"url":"assets/64/beachnpc.png"
+			"url": "assets/64/beachnpc.png",
+			"type": "image",
+			"name": "beachnpc_png"
 		},
 		{
-			"name":"bluesword_png",
-			"type":"image",
-			"url":"assets/64/bluesword.png"
+			"url": "assets/64/bluesword.png",
+			"type": "image",
+			"name": "bluesword_png"
 		},
 		{
-			"name":"border_png",
-			"type":"image",
-			"url":"assets/64/border.png"
+			"url": "assets/64/border.png",
+			"type": "image",
+			"name": "border_png"
 		},
 		{
-			"name":"boss_png",
-			"type":"image",
-			"url":"assets/64/boss.png"
+			"url": "assets/64/boss.png",
+			"type": "image",
+			"name": "boss_png"
 		},
 		{
-			"name":"chest_png",
-			"type":"image",
-			"url":"assets/64/chest.png"
+			"url": "assets/64/chest.png",
+			"type": "image",
+			"name": "chest_png"
 		},
 		{
-			"name":"clotharmor_png",
-			"type":"image",
-			"url":"assets/64/clotharmor.png"
+			"url": "assets/64/clotharmor.png",
+			"type": "image",
+			"name": "clotharmor_png"
 		},
 		{
-			"name":"coder_png",
-			"type":"image",
-			"url":"assets/64/coder.png"
+			"url": "assets/64/coder.png",
+			"type": "image",
+			"name": "coder_png"
 		},
 		{
-			"name":"crab_png",
-			"type":"image",
-			"url":"assets/64/crab.png"
+			"url": "assets/64/crab.png",
+			"type": "image",
+			"name": "crab_png"
 		},
 		{
-			"name":"death_png",
-			"type":"image",
-			"url":"assets/64/death.png"
+			"url": "assets/64/death.png",
+			"type": "image",
+			"name": "death_png"
 		},
 		{
-			"name":"deathknight_png",
-			"type":"image",
-			"url":"assets/64/deathknight.png"
+			"url": "assets/64/deathknight.png",
+			"type": "image",
+			"name": "deathknight_png"
 		},
 		{
-			"name":"desertnpc_png",
-			"type":"image",
-			"url":"assets/64/desertnpc.png"
+			"url": "assets/64/desertnpc.png",
+			"type": "image",
+			"name": "desertnpc_png"
 		},
 		{
-			"name":"eye_png",
-			"type":"image",
-			"url":"assets/64/eye.png"
+			"url": "assets/64/eye.png",
+			"type": "image",
+			"name": "eye_png"
 		},
 		{
-			"name":"firefox_png",
-			"type":"image",
-			"url":"assets/64/firefox.png"
+			"url": "assets/64/firefox.png",
+			"type": "image",
+			"name": "firefox_png"
 		},
 		{
-			"name":"forestnpc_png",
-			"type":"image",
-			"url":"assets/64/forestnpc.png"
+			"url": "assets/64/forestnpc.png",
+			"type": "image",
+			"name": "forestnpc_png"
 		},
 		{
-			"name":"goblin_png",
-			"type":"image",
-			"url":"assets/64/goblin.png"
+			"url": "assets/64/goblin.png",
+			"type": "image",
+			"name": "goblin_png"
 		},
 		{
-			"name":"goldenarmor_png",
-			"type":"image",
-			"url":"assets/64/goldenarmor.png"
+			"url": "assets/64/goldenarmor.png",
+			"type": "image",
+			"name": "goldenarmor_png"
 		},
 		{
-			"name":"goldensword_png",
-			"type":"image",
-			"url":"assets/64/goldensword.png"
+			"url": "assets/64/goldensword.png",
+			"type": "image",
+			"name": "goldensword_png"
 		},
 		{
-			"name":"guard_png",
-			"type":"image",
-			"url":"assets/64/guard.png"
+			"url": "assets/64/guard.png",
+			"type": "image",
+			"name": "guard_png"
 		},
 		{
-			"name":"hand_png",
-			"type":"image",
-			"url":"assets/64/hand.png"
+			"url": "assets/64/hand.png",
+			"type": "image",
+			"name": "hand_png"
 		},
 		{
-			"name":"item-axe_png",
-			"type":"image",
-			"url":"assets/64/item-axe.png"
+			"url": "assets/64/item-axe.png",
+			"type": "image",
+			"name": "item-axe_png"
 		},
 		{
-			"name":"item-bluesword_png",
-			"type":"image",
-			"url":"assets/64/item-bluesword.png"
+			"url": "assets/64/item-bluesword.png",
+			"type": "image",
+			"name": "item-bluesword_png"
 		},
 		{
-			"name":"item-burger_png",
-			"type":"image",
-			"url":"assets/64/item-burger.png"
+			"url": "assets/64/item-burger.png",
+			"type": "image",
+			"name": "item-burger_png"
 		},
 		{
-			"name":"item-cake_png",
-			"type":"image",
-			"url":"assets/64/item-cake.png"
+			"url": "assets/64/item-cake.png",
+			"type": "image",
+			"name": "item-cake_png"
 		},
 		{
-			"name":"item-clotharmor_png",
-			"type":"image",
-			"url":"assets/64/item-clotharmor.png"
+			"url": "assets/64/item-clotharmor.png",
+			"type": "image",
+			"name": "item-clotharmor_png"
 		},
 		{
-			"name":"item-firepotion_png",
-			"type":"image",
-			"url":"assets/64/item-firepotion.png"
+			"url": "assets/64/item-firepotion.png",
+			"type": "image",
+			"name": "item-firepotion_png"
 		},
 		{
-			"name":"item-flask_png",
-			"type":"image",
-			"url":"assets/64/item-flask.png"
+			"url": "assets/64/item-flask.png",
+			"type": "image",
+			"name": "item-flask_png"
 		},
 		{
-			"name":"item-goldenarmor_png",
-			"type":"image",
-			"url":"assets/64/item-goldenarmor.png"
+			"url": "assets/64/item-goldenarmor.png",
+			"type": "image",
+			"name": "item-goldenarmor_png"
 		},
 		{
-			"name":"item-goldensword_png",
-			"type":"image",
-			"url":"assets/64/item-goldensword.png"
+			"url": "assets/64/item-goldensword.png",
+			"type": "image",
+			"name": "item-goldensword_png"
 		},
 		{
-			"name":"item-leatherarmor_png",
-			"type":"image",
-			"url":"assets/64/item-leatherarmor.png"
+			"url": "assets/64/item-leatherarmor.png",
+			"type": "image",
+			"name": "item-leatherarmor_png"
 		},
 		{
-			"name":"item-mailarmor_png",
-			"type":"image",
-			"url":"assets/64/item-mailarmor.png"
+			"url": "assets/64/item-mailarmor.png",
+			"type": "image",
+			"name": "item-mailarmor_png"
 		},
 		{
-			"name":"item-morningstar_png",
-			"type":"image",
-			"url":"assets/64/item-morningstar.png"
+			"url": "assets/64/item-morningstar.png",
+			"type": "image",
+			"name": "item-morningstar_png"
 		},
 		{
-			"name":"item-platearmor_png",
-			"type":"image",
-			"url":"assets/64/item-platearmor.png"
+			"url": "assets/64/item-platearmor.png",
+			"type": "image",
+			"name": "item-platearmor_png"
 		},
 		{
-			"name":"item-redarmor_png",
-			"type":"image",
-			"url":"assets/64/item-redarmor.png"
+			"url": "assets/64/item-redarmor.png",
+			"type": "image",
+			"name": "item-redarmor_png"
 		},
 		{
-			"name":"item-redsword_png",
-			"type":"image",
-			"url":"assets/64/item-redsword.png"
+			"url": "assets/64/item-redsword.png",
+			"type": "image",
+			"name": "item-redsword_png"
 		},
 		{
-			"name":"item-sword1_png",
-			"type":"image",
-			"url":"assets/64/item-sword1.png"
+			"url": "assets/64/item-sword1.png",
+			"type": "image",
+			"name": "item-sword1_png"
 		},
 		{
-			"name":"item-sword2_png",
-			"type":"image",
-			"url":"assets/64/item-sword2.png"
+			"url": "assets/64/item-sword2.png",
+			"type": "image",
+			"name": "item-sword2_png"
 		},
 		{
-			"name":"king_png",
-			"type":"image",
-			"url":"assets/64/king.png"
+			"url": "assets/64/king.png",
+			"type": "image",
+			"name": "king_png"
 		},
 		{
-			"name":"lavanpc_png",
-			"type":"image",
-			"url":"assets/64/lavanpc.png"
+			"url": "assets/64/lavanpc.png",
+			"type": "image",
+			"name": "lavanpc_png"
 		},
 		{
-			"name":"leatherarmor_png",
-			"type":"image",
-			"url":"assets/64/leatherarmor.png"
+			"url": "assets/64/leatherarmor.png",
+			"type": "image",
+			"name": "leatherarmor_png"
 		},
 		{
-			"name":"loot_png",
-			"type":"image",
-			"url":"assets/64/loot.png"
+			"url": "assets/64/loot.png",
+			"type": "image",
+			"name": "loot_png"
 		},
 		{
-			"name":"mailarmor_png",
-			"type":"image",
-			"url":"assets/64/mailarmor.png"
+			"url": "assets/64/mailarmor.png",
+			"type": "image",
+			"name": "mailarmor_png"
 		},
 		{
-			"name":"morningstar_png",
-			"type":"image",
-			"url":"assets/64/morningstar.png"
+			"url": "assets/64/morningstar.png",
+			"type": "image",
+			"name": "morningstar_png"
 		},
 		{
-			"name":"nyan_png",
-			"type":"image",
-			"url":"assets/64/nyan.png"
+			"url": "assets/64/nyan.png",
+			"type": "image",
+			"name": "nyan_png"
 		},
 		{
-			"name":"octocat_png",
-			"type":"image",
-			"url":"assets/64/octocat.png"
+			"url": "assets/64/octocat.png",
+			"type": "image",
+			"name": "octocat_png"
 		},
 		{
-			"name":"ogre_png",
-			"type":"image",
-			"url":"assets/64/ogre.png"
+			"url": "assets/64/ogre.png",
+			"type": "image",
+			"name": "ogre_png"
 		},
 		{
-			"name":"platearmor_png",
-			"type":"image",
-			"url":"assets/64/platearmor.png"
+			"url": "assets/64/platearmor.png",
+			"type": "image",
+			"name": "platearmor_png"
 		},
 		{
-			"name":"priest_png",
-			"type":"image",
-			"url":"assets/64/priest.png"
+			"url": "assets/64/priest.png",
+			"type": "image",
+			"name": "priest_png"
 		},
 		{
-			"name":"rat_png",
-			"type":"image",
-			"url":"assets/64/rat.png"
+			"url": "assets/64/rat.png",
+			"type": "image",
+			"name": "rat_png"
 		},
 		{
-			"name":"redarmor_png",
-			"type":"image",
-			"url":"assets/64/redarmor.png"
+			"url": "assets/64/redarmor.png",
+			"type": "image",
+			"name": "redarmor_png"
 		},
 		{
-			"name":"redsword_png",
-			"type":"image",
-			"url":"assets/64/redsword.png"
+			"url": "assets/64/redsword.png",
+			"type": "image",
+			"name": "redsword_png"
 		},
 		{
-			"name":"rick_png",
-			"type":"image",
-			"url":"assets/64/rick.png"
+			"url": "assets/64/rick.png",
+			"type": "image",
+			"name": "rick_png"
 		},
 		{
-			"name":"scientist_png",
-			"type":"image",
-			"url":"assets/64/scientist.png"
+			"url": "assets/64/scientist.png",
+			"type": "image",
+			"name": "scientist_png"
 		},
 		{
-			"name":"shadow16_png",
-			"type":"image",
-			"url":"assets/64/shadow16.png"
+			"url": "assets/64/shadow16.png",
+			"type": "image",
+			"name": "shadow16_png"
 		},
 		{
-			"name":"skeleton_png",
-			"type":"image",
-			"url":"assets/64/skeleton.png"
+			"url": "assets/64/skeleton.png",
+			"type": "image",
+			"name": "skeleton_png"
 		},
 		{
-			"name":"skeleton2_png",
-			"type":"image",
-			"url":"assets/64/skeleton2.png"
+			"url": "assets/64/skeleton2.png",
+			"type": "image",
+			"name": "skeleton2_png"
 		},
 		{
-			"name":"snake_png",
-			"type":"image",
-			"url":"assets/64/snake.png"
+			"url": "assets/64/snake.png",
+			"type": "image",
+			"name": "snake_png"
 		},
 		{
-			"name":"sorcerer_png",
-			"type":"image",
-			"url":"assets/64/sorcerer.png"
+			"url": "assets/64/sorcerer.png",
+			"type": "image",
+			"name": "sorcerer_png"
 		},
 		{
-			"name":"sparks_png",
-			"type":"image",
-			"url":"assets/64/sparks.png"
+			"url": "assets/64/sparks.png",
+			"type": "image",
+			"name": "sparks_png"
 		},
 		{
-			"name":"spectre_png",
-			"type":"image",
-			"url":"assets/64/spectre.png"
+			"url": "assets/64/spectre.png",
+			"type": "image",
+			"name": "spectre_png"
 		},
 		{
-			"name":"spritesheet_png",
-			"type":"image",
-			"url":"assets/64/spritesheet.png"
+			"url": "assets/64/spritesheet.png",
+			"type": "image",
+			"name": "spritesheet_png"
 		},
 		{
-			"name":"sword_png",
-			"type":"image",
-			"url":"assets/64/sword.png"
+			"url": "assets/64/sword.png",
+			"type": "image",
+			"name": "sword_png"
 		},
 		{
-			"name":"sword1_png",
-			"type":"image",
-			"url":"assets/64/sword1.png"
+			"url": "assets/64/sword1.png",
+			"type": "image",
+			"name": "sword1_png"
 		},
 		{
-			"name":"sword2_png",
-			"type":"image",
-			"url":"assets/64/sword2.png"
+			"url": "assets/64/sword2.png",
+			"type": "image",
+			"name": "sword2_png"
 		},
 		{
-			"name":"talk_png",
-			"type":"image",
-			"url":"assets/64/talk.png"
+			"url": "assets/64/talk.png",
+			"type": "image",
+			"name": "talk_png"
 		},
 		{
-			"name":"target_png",
-			"type":"image",
-			"url":"assets/64/target.png"
+			"url": "assets/64/target.png",
+			"type": "image",
+			"name": "target_png"
 		},
 		{
-			"name":"tilesheet_png",
-			"type":"image",
-			"url":"assets/64/tilesheet.png"
+			"url": "assets/64/tilesheet.png",
+			"type": "image",
+			"name": "tilesheet_png"
 		},
 		{
-			"name":"villagegirl_png",
-			"type":"image",
-			"url":"assets/64/villagegirl.png"
+			"url": "assets/64/villagegirl.png",
+			"type": "image",
+			"name": "villagegirl_png"
 		},
 		{
-			"name":"villager_png",
-			"type":"image",
-			"url":"assets/64/villager.png"
+			"url": "assets/64/villager.png",
+			"type": "image",
+			"name": "villager_png"
 		},
 		{
-			"name":"wizard_png",
-			"type":"image",
-			"url":"assets/64/wizard.png"
+			"url": "assets/64/wizard.png",
+			"type": "image",
+			"name": "wizard_png"
 		},
 		{
-			"name":"wood_png",
-			"type":"image",
-			"url":"assets/64/wood.png"
+			"url": "assets/64/wood.png",
+			"type": "image",
+			"name": "wood_png"
 		},
 		{
-			"name":"wood2_png",
-			"type":"image",
-			"url":"assets/64/wood2.png"
+			"url": "assets/64/wood2.png",
+			"type": "image",
+			"name": "wood2_png"
 		},
 		{
-			"name":"wood3_png",
-			"type":"image",
-			"url":"assets/64/wood3.png"
+			"url": "assets/64/wood3.png",
+			"type": "image",
+			"name": "wood3_png"
 		},
 		{
-			"name":"agent_json",
-			"type":"json",
-			"url":"assets/sprites/agent.json"
+			"url": "assets/sprites/agent.json",
+			"type": "json",
+			"name": "agent_json"
 		},
 		{
-			"name":"arrow_json",
-			"type":"json",
-			"url":"assets/sprites/arrow.json"
+			"url": "assets/sprites/arrow.json",
+			"type": "json",
+			"name": "arrow_json"
 		},
 		{
-			"name":"axe_json",
-			"type":"json",
-			"url":"assets/sprites/axe.json"
+			"url": "assets/sprites/axe.json",
+			"type": "json",
+			"name": "axe_json"
 		},
 		{
-			"name":"bat_json",
-			"type":"json",
-			"url":"assets/sprites/bat.json"
+			"url": "assets/sprites/bat.json",
+			"type": "json",
+			"name": "bat_json"
 		},
 		{
-			"name":"beachnpc_json",
-			"type":"json",
-			"url":"assets/sprites/beachnpc.json"
+			"url": "assets/sprites/beachnpc.json",
+			"type": "json",
+			"name": "beachnpc_json"
 		},
 		{
-			"name":"bluesword_json",
-			"type":"json",
-			"url":"assets/sprites/bluesword.json"
+			"url": "assets/sprites/bluesword.json",
+			"type": "json",
+			"name": "bluesword_json"
 		},
 		{
-			"name":"boss_json",
-			"type":"json",
-			"url":"assets/sprites/boss.json"
+			"url": "assets/sprites/boss.json",
+			"type": "json",
+			"name": "boss_json"
 		},
 		{
-			"name":"chest_json",
-			"type":"json",
-			"url":"assets/sprites/chest.json"
+			"url": "assets/sprites/chest.json",
+			"type": "json",
+			"name": "chest_json"
 		},
 		{
-			"name":"clotharmor_json",
-			"type":"json",
-			"url":"assets/sprites/clotharmor.json"
+			"url": "assets/sprites/clotharmor.json",
+			"type": "json",
+			"name": "clotharmor_json"
 		},
 		{
-			"name":"coder_json",
-			"type":"json",
-			"url":"assets/sprites/coder.json"
+			"url": "assets/sprites/coder.json",
+			"type": "json",
+			"name": "coder_json"
 		},
 		{
-			"name":"crab_json",
-			"type":"json",
-			"url":"assets/sprites/crab.json"
+			"url": "assets/sprites/crab.json",
+			"type": "json",
+			"name": "crab_json"
 		},
 		{
-			"name":"death_json",
-			"type":"json",
-			"url":"assets/sprites/death.json"
+			"url": "assets/sprites/death.json",
+			"type": "json",
+			"name": "death_json"
 		},
 		{
-			"name":"deathknight_json",
-			"type":"json",
-			"url":"assets/sprites/deathknight.json"
+			"url": "assets/sprites/deathknight.json",
+			"type": "json",
+			"name": "deathknight_json"
 		},
 		{
-			"name":"desertnpc_json",
-			"type":"json",
-			"url":"assets/sprites/desertnpc.json"
+			"url": "assets/sprites/desertnpc.json",
+			"type": "json",
+			"name": "desertnpc_json"
 		},
 		{
-			"name":"eye_json",
-			"type":"json",
-			"url":"assets/sprites/eye.json"
+			"url": "assets/sprites/eye.json",
+			"type": "json",
+			"name": "eye_json"
 		},
 		{
-			"name":"firefox_json",
-			"type":"json",
-			"url":"assets/sprites/firefox.json"
+			"url": "assets/sprites/firefox.json",
+			"type": "json",
+			"name": "firefox_json"
 		},
 		{
-			"name":"forestnpc_json",
-			"type":"json",
-			"url":"assets/sprites/forestnpc.json"
+			"url": "assets/sprites/forestnpc.json",
+			"type": "json",
+			"name": "forestnpc_json"
 		},
 		{
-			"name":"goblin_json",
-			"type":"json",
-			"url":"assets/sprites/goblin.json"
+			"url": "assets/sprites/goblin.json",
+			"type": "json",
+			"name": "goblin_json"
 		},
 		{
-			"name":"goldenarmor_json",
-			"type":"json",
-			"url":"assets/sprites/goldenarmor.json"
+			"url": "assets/sprites/goldenarmor.json",
+			"type": "json",
+			"name": "goldenarmor_json"
 		},
 		{
-			"name":"goldensword_json",
-			"type":"json",
-			"url":"assets/sprites/goldensword.json"
+			"url": "assets/sprites/goldensword.json",
+			"type": "json",
+			"name": "goldensword_json"
 		},
 		{
-			"name":"guard_json",
-			"type":"json",
-			"url":"assets/sprites/guard.json"
+			"url": "assets/sprites/guard.json",
+			"type": "json",
+			"name": "guard_json"
 		},
 		{
-			"name":"hand_json",
-			"type":"json",
-			"url":"assets/sprites/hand.json"
+			"url": "assets/sprites/hand.json",
+			"type": "json",
+			"name": "hand_json"
 		},
 		{
-			"name":"impact_json",
-			"type":"json",
-			"url":"assets/sprites/impact.json"
+			"url": "assets/sprites/impact.json",
+			"type": "json",
+			"name": "impact_json"
 		},
 		{
-			"name":"item-axe_json",
-			"type":"json",
-			"url":"assets/sprites/item-axe.json"
+			"url": "assets/sprites/item-axe.json",
+			"type": "json",
+			"name": "item-axe_json"
 		},
 		{
-			"name":"item-bluesword_json",
-			"type":"json",
-			"url":"assets/sprites/item-bluesword.json"
+			"url": "assets/sprites/item-bluesword.json",
+			"type": "json",
+			"name": "item-bluesword_json"
 		},
 		{
-			"name":"item-burger_json",
-			"type":"json",
-			"url":"assets/sprites/item-burger.json"
+			"url": "assets/sprites/item-burger.json",
+			"type": "json",
+			"name": "item-burger_json"
 		},
 		{
-			"name":"item-cake_json",
-			"type":"json",
-			"url":"assets/sprites/item-cake.json"
+			"url": "assets/sprites/item-cake.json",
+			"type": "json",
+			"name": "item-cake_json"
 		},
 		{
-			"name":"item-clotharmor_json",
-			"type":"json",
-			"url":"assets/sprites/item-clotharmor.json"
+			"url": "assets/sprites/item-clotharmor.json",
+			"type": "json",
+			"name": "item-clotharmor_json"
 		},
 		{
-			"name":"item-firepotion_json",
-			"type":"json",
-			"url":"assets/sprites/item-firepotion.json"
+			"url": "assets/sprites/item-firepotion.json",
+			"type": "json",
+			"name": "item-firepotion_json"
 		},
 		{
-			"name":"item-flask_json",
-			"type":"json",
-			"url":"assets/sprites/item-flask.json"
+			"url": "assets/sprites/item-flask.json",
+			"type": "json",
+			"name": "item-flask_json"
 		},
 		{
-			"name":"item-goldenarmor_json",
-			"type":"json",
-			"url":"assets/sprites/item-goldenarmor.json"
+			"url": "assets/sprites/item-goldenarmor.json",
+			"type": "json",
+			"name": "item-goldenarmor_json"
 		},
 		{
-			"name":"item-goldensword_json",
-			"type":"json",
-			"url":"assets/sprites/item-goldensword.json"
+			"url": "assets/sprites/item-goldensword.json",
+			"type": "json",
+			"name": "item-goldensword_json"
 		},
 		{
-			"name":"item-leatherarmor_json",
-			"type":"json",
-			"url":"assets/sprites/item-leatherarmor.json"
+			"url": "assets/sprites/item-leatherarmor.json",
+			"type": "json",
+			"name": "item-leatherarmor_json"
 		},
 		{
-			"name":"item-mailarmor_json",
-			"type":"json",
-			"url":"assets/sprites/item-mailarmor.json"
+			"url": "assets/sprites/item-mailarmor.json",
+			"type": "json",
+			"name": "item-mailarmor_json"
 		},
 		{
-			"name":"item-morningstar_json",
-			"type":"json",
-			"url":"assets/sprites/item-morningstar.json"
+			"url": "assets/sprites/item-morningstar.json",
+			"type": "json",
+			"name": "item-morningstar_json"
 		},
 		{
-			"name":"item-platearmor_json",
-			"type":"json",
-			"url":"assets/sprites/item-platearmor.json"
+			"url": "assets/sprites/item-platearmor.json",
+			"type": "json",
+			"name": "item-platearmor_json"
 		},
 		{
-			"name":"item-redarmor_json",
-			"type":"json",
-			"url":"assets/sprites/item-redarmor.json"
+			"url": "assets/sprites/item-redarmor.json",
+			"type": "json",
+			"name": "item-redarmor_json"
 		},
 		{
-			"name":"item-redsword_json",
-			"type":"json",
-			"url":"assets/sprites/item-redsword.json"
+			"url": "assets/sprites/item-redsword.json",
+			"type": "json",
+			"name": "item-redsword_json"
 		},
 		{
-			"name":"item-sword1_json",
-			"type":"json",
-			"url":"assets/sprites/item-sword1.json"
+			"url": "assets/sprites/item-sword1.json",
+			"type": "json",
+			"name": "item-sword1_json"
 		},
 		{
-			"name":"item-sword2_json",
-			"type":"json",
-			"url":"assets/sprites/item-sword2.json"
+			"url": "assets/sprites/item-sword2.json",
+			"type": "json",
+			"name": "item-sword2_json"
 		},
 		{
-			"name":"king_json",
-			"type":"json",
-			"url":"assets/sprites/king.json"
+			"url": "assets/sprites/king.json",
+			"type": "json",
+			"name": "king_json"
 		},
 		{
-			"name":"lavanpc_json",
-			"type":"json",
-			"url":"assets/sprites/lavanpc.json"
+			"url": "assets/sprites/lavanpc.json",
+			"type": "json",
+			"name": "lavanpc_json"
 		},
 		{
-			"name":"leatherarmor_json",
-			"type":"json",
-			"url":"assets/sprites/leatherarmor.json"
+			"url": "assets/sprites/leatherarmor.json",
+			"type": "json",
+			"name": "leatherarmor_json"
 		},
 		{
-			"name":"loot_json",
-			"type":"json",
-			"url":"assets/sprites/loot.json"
+			"url": "assets/sprites/loot.json",
+			"type": "json",
+			"name": "loot_json"
 		},
 		{
-			"name":"mailarmor_json",
-			"type":"json",
-			"url":"assets/sprites/mailarmor.json"
+			"url": "assets/sprites/mailarmor.json",
+			"type": "json",
+			"name": "mailarmor_json"
 		},
 		{
-			"name":"morningstar_json",
-			"type":"json",
-			"url":"assets/sprites/morningstar.json"
+			"url": "assets/sprites/morningstar.json",
+			"type": "json",
+			"name": "morningstar_json"
 		},
 		{
-			"name":"nyan_json",
-			"type":"json",
-			"url":"assets/sprites/nyan.json"
+			"url": "assets/sprites/nyan.json",
+			"type": "json",
+			"name": "nyan_json"
 		},
 		{
-			"name":"octocat_json",
-			"type":"json",
-			"url":"assets/sprites/octocat.json"
+			"url": "assets/sprites/octocat.json",
+			"type": "json",
+			"name": "octocat_json"
 		},
 		{
-			"name":"ogre_json",
-			"type":"json",
-			"url":"assets/sprites/ogre.json"
+			"url": "assets/sprites/ogre.json",
+			"type": "json",
+			"name": "ogre_json"
 		},
 		{
-			"name":"platearmor_json",
-			"type":"json",
-			"url":"assets/sprites/platearmor.json"
+			"url": "assets/sprites/platearmor.json",
+			"type": "json",
+			"name": "platearmor_json"
 		},
 		{
-			"name":"priest_json",
-			"type":"json",
-			"url":"assets/sprites/priest.json"
+			"url": "assets/sprites/priest.json",
+			"type": "json",
+			"name": "priest_json"
 		},
 		{
-			"name":"rat_json",
-			"type":"json",
-			"url":"assets/sprites/rat.json"
+			"url": "assets/sprites/rat.json",
+			"type": "json",
+			"name": "rat_json"
 		},
 		{
-			"name":"redarmor_json",
-			"type":"json",
-			"url":"assets/sprites/redarmor.json"
+			"url": "assets/sprites/redarmor.json",
+			"type": "json",
+			"name": "redarmor_json"
 		},
 		{
-			"name":"redsword_json",
-			"type":"json",
-			"url":"assets/sprites/redsword.json"
+			"url": "assets/sprites/redsword.json",
+			"type": "json",
+			"name": "redsword_json"
 		},
 		{
-			"name":"rick_json",
-			"type":"json",
-			"url":"assets/sprites/rick.json"
+			"url": "assets/sprites/rick.json",
+			"type": "json",
+			"name": "rick_json"
 		},
 		{
-			"name":"scientist_json",
-			"type":"json",
-			"url":"assets/sprites/scientist.json"
+			"url": "assets/sprites/scientist.json",
+			"type": "json",
+			"name": "scientist_json"
 		},
 		{
-			"name":"shadow16_json",
-			"type":"json",
-			"url":"assets/sprites/shadow16.json"
+			"url": "assets/sprites/shadow16.json",
+			"type": "json",
+			"name": "shadow16_json"
 		},
 		{
-			"name":"skeleton_json",
-			"type":"json",
-			"url":"assets/sprites/skeleton.json"
+			"url": "assets/sprites/skeleton.json",
+			"type": "json",
+			"name": "skeleton_json"
 		},
 		{
-			"name":"skeleton2_json",
-			"type":"json",
-			"url":"assets/sprites/skeleton2.json"
+			"url": "assets/sprites/skeleton2.json",
+			"type": "json",
+			"name": "skeleton2_json"
 		},
 		{
-			"name":"snake_json",
-			"type":"json",
-			"url":"assets/sprites/snake.json"
+			"url": "assets/sprites/snake.json",
+			"type": "json",
+			"name": "snake_json"
 		},
 		{
-			"name":"sorcerer_json",
-			"type":"json",
-			"url":"assets/sprites/sorcerer.json"
+			"url": "assets/sprites/sorcerer.json",
+			"type": "json",
+			"name": "sorcerer_json"
 		},
 		{
-			"name":"sparks_json",
-			"type":"json",
-			"url":"assets/sprites/sparks.json"
+			"url": "assets/sprites/sparks.json",
+			"type": "json",
+			"name": "sparks_json"
 		},
 		{
-			"name":"spectre_json",
-			"type":"json",
-			"url":"assets/sprites/spectre.json"
+			"url": "assets/sprites/spectre.json",
+			"type": "json",
+			"name": "spectre_json"
 		},
 		{
-			"name":"sword_json",
-			"type":"json",
-			"url":"assets/sprites/sword.json"
+			"url": "assets/sprites/sword.json",
+			"type": "json",
+			"name": "sword_json"
 		},
 		{
-			"name":"sword1_json",
-			"type":"json",
-			"url":"assets/sprites/sword1.json"
+			"url": "assets/sprites/sword1.json",
+			"type": "json",
+			"name": "sword1_json"
 		},
 		{
-			"name":"sword2_json",
-			"type":"json",
-			"url":"assets/sprites/sword2.json"
+			"url": "assets/sprites/sword2.json",
+			"type": "json",
+			"name": "sword2_json"
 		},
 		{
-			"name":"talk_json",
-			"type":"json",
-			"url":"assets/sprites/talk.json"
+			"url": "assets/sprites/talk.json",
+			"type": "json",
+			"name": "talk_json"
 		},
 		{
-			"name":"target_json",
-			"type":"json",
-			"url":"assets/sprites/target.json"
+			"url": "assets/sprites/target.json",
+			"type": "json",
+			"name": "target_json"
 		},
 		{
-			"name":"villagegirl_json",
-			"type":"json",
-			"url":"assets/sprites/villagegirl.json"
+			"url": "assets/sprites/villagegirl.json",
+			"type": "json",
+			"name": "villagegirl_json"
 		},
 		{
-			"name":"villager_json",
-			"type":"json",
-			"url":"assets/sprites/villager.json"
+			"url": "assets/sprites/villager.json",
+			"type": "json",
+			"name": "villager_json"
 		},
 		{
-			"name":"wizard_json",
-			"type":"json",
-			"url":"assets/sprites/wizard.json"
+			"url": "assets/sprites/wizard.json",
+			"type": "json",
+			"name": "wizard_json"
 		},
 		{
-			"name":"ic_keyboard_arrow_right_48px_png",
-			"type":"image",
-			"url":"assets/common/ic_keyboard_arrow_right_48px.png"
+			"url": "assets/common/ic_keyboard_arrow_right_48px.png",
+			"type": "image",
+			"name": "ic_keyboard_arrow_right_48px_png"
+		},
+		{
+			"url": "assets/world_client.json",
+			"type": "json",
+			"name": "world_client_json"
 		}
 	]
 }
