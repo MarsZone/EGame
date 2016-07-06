@@ -114,7 +114,7 @@ var Main = (function (_super) {
         //this.net = new NetWork.Net();
         //this.net.Init();
         //加载地图
-        //this.map =new Gmap.Map();
+        this.map = new Gmap.Map();
         //游戏层
         this.gameLayer = new egret.Sprite();
         this.gameLayer.touchEnabled = true;
@@ -124,7 +124,7 @@ var Main = (function (_super) {
         this.gameLayer.graphics.drawRect(0, 0, Main.StageWidth, Main.StageHeight);
         this.gameLayer.graphics.endFill();
         this.addChild(this.gameLayer);
-        this.game = new Content.Game();
+        this.game = new Content.Game(this.map);
         //游戏内容
         this.gameLayer.addChild(this.game);
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));

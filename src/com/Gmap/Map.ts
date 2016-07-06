@@ -3,14 +3,15 @@ module Gmap {
 		public constructor() {
 			this.init();
 		}
+		public mapLoaded = false;
 		grid;
 		plateauGrid = false;
-		mapLoaded = false;
 		isLoaded=false;
 		tilesetsLoaded = false;
 		init():void{
 			this.loadMap();
 			this.loadTileSets();
+			this.mapLoaded = true;
 			//Done.
 		}
 		loadMap():void{
@@ -18,7 +19,7 @@ module Gmap {
 			this.initMap(worker.mapData);
 			this.grid = worker.mapData.grid;
 			this.plateauGrid = worker.mapData.plateauGrid;
-            this.mapLoaded = true;
+            
 		}
 		width;
 		height;
@@ -47,7 +48,10 @@ module Gmap {
 		}
 		mapTexture:egret.Texture;
 		SpritesSheet:egret.SpriteSheet;
+		tileSetWidth:number;
+		tileSetHeight:number;
 		PerTilesetSize=32;
+		WhiteSpaceGap=0.2;
 		row;
 		col;
 		//32*32
@@ -55,19 +59,23 @@ module Gmap {
 			this.mapTexture = RES.getRes("tilesheet_png");
 			this.row = this.mapTexture.$getTextureHeight() / this.PerTilesetSize;
 			this.col = this.mapTexture.$getTextureWidth() / this.PerTilesetSize;
+			this.tileSetHeight = this.mapTexture.$getTextureHeight();
+			this.tileSetWidth = this.mapTexture.$getTextureWidth();
 			this.SpritesSheet = new egret.SpriteSheet(this.mapTexture);
+			
 			for(var i =0 ;i<this.row;i++)
 			{
 				for(var k=0;k<this.col;k++)
 				{
-					var index=i*this.col+k;
-					var bitx = k*this.PerTilesetSize;
-					var bity = i*this.PerTilesetSize;
-					this.SpritesSheet.createTexture(""+index,bitx,bity,this.PerTilesetSize,this.PerTilesetSize);
+					var index=i*this.col+k+1;
+					var bitx = k*this.PerTilesetSize+this.WhiteSpaceGap;
+					var bity = i*this.PerTilesetSize+this.WhiteSpaceGap;
+					this.SpritesSheet.createTexture(""+index,bitx,bity,this.PerTilesetSize-this.WhiteSpaceGap,this.PerTilesetSize-this.WhiteSpaceGap);
 					//Main.debugView.addLog("Map Index:"+index+"|BitX:"+bitx+"|BitY:"+bity);
 				}
 			}
-			Main.debugView.addLog("MapTileSets was Loaded","Map");
+			Main.debugView.log("MapTileSets was Loaded"+" Row:"+this.row
+			+"Col:"+this.col,"Map");
 		}
 	}
 }

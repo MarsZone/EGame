@@ -40,7 +40,7 @@ module Assets {
 
             //add all animation To animations
             for (var animate_json in imgJson.animations) {
-                //Main.debugView.addLog(animate_json, "Role");
+                //Main.debugView.log(animate_json, "Role");
                 var ob = imgJson.animations[animate_json];
                 var animate: Assets.Animation = new Assets.RoleAnimation();
                 animate.init(animate_json, ob.length, ob.row, Role.BitMapSize, Role.BitMapSize);
@@ -107,7 +107,7 @@ module Assets {
             try {
                 return this.sprites.getTexture(index);
             } catch (error) {
-                Main.debugView.addLog("Get Texture fail.","Role:"+clip.name);
+                Main.debugView.log("Get Texture fail.","Role:"+clip.name);
             }
         }
         setTrunLeft(flag):void{

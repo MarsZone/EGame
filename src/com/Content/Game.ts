@@ -5,15 +5,18 @@ module Content {
 	 *
 	 */
 	export class Game extends egret.Sprite{
-		public constructor() {
+        map:Gmap.Map;
+        core:Content.Core;
+        render:Content.Render;
+		public constructor(map:Gmap.Map) {
             super();
+            this.map=map;
             this.Init();
 		}
-        private core:Content.Core;
-        private render:Content.Render;
+        
         Init():void{
             //init view
-            this.render = new Content.Render();
+            this.render = new Content.Render(this.map);
             this.addChild(this.render);
             //init core
             this.core=new Content.Core(this.render);

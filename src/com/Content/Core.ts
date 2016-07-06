@@ -22,7 +22,7 @@ module Content {
             var time = this.time;
             var pass = now - time;
             //console.log("moveStar: ",(1000 / pass).toFixed(5));
-            //Main.debugView.addLog("moveStar: "+(1000 / pass).toFixed(5)+"_index"+this.index,"Core");
+            //Main.debugView.log("moveStar: "+(1000 / pass).toFixed(5)+"_index"+this.index,"Core");
             this.time = now;
             //Every 30 frame.update.
             if(this.frameControler)
