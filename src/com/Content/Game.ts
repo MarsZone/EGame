@@ -13,7 +13,7 @@ module Content {
             this.map=map;
             this.Init();
 		}
-        
+        sprites={};
         Init():void{
             //init view
             this.render = new Content.Render(this.map);

@@ -130,7 +130,7 @@ class Main extends egret.DisplayObjectContainer {
         //调试面板先实例化
         Main.debugView = new Tools.DebugView();
         Main.debugView.init(Main.StageWidth,Main.StageHeight);
-        Main.debugView.addLog("Start: StageWidth:"+Main.StageWidth+"_ StageHeight:"+Main.StageHeight);
+        Main.debugView.log("Start: StageWidth:"+Main.StageWidth+"_ StageHeight:"+Main.StageHeight);
         
         //网络初始化
         //this.net = new NetWork.Net();
@@ -139,7 +139,7 @@ class Main extends egret.DisplayObjectContainer {
         //加载地图
         this.map =new Gmap.Map();
         
-        
+        var sp:Assets.ESprite = new Assets.ESprite("leatherarmor");
         //游戏层
         this.gameLayer = new egret.Sprite();
         this.gameLayer.touchEnabled = true;

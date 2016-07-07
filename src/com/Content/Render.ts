@@ -10,32 +10,93 @@ module Content {
 			this.map = map;
 			this.init();
 		}
-		role: Assets.Role;
+		chara: Assets.ECharacter;
+		context:egret.Sprite;
         backGound:egret.Sprite;
 		foreground:egret.Sprite;
 		map:Gmap.Map;
 		camera:Content.Camera;
 		mobile:boolean=false;
 		tilesize=32;
+		animatedTileCount=0;
+		highTileCount=0;
 		init(): void {
+			
 			//add BG
 			this.backGound=new egret.Sprite();
 			this.foreground = new egret.Sprite();
+			this.context = new egret.Sprite();
 			this.addSP(this.backGound,Main.StageWidth,Main.StageHeight);
-			//this.addSP(this.foreground,Main.StageWidth,Main.StageHeight);
+			this.addSP(this.foreground,Main.StageWidth,Main.StageHeight);
+			this.addSP(this.context,Main.StageWidth,Main.StageHeight)
 			this.addRole();
 			//this.renderStaticCanvases();
+			
 			this.camera =new Content.Camera(this);
-			this.camera.forEachVisiblePosition(this.callbacktest,1);
 		}
-		callbacktest(x,y):void{
-			Main.debugView.log("x:"+x+"|y:"+y);
-		}
-
 		addSP(sp:egret.Sprite,width,height){
 			sp.width = width;
 			sp.height = height;
 			this.addChild(sp);
+		}
+
+		drawText(text, x, y, centered, color, strokeColor){
+			//Main.debugView.log("drawText");
+
+		}
+		drawCellRect(x, y, color,alpha=1) {
+			Main.debugView.log("drawCellRect");
+			this.context.graphics.lineStyle(2,color,alpha);
+			this.context.graphics.drawRect(x,y,this.tilesize-4,this.tilesize-4);
+            //this.context.strokeRect(0, 0, (this.tilesize * this.scale) - 4, (this.tilesize * this.scale) - 4);
+		}
+		drawRectStroke(x, y, width, height, color,alpha=1) {
+			Main.debugView.log("drawRectStroke");
+			this.context.graphics.beginFill(color,alpha);
+			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
+			this.context.graphics.endFill();
+			
+			this.context.graphics.lineStyle(5,0x000000);
+			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
+		}
+		drawRect(x, y, width, height, color,alpha=1) {
+			Main.debugView.log("drawRect");
+			this.context.graphics.beginFill(color,alpha);
+			this.context.graphics.lineStyle(5);
+			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
+			this.context.graphics.endFill();
+		}
+
+		drawCellHighlight(x, y, color ,alpha=1) {
+			var ts = this.tilesize;
+			var tx = x * ts;
+			var ty = y * ts;
+            this.drawCellRect(tx, ty, color,alpha);
+        }
+		drawTargetCell(){
+			Main.debugView.log("drawTargetCell");
+			
+		}
+		drawAttackTargetCell(){
+			Main.debugView.log("drawAttackTargetCell");
+		}
+		drawOccupiedCells(){
+
+		}
+		drawPathingCells(){
+
+		}
+		drawSelectedCell(){
+
+		}
+		clearScaledRect(){
+			this.context.graphics.clear();
+		}
+		drawCursor(){
+
+		}
+		clearTile(){
+
 		}
 
 		renderStaticCanvases():void{
@@ -43,6 +104,7 @@ module Content {
 			//this.drawHighTiles(this.foreground);
 		}
 		GridS:Array<egret.Sprite>;
+
 		drawTerrain():void{
 			var tilesetwidth:number = this.map.tileSetWidth / this.map.tilesize;
 			var horizontal_tiles = Main.StageWidth / tilesetwidth;
@@ -128,35 +190,35 @@ module Content {
 		//AddRole_test
 		addRole():void{
 			//ForTest AddRole
-			this.role = new Assets.Role("leatherarmor", "character");
-			this.role.x += 100;
-			this.role.y += 100;
-			this.addChild(this.role);
+			this.chara = new Assets.ECharacter("leatherarmor", "character");
+			this.chara.x += 100;
+			this.chara.y += 100;
+			this.addChild(this.chara);
 			var self = this;
 			//test key controler.
 			document.addEventListener("keydown",function(event:KeyboardEvent){
 				switch (event.keyCode) {
 					case Types.KeyMap.Up:
-						self.role.setCurAnimation("walk_up");
+						self.chara.setCurAnimation("walk_up");
 						break;
 					case Types.KeyMap.Down:
-						self.role.setCurAnimation("walk_down");
+						self.chara.setCurAnimation("walk_down");
 						break;
 					case Types.KeyMap.Left:
-						self.role.setCurAnimation("walk_right",true);
+						self.chara.setCurAnimation("walk_right",true);
 						break;
 					case Types.KeyMap.Right:
-						self.role.setCurAnimation("walk_right");
+						self.chara.setCurAnimation("walk_right");
 						break;
 				}
 			})
 			EGEvent.UIEventHandler.instance.addEventListener(EGEvent.GameEvent.CHANGE,this.onChange,this);
 		}
 		update(): void {
-			this.role.update();
+			this.chara.update();
 		}
 		onChange(e:EGEvent.GameEvent):void{
-			this.role.setCurAnimation("walk_right");
+			this.chara.setCurAnimation("walk_right");
 		}
 	}
 }

@@ -47,7 +47,7 @@ module NetWork{
             //     weaponAvatar = data[9],
             //     experience = data[10];
             
-            Main.debugView.addLog("Calling receiveWelcome");
+            Main.debugView.log("Calling receiveWelcome");
         }
     }
 }

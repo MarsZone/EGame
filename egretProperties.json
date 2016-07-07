@@ -32,6 +32,10 @@
 		{
 			"name": "socket.io",
 			"path": "../libsrc/socket.io"
+		},
+		{
+			"name": "underscore",
+			"path": "../libsrc/underscore"
 		}
 	]
 }

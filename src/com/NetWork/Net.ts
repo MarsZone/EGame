@@ -19,10 +19,10 @@ module NetWork{
             var self = this;
             this.connection = io('http://127.0.0.1:8000/');
             this.connection.on('news', function (data) {
-                Main.debugView.addLog("receive message: " + data);
+                Main.debugView.log("receive message: " + data);
             });
             this.connection.on('connection', function() {
-                Main.debugView.addLog("Connected to server");
+                Main.debugView.log("Connected to server");
             });
 
             this.connection.on('message', function(e) {
@@ -44,11 +44,11 @@ module NetWork{
                 self.receiveMessage(e);
             });
             this.connection.on('error', function(e) {
-                Main.debugView.addLog(""+e);
+                Main.debugView.log(""+e);
             });
 
             this.connection.on('disconnect', function() {
-                Main.debugView.addLog("Connection closed");
+                Main.debugView.log("Connection closed");
             });
             this.enable();
         }
@@ -64,7 +64,7 @@ module NetWork{
             var data, action;
             if(this.isListening) {
               data = JSON.parse(message);
-              Main.debugView.addLog("data: " + message);
+              Main.debugView.log("data: " + message);
               
               if(data instanceof Array) {
                     if(data[0] instanceof Array) {
@@ -84,7 +84,7 @@ module NetWork{
                 var fun = this.commands.CommandMap.get(action);
                 new fun();
             }else{
-                Main.debugView.addLog("Unknown action : " + action); 
+                Main.debugView.log("Unknown action : " + action); 
             }
         }
 

@@ -1,4 +1,8 @@
 # EGame
+-2016/7/6
+地图加载实现.
+Render.
+Cammer done;
 
 -2016/6/22
 Before Finished Net Work(只是通信初始部分.多数命令还没实现)...And Object Display Render.
