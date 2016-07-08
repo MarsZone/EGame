@@ -1,4 +1,4 @@
-module Assets {
+module Common {
     export /**
      * Entity
      */
