@@ -19,7 +19,7 @@ module Content {
             this.render = new Content.Render(this.map);
             this.addChild(this.render);
             //init core
-            this.core=new Content.Core(this.render);
+            this.core=new Content.Core(this.render,this.map);
             this.core.start();
         }
 	}

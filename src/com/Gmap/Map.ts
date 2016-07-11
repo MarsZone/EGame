@@ -12,6 +12,7 @@ module Gmap {
 			this.loadMap();
 			this.loadTileSets();
 			this.mapLoaded = true;
+			this.isLoaded = true;
 			//Done.
 		}
 		loadMap():void{

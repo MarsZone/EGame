@@ -17,9 +17,12 @@ module Content {
 		map:Gmap.Map;
 		camera:Content.Camera;
 		mobile:boolean=false;
+		tablet=false;
 		tilesize=32;
 		animatedTileCount=0;
 		highTileCount=0;
+		upscaledRendering=false;
+		supportsSilhouettes;
 		init(): void {
 			
 			//add BG
@@ -33,6 +36,9 @@ module Content {
 			//this.renderStaticCanvases();
 			
 			this.camera =new Content.Camera(this);
+			//this.upscaledRendering = this.context.mozImageSmoothingEnabled !== undefined;
+			this.upscaledRendering = false;
+            this.supportsSilhouettes = this.upscaledRendering;
 		}
 		addSP(sp:egret.Sprite,width,height){
 			sp.width = width;

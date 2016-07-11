@@ -1,6 +1,6 @@
 module Assets {
-	export class ESprite extends egret.Sprite{
-		public constructor(name, scale=2) {
+	export class Sprite extends egret.Sprite{
+		public constructor(name, scale=1) {
 			super();
 			this.name = name;
             this.scale = scale;

@@ -4,7 +4,7 @@ module Assets {
 	 * @author mars
 	 *
 	 */
-    export class ECharacter extends Assets.Entity {
+    export class ECharacter extends Common.Entity {
         public static BitMapSize=64;
         public static FramesNextTexture=5;
         public constructor(id:string,kind:string) {

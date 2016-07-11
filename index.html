@@ -32,6 +32,7 @@
 	<script egret="lib" src="libs/modules/greensock/greensock.js" src-release="libs/modules/greensock/greensock.min.js"></script>
 	<script egret="lib" src="libs/modules/socket.io/socket.io.js" src-release="libs/modules/socket.io/socket.io.min.js"></script>
 	<script egret="lib" src="libs/modules/underscore/underscore.js" src-release="libs/modules/underscore/underscore.min.js"></script>
+	<script egret="lib" src="libs/modules/AStar/AStar.js" src-release="libs/modules/AStar/AStar.min.js"></script>
 	<!--modules_files_end-->
 
     <!--这个标签为不通过egret提供的第三方库的方式使用的 javascript 文件，请将这些文件放在libs下，但不要放在modules下面。-->
@@ -42,14 +43,20 @@
     <!--game_files_start-->
 	<script egret="game" src="bin-debug/com/Assets/Animation.js"></script>
 	<script egret="game" src="bin-debug/com/Assets/EAnimation.js"></script>
-	<script egret="game" src="bin-debug/com/Assets/Entity.js"></script>
+	<script egret="game" src="bin-debug/com/Common/Entity.js"></script>
 	<script egret="game" src="bin-debug/com/Assets/ECharacter.js"></script>
 	<script egret="game" src="bin-debug/com/Assets/ESprite.js"></script>
-	<script egret="game" src="bin-debug/com/Assets/Sprites.js"></script>
+	<script egret="game" src="bin-debug/com/Assets/Sprite.js"></script>
+	<script egret="game" src="bin-debug/com/Common/Character.js"></script>
+	<script egret="game" src="bin-debug/com/Common/ETimer.js"></script>
+	<script egret="game" src="bin-debug/com/Common/Exceptions.js"></script>
+	<script egret="game" src="bin-debug/com/Common/Transition.js"></script>
 	<script egret="game" src="bin-debug/com/Common/UI.js"></script>
+	<script egret="game" src="bin-debug/com/Common/Updater.js"></script>
 	<script egret="game" src="bin-debug/com/Content/Camera.js"></script>
 	<script egret="game" src="bin-debug/com/Content/Core.js"></script>
 	<script egret="game" src="bin-debug/com/Content/Game.js"></script>
+	<script egret="game" src="bin-debug/com/Content/InfoManager.js"></script>
 	<script egret="game" src="bin-debug/com/Content/Player.js"></script>
 	<script egret="game" src="bin-debug/com/Content/Render.js"></script>
 	<script egret="game" src="bin-debug/com/Event/GameEvent.js"></script>
@@ -63,8 +70,10 @@
 	<script egret="game" src="bin-debug/com/Model/User.js"></script>
 	<script egret="game" src="bin-debug/com/NetWork/Commands.js"></script>
 	<script egret="game" src="bin-debug/com/NetWork/Net.js"></script>
+	<script egret="game" src="bin-debug/com/Role/Warrior.js"></script>
 	<script egret="game" src="bin-debug/com/Tools/DebugView.js"></script>
 	<script egret="game" src="bin-debug/com/Tools/HashMap.js"></script>
+	<script egret="game" src="bin-debug/com/Tools/Pathfinder.js"></script>
 	<script egret="game" src="bin-debug/com/Types/gameTypes.js"></script>
 	<script egret="game" src="bin-debug/LoadingUI.js"></script>
 	<script egret="game" src="bin-debug/Main.js"></script>
