@@ -18,6 +18,7 @@ module Common {
         isHighlighted;
         isFading;
         ready_func;
+        fadingAlpha;
         init(id, kind): void {
             this.id = id;
             this.kind = kind;

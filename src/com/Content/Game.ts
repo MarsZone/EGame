@@ -18,9 +18,9 @@ module Content {
         sprites={};
         Init():void{
             //init view
-            this.render = new Content.Render(this.map);
-            this.addChild(this.render);
             //init core
+            this.render = new Content.Render(this.map,this.core);
+            this.addChild(this.render);
             this.core=new Content.Core(this.render,this.map,this.net);
             //this.core.start();
         }

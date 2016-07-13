@@ -8,7 +8,7 @@ module Gmap {
 		world;
 		entities;
 		hasCompletelyRespawned;
-		public constructor(id,x, y, width, height,world) {
+		public constructor(id,x, y, width, height,world=null) {
 			this.id = id;
 			this.x = x;
             this.y = y;

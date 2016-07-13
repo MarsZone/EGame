@@ -5,11 +5,13 @@ module Content {
 	 *
 	 */
 	export class Render extends egret.Sprite {
-		public constructor(map:Gmap.Map) {
+		public constructor(map:Gmap.Map,core:Content.Core) {
 			super();
 			this.map = map;
+			this.core = core;
 			this.init();
 		}
+		core;
 		chara: Assets.ECharacter;
 		context:egret.Sprite;
         backGound:egret.Sprite;
@@ -226,5 +228,61 @@ module Content {
 		onChange(e:EGEvent.GameEvent):void{
 			this.chara.setCurAnimation("walk_right");
 		}
+		clearScreen() {
+            this.context.graphics.clear();
+        }
+		scale=1;
+		getEntityBoundingRect(entity) {
+            var rect = <any>{},
+                s = this.scale,
+                spr;
+
+            if(entity instanceof Player && entity.hasWeapon()) {
+                var weapon = this.core.sprites[entity.getWeaponName()];
+                spr = weapon;
+            } else {
+                spr = entity.sprite;
+            }
+
+            if(spr) {
+                rect.x = (entity.x + spr.offsetX - this.camera.x) * s;
+                rect.y = (entity.y + spr.offsetY - this.camera.y) * s;
+                rect.w = spr.width * s;
+                rect.h = spr.height * s;
+                rect.left = rect.x;
+                rect.right = rect.x + rect.w;
+                rect.top = rect.y;
+                rect.bottom = rect.y + rect.h;
+            }
+            return rect;
+        }
+
+		setCameraView(ctx:egret.Sprite) {
+			ctx.x = -this.camera.x * this.scale;
+			ctx.y = -this.camera.y * this.scale;
+			
+        }
+
+		renderFrame() {
+            if(this.mobile || this.tablet) {
+                this.renderFrameMobile();
+            }
+            else {
+                this.renderFrameDesktop();
+            }
+        }
+
+        renderFrameDesktop() {
+            this.clearScreen();
+			this.setCameraView(this.context);
+			this.drawTerrain();
+
+			//this.drawOccupiedCells();
+			this.drawPathingCells();
+			//this.drawEntities();
+			//this.drawCombatInfo();
+
+        }
+		renderFrameMobile(){};
 	}
 }

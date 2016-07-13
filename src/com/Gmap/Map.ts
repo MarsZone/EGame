@@ -97,5 +97,64 @@ module Gmap {
 		isInt = function(n) {
    		 return (n % 1) === 0;
 		};
+
+		GridPositionToTileIndex(x, y) {
+            return (y * this.width) + x + 1;
+        }
+		isAnimatedTile(id) {
+            return id+1 in this.animated;
+        }
+		 isHighTile(id) {
+            return _.indexOf(this.high, id+1) >= 0;
+        }
+		getTileAnimationLength(id) {
+            return this.animated[id+1].l;
+        }
+
+		/**
+         *
+         */
+        getTileAnimationDelay(id) {
+            var animProperties = this.animated[id+1];
+            if(animProperties.d) {
+                return animProperties.d;
+            } else {
+                return 100;
+            }
+        }
+
+		tileIndexToGridPosition(tileNum) {
+            var x = 0,
+                y = 0;
+
+            var getX = function(num, w) {
+                if(num == 0) {
+                    return 0;
+                }
+                return (num % w == 0) ? w - 1 : (num % w) - 1;
+            };
+
+            tileNum -= 1;
+            x = getX(tileNum + 1, this.width);
+            y = Math.floor(tileNum / this.width);
+
+            return { x: x, y: y };
+        }
+		checkpoints= [];
+		 _getCheckpoints(map) {
+			 this.checkpoints=[];
+            _.each(map.checkpoints, function(cp:any) {
+                var area = new Gmap.Area(cp.id,cp.x, cp.y, cp.w, cp.h);
+                //area.id = cp.id;
+                this.checkpoints.push(area);
+            });
+            return this.checkpoints;
+        }
+
+        getCurrentCheckpoint(entity) {
+            return _.detect(this.checkpoints, function(checkpoint) {
+                return checkpoint.contains(entity);
+            });
+        }
 	}
 }

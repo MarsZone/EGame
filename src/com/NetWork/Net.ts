@@ -84,7 +84,7 @@ module NetWork{
             if(this.commands.CommandMap.get(action) &&typeof(this.commands.CommandMap.get(action))=="function")
             {
                 var fun = this.commands.CommandMap.get(action);
-                new fun();
+                new fun(data,this);
             }else{
                 //Main.debugView.log("Unknown action : " + action,Net.NetSrcName); 
             }
@@ -123,8 +123,12 @@ module NetWork{
         onEntityList(callback) {
             this.list_callback = callback;
         }
+        welcome_callback;
+        onWelcome(callback) {
+            this.welcome_callback = callback;
+        }
 
-        		sendMove(x, y) {
+        sendMove(x, y) {
             this.sendMessage([Types.Messages.MOVE,
                               x,
                               y]);

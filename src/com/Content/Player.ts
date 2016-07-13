@@ -12,6 +12,10 @@ module Content {
 		isLootMoving;
 		isSwitchingWeapon;
 		pvpFlag;
+        experience;
+        level;
+        isOnPlateau;
+        lastCheckpoint;
 		init(){
 			 // Renderer
             this.nameOffsetY = -10;
