@@ -4,14 +4,14 @@ module Assets {
 	 * @author mars
 	 *
 	 */
-    export class Role extends Assets.Entity {
+    export class ECharacter extends Common.Entity {
         public static BitMapSize=64;
         public static FramesNextTexture=5;
         public constructor(id:string,kind:string) {
-            super();
+            super(id,kind);
             this.init(id,kind);
         }
-        animations: Array<Assets.Animation>;
+        animations: Array<Assets.EAnimation>;
         textures: Array<egret.Texture>;
         display: egret.Bitmap;
         bigTexture: egret.Texture
@@ -35,29 +35,29 @@ module Assets {
             var imgJson = RES.getRes(dataPath);
 
             //init array
-            this.animations = new Array<Assets.Animation>();
+            this.animations = new Array<Assets.EAnimation>();
             this.textures = new Array<egret.Texture>();
 
             //add all animation To animations
             for (var animate_json in imgJson.animations) {
                 //Main.debugView.addLog(animate_json, "Role");
                 var ob = imgJson.animations[animate_json];
-                var animate: Assets.Animation = new Assets.RoleAnimation();
-                animate.init(animate_json, ob.length, ob.row, Role.BitMapSize, Role.BitMapSize);
+                var animate: Assets.EAnimation = new Assets.RoleAnimation();
+                animate.init(animate_json, ob.length, ob.row, ECharacter.BitMapSize, ECharacter.BitMapSize);
                 this.animations.push(animate);
             }
             
             //create textures from SpriteSheet
-            var bitGridRol:number = this.bigTexture.$getTextureHeight()/Role.BitMapSize;
-            var bitGridCow:number = this.bigTexture.$getTextureWidth()/Role.BitMapSize;
+            var bitGridRol:number = this.bigTexture.$getTextureHeight()/ECharacter.BitMapSize;
+            var bitGridCow:number = this.bigTexture.$getTextureWidth()/ECharacter.BitMapSize;
             for(var i=0;i<bitGridRol;i++)
             {
                 for(var k=0;k<bitGridCow;k++)
                 {
                     var name = i+"_"+k;
-                    var bity=i*Role.BitMapSize;
-                    var bitx=k*Role.BitMapSize;
-                    this.sprites.createTexture(name,bitx,bity,Role.BitMapSize,Role.BitMapSize);
+                    var bity=i*ECharacter.BitMapSize;
+                    var bitx=k*ECharacter.BitMapSize;
+                    this.sprites.createTexture(name,bitx,bity,ECharacter.BitMapSize,ECharacter.BitMapSize);
                 }
             }
             
@@ -75,11 +75,11 @@ module Assets {
             //this.resetAnimation();
         }
         resetAnimation():void{
-            var clip:Assets.Animation = this.getClip(this.curAnimation);
+            var clip:Assets.EAnimation = this.getClip(this.curAnimation);
             clip.currentFrame=0;
             clip.lastCallCounter=0;
         }
-        getClip(animation):Assets.Animation{
+        getClip(animation):Assets.EAnimation{
             //Find Clip
             for(var clip of this.animations)
             {
@@ -102,12 +102,12 @@ module Assets {
             }
         }
         getCurAnimationTexture():egret.Texture{
-            var clip:Assets.Animation = this.getClip(this.curAnimation);
+            var clip:Assets.EAnimation = this.getClip(this.curAnimation);
             var index = clip.row+"_"+clip.currentFrame;
             try {
                 return this.sprites.getTexture(index);
             } catch (error) {
-                Main.debugView.addLog("Get Texture fail.","Role:"+clip.name);
+                Main.debugView.log("Get Texture fail.","Role:"+clip.name);
             }
         }
         setTrunLeft(flag):void{
@@ -116,8 +116,8 @@ module Assets {
         update():void{
             if(this.curAnimation!="")
             {
-                var clip:Assets.Animation = this.getClip(this.curAnimation);
-                if(clip.lastCallCounter>=Role.FramesNextTexture)
+                var clip:Assets.EAnimation = this.getClip(this.curAnimation);
+                if(clip.lastCallCounter>=ECharacter.FramesNextTexture)
                 {
                     clip.currentFrame += 1;
                     if(clip.currentFrame>=clip.length)

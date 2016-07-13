@@ -5,19 +5,24 @@ module Content {
 	 *
 	 */
 	export class Game extends egret.Sprite{
-		public constructor() {
+        map:Gmap.Map;
+        net:NetWork.Net;
+        core:Content.Core;
+        render:Content.Render;
+		public constructor(map:Gmap.Map,net:NetWork.Net) {
             super();
+            this.map = map;
+            this.net = net;
             this.Init();
 		}
-        private core:Content.Core;
-        private view:Content.View;
+        sprites={};
         Init():void{
             //init view
-            this.view = new Content.View();
-            this.addChild(this.view);
             //init core
-            this.core=new Content.Core(this.view);
-            this.core.start();
+            this.render = new Content.Render(this.map,this.core);
+            this.addChild(this.render);
+            this.core=new Content.Core(this.render,this.map,this.net);
+            //this.core.start();
         }
 	}
 }

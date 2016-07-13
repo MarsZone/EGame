@@ -2294,6 +2294,8 @@ var egret;
                 var option = this.playerOption;
                 var screenWidth = egret_native.EGTView.getFrameWidth();
                 var screenHeight = egret_native.EGTView.getFrameHeight();
+                egret.Capabilities.$boundingClientWidth = screenWidth;
+                egret.Capabilities.$boundingClientHeight = screenHeight;
                 var stageSize = egret.sys.screenAdapter.calculateStageSize(this.$stage.$scaleMode, screenWidth, screenHeight, option.contentWidth, option.contentHeight);
                 var stageWidth = stageSize.stageWidth;
                 var stageHeight = stageSize.stageHeight;
@@ -2418,7 +2420,7 @@ var egret;
                 egret.sys.RenderBuffer = native.NativeRenderTextureRenderBuffer;
             }
             egret.sys.systemRenderer = new egret.CanvasRenderer();
-            egret.Capabilities.renderMode = "canvas";
+            egret.Capabilities.$renderMode = "canvas";
         }
         function updateAllScreens() {
             var length = playerList.length;
@@ -2462,6 +2464,135 @@ var egret;
         }
         egret.runEgret = runEgret;
         egret.updateAllScreens = updateAllScreens;
+    })(native = egret.native || (egret.native = {}));
+})(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var egret;
+(function (egret) {
+    var native;
+    (function (native) {
+        var NativeFps = (function (_super) {
+            __extends(NativeFps, _super);
+            function NativeFps(stage, showFPS, showLog, logFilter, styles) {
+                _super.call(this);
+                this.arrLog = [];
+                if (showFPS || showLog) {
+                    this.panelX = styles["x"] === undefined ? 0 : parseInt(styles['x']);
+                    this.panelY = styles["y"] === undefined ? 0 : parseInt(styles['y']);
+                    this._stage = stage;
+                    this.showFps = showFPS;
+                    this.showLog = showLog;
+                    this.fontColor = styles["textColor"] === undefined ? 0xffffff : parseInt(styles['textColor']);
+                    this.fontSize = styles["size"] === undefined ? 24 : parseInt(styles['size']);
+                    this.bgAlpha = styles["bgAlpha"] || 0.9;
+                    this.shape = new egret.Shape();
+                    this.addChild(this.shape);
+                    if (showFPS)
+                        this.addFps();
+                    if (showLog)
+                        this.addLog();
+                }
+            }
+            var d = __define,c=NativeFps,p=c.prototype;
+            p.addFps = function () {
+                var fps = new egret.TextField();
+                fps.x = fps.y = 4;
+                this.textFps = fps;
+                this.addChild(fps);
+                fps.lineSpacing = 2;
+                fps.size = this.fontSize;
+                fps.textColor = this.fontColor;
+                fps.textFlow = [
+                    { text: "0 FPS " + egret.Capabilities.renderMode + "\n" },
+                    { text: "Draw: 0\nDirty: 0%\n" },
+                    { text: "Cost: " },
+                    { text: "0 ", style: { "textColor": 0x18fefe } },
+                    { text: "0 ", style: { "textColor": 0xffff00 } },
+                    { text: "0 ", style: { "textColor": 0xff0000 } }
+                ];
+            };
+            p.addLog = function () {
+                var text = new egret.TextField();
+                text.size = this.fontSize;
+                text.textColor = this.fontColor;
+                text.x = 4;
+                this.addChild(text);
+                this.textLog = text;
+            };
+            ;
+            p.update = function (datas) {
+                this.textFps.textFlow = [
+                    { text: datas.fps + " FPS " + egret.Capabilities.renderMode + "\n" },
+                    { text: "Draw: " + datas.draw + "\nDirty: " + datas.dirty + "%\n" },
+                    { text: "Cost: " },
+                    { text: datas.costTicker + " ", style: { "textColor": 0x18fefe } },
+                    { text: datas.costDirty + " ", style: { "textColor": 0xffff00 } },
+                    { text: datas.costRender + " ", style: { "textColor": 0xff0000 } }
+                ];
+                this.updateLayout();
+            };
+            ;
+            p.updateInfo = function (info) {
+                var fpsHeight = 0;
+                if (this.showFps) {
+                    fpsHeight = this.textFps.height;
+                    this.textLog.y = fpsHeight + 4;
+                }
+                this.arrLog.push(info);
+                this.textLog.text = this.arrLog.join('\n');
+                if (this._stage.stageHeight > 0) {
+                    if (this.textLog.textWidth > this._stage.stageWidth - 20 - this.panelX) {
+                        this.textLog.width = this._stage.stageWidth - 20 - this.panelX;
+                    }
+                    while (this.textLog.textHeight > this._stage.stageHeight - fpsHeight - 20 - this.panelY) {
+                        this.arrLog.shift();
+                        this.textLog.text = this.arrLog.join("\n");
+                    }
+                }
+                this.updateLayout();
+            };
+            p.updateLayout = function () {
+                if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
+                    return;
+                }
+                var g = this.shape.$graphics;
+                g.clear();
+                g.beginFill(0x000000, this.bgAlpha);
+                g.drawRect(0, 0, this.width + 8, this.height + 8);
+                g.endFill();
+            };
+            return NativeFps;
+        }(egret.Sprite));
+        native.NativeFps = NativeFps;
+        egret.registerClass(NativeFps,'egret.native.NativeFps',["egret.FPSDisplay"]);
+        egret.FPSDisplay = NativeFps;
     })(native = egret.native || (egret.native = {}));
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -3232,6 +3363,503 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
+    var native;
+    (function (native) {
+        /**
+         * @private
+         * @inheritDoc
+         */
+        var NativeVideo = (function (_super) {
+            __extends(NativeVideo, _super);
+            /**
+             * @private
+             * @inheritDoc
+             */
+            function NativeVideo(url, cache) {
+                if (cache === void 0) { cache = true; }
+                _super.call(this);
+                /**
+                 * @private
+                 */
+                this.loaded = false;
+                /**
+                 * @private
+                 */
+                this.loading = false;
+                /**
+                 * @private
+                 * */
+                this.loop = false;
+                /**
+                 * @private
+                 * */
+                this.isPlayed = false;
+                /**
+                 * @private
+                 * */
+                this.firstPlay = true;
+                /**
+                 * @inheritDoc
+                 */
+                this.src = "";
+                this._fullscreen = true;
+                this._bitmapData = null;
+                /**
+                 * @inheritDoc
+                 */
+                this.paused = false;
+                /**
+                 * @private
+                 */
+                this.isAddToStage = false;
+                /**
+                 * @private
+                 */
+                this.heightSet = 0;
+                /**
+                 * @private
+                 */
+                this.widthSet = 0;
+                this.$renderNode = new egret.sys.BitmapNode();
+                this.cache = cache;
+                if (!__global.Video) {
+                    egret.$error(1044);
+                }
+                if (url) {
+                    this.load(url, cache);
+                }
+            }
+            var d = __define,c=NativeVideo,p=c.prototype;
+            /**
+             * @inheritDoc
+             */
+            p.load = function (url, cache) {
+                if (cache === void 0) { cache = true; }
+                if (DEBUG && !url) {
+                    egret.$error(3002);
+                    return;
+                }
+                if (this.loading) {
+                    return;
+                }
+                if (url.indexOf('/') == 0) {
+                    url = url.slice(1, url.length);
+                }
+                this.src = url;
+                this.loading = true;
+                this.loaded = false;
+                if (cache && !egret_native.isFileExists(url)) {
+                    var self = this;
+                    var promise = egret.PromiseObject.create();
+                    promise.onSuccessFunc = function () {
+                        self.loadEnd();
+                    };
+                    promise.onErrorFunc = function () {
+                        egret.$warn(1048);
+                        self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                    };
+                    egret_native.download(url, url, promise);
+                }
+                else {
+                    this.loadEnd();
+                }
+            };
+            /**
+             * @private
+             * */
+            p.loadEnd = function () {
+                var video = new __global.Video(this.src);
+                video['setVideoRect'](0, 0, 1, 1);
+                video['setKeepRatio'](false);
+                video.addEventListener("canplaythrough", onCanPlay);
+                video.addEventListener("error", onVideoError);
+                video.addEventListener("playing", onPlaying);
+                video.load();
+                var self = this;
+                function onCanPlay() {
+                    video['setVideoRect'](0, 0, 1, 1);
+                    video.play();
+                }
+                function onPlaying() {
+                    video['setVideoRect'](0, 0, 1, 1);
+                    __global.setTimeout(function () {
+                        video.pause();
+                        if (self._fullscreen) {
+                            video.fullScreen = true;
+                        }
+                        video.currentTime = 0;
+                        self.originVideo = video;
+                        self.loaded = true;
+                        self.loading = false;
+                        removeListeners();
+                        self.dispatchEventWith(egret.Event.COMPLETE);
+                        video.addEventListener('pause', function () {
+                            self.paused = true;
+                        });
+                        video.addEventListener('playing', function () {
+                            self.paused = false;
+                        });
+                        video.addEventListener('ended', function () {
+                            self.dispatchEventWith(egret.Event.ENDED);
+                            if (self.loop) {
+                                self.play(0, true);
+                            }
+                        });
+                    }, 1);
+                }
+                function onVideoError() {
+                    removeListeners();
+                    self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                }
+                function removeListeners() {
+                    video.removeEventListener("canplaythrough", onCanPlay);
+                    video.removeEventListener("error", onVideoError);
+                    video.removeEventListener("playing", onPlaying);
+                }
+            };
+            /**
+             * @inheritDoc
+             */
+            p.play = function (startTime, loop) {
+                var _this = this;
+                if (loop === void 0) { loop = false; }
+                this.loop = loop;
+                if (!this.loaded) {
+                    this.load(this.src);
+                    this.once(egret.Event.COMPLETE, function (e) { return _this.play(startTime, loop); }, this);
+                    return;
+                }
+                var haveStartTime = false;
+                if (startTime != undefined && startTime != this.originVideo.currentTime) {
+                    this.originVideo.currentTime = startTime || 0;
+                    haveStartTime = true;
+                }
+                this.startPlay(haveStartTime);
+            };
+            /**
+             * @private
+             * */
+            p.startPlay = function (haveStartTime) {
+                if (haveStartTime === void 0) { haveStartTime = false; }
+                if (!this.isAddToStage || !this.loaded) {
+                    return;
+                }
+                this.firstPlay = false;
+                this.setVideoSize();
+                this.isPlayed = true;
+                if (!haveStartTime && this.paused && this.position != 0) {
+                    this.originVideo['resume']();
+                }
+                else {
+                    this.originVideo.play();
+                }
+                egret.startTick(this.markDirty, this);
+            };
+            /**
+             * @private
+             * */
+            p.stopPlay = function () {
+                egret.stopTick(this.markDirty, this);
+                if (this.isPlayed) {
+                    this.isPlayed = false;
+                    this.originVideo.pause();
+                }
+            };
+            /**
+             * @inheritDoc
+             */
+            p.close = function () {
+                if (this.originVideo) {
+                    this.originVideo['destroy']();
+                }
+                this.loaded = false;
+                this.loading = false;
+                this.originVideo = null;
+                this.loop = false;
+                this.src = null;
+            };
+            d(p, "poster"
+                /**
+                 * @inheritDoc
+                 */
+                ,function () {
+                    return this.posterUrl;
+                }
+                /**
+                 * @inheritDoc
+                 */
+                ,function (value) {
+                    var _this = this;
+                    this.posterUrl = value;
+                    var loader = new native.NativeImageLoader();
+                    loader.load(value);
+                    loader.addEventListener(egret.Event.COMPLETE, function () {
+                        _this.posterData = loader.data;
+                        _this.markDirty();
+                        _this.$invalidateContentBounds();
+                    }, this);
+                }
+            );
+            d(p, "fullscreen"
+                /**
+                 * @inheritDoc
+                 */
+                ,function () {
+                    if (this.originVideo) {
+                        return this.originVideo['fullScreen'];
+                    }
+                    return this._fullscreen;
+                }
+                /**
+                 * @inheritDoc
+                 */
+                ,function (value) {
+                    this._fullscreen = value;
+                    if (this.originVideo) {
+                        this.originVideo['fullScreen'] = value;
+                    }
+                }
+            );
+            d(p, "volume"
+                /**
+                 * @inheritDoc
+                 */
+                ,function () {
+                    if (!this.loaded)
+                        return 0;
+                    return this.originVideo.volume;
+                }
+                /**
+                 * @inheritDoc
+                 */
+                ,function (value) {
+                    if (!this.loaded)
+                        return;
+                    this.originVideo.volume = value;
+                }
+            );
+            d(p, "position"
+                /**
+                 * @inheritDoc
+                 */
+                ,function () {
+                    return this.originVideo.currentTime;
+                }
+                /**
+                 * @inheritDoc
+                 */
+                ,function (value) {
+                    if (this.loaded) {
+                        this.originVideo.currentTime = value;
+                    }
+                }
+            );
+            /**
+             * @inheritDoc
+             */
+            p.pause = function () {
+                this.originVideo.pause();
+            };
+            d(p, "bitmapData"
+                /**
+                 * @inheritDoc
+                 */
+                ,function () {
+                    return this._bitmapData;
+                }
+            );
+            d(p, "length"
+                /**
+                 * @inheritDoc
+                 */
+                ,function () {
+                    if (this.loaded) {
+                        return this.originVideo.duration;
+                    }
+                    throw new Error("Video not loaded!");
+                    //return 0;
+                }
+            );
+            /**
+             * @inheritDoc
+             */
+            p.$onAddToStage = function (stage, nestLevel) {
+                this.isAddToStage = true;
+                if (this.originVideo) {
+                    this.originVideo["setVideoVisible"](true);
+                }
+                this.$invalidate();
+                this.$invalidateContentBounds();
+                _super.prototype.$onAddToStage.call(this, stage, nestLevel);
+            };
+            /**
+             * @inheritDoc
+             */
+            p.$onRemoveFromStage = function () {
+                this.isAddToStage = false;
+                if (this.originVideo) {
+                    this.stopPlay();
+                    this.originVideo["setVideoVisible"](false);
+                }
+                _super.prototype.$onRemoveFromStage.call(this);
+            };
+            /**
+             * @private
+             */
+            p.getPlayWidth = function () {
+                if (!isNaN(this.widthSet)) {
+                    return this.widthSet;
+                }
+                if (this.bitmapData) {
+                    return this.bitmapData.width;
+                }
+                if (this.posterData) {
+                    return this.posterData.width;
+                }
+                return NaN;
+            };
+            /**
+             * @private
+             */
+            p.getPlayHeight = function () {
+                if (!isNaN(this.heightSet)) {
+                    return this.heightSet;
+                }
+                if (this.bitmapData) {
+                    return this.bitmapData.height;
+                }
+                if (this.posterData) {
+                    return this.posterData.height;
+                }
+                return NaN;
+            };
+            /**
+             * @private
+             */
+            p.$setHeight = function (value) {
+                this.heightSet = +value || 0;
+                this.setVideoSize();
+                this.$invalidate();
+                this.$invalidateContentBounds();
+                return _super.prototype.$setHeight.call(this, value);
+            };
+            /**
+             * @private
+             */
+            p.$setWidth = function (value) {
+                this.widthSet = +value || 0;
+                this.setVideoSize();
+                this.$invalidate();
+                this.$invalidateContentBounds();
+                return _super.prototype.$setWidth.call(this, value);
+            };
+            /**
+             * @inheritDoc
+             */
+            p.$setX = function (value) {
+                var result = _super.prototype.$setX.call(this, value);
+                this.setVideoSize();
+                return result;
+            };
+            /**
+             * @inheritDoc
+             */
+            p.$setY = function (value) {
+                var result = _super.prototype.$setY.call(this, value);
+                this.setVideoSize();
+                return result;
+            };
+            /**
+             * @private
+             */
+            p.setVideoSize = function () {
+                var video = this.originVideo;
+                if (video && !this.fullscreen) {
+                    if (!this.firstPlay) {
+                        video['setVideoRect'](this.x, this.y, this.widthSet, this.heightSet);
+                    }
+                    else {
+                        video['setVideoRect'](this.x, this.y, 0, 0);
+                    }
+                }
+            };
+            /**
+             * @private
+             */
+            p.$measureContentBounds = function (bounds) {
+                var posterData = this.posterData;
+                if (posterData) {
+                    bounds.setTo(0, 0, this.getPlayWidth(), this.getPlayHeight());
+                }
+                else {
+                    bounds.setEmpty();
+                }
+            };
+            /**
+             * @private
+             */
+            p.$render = function () {
+                var node = this.$renderNode;
+                var posterData = this.posterData;
+                var width = this.getPlayWidth();
+                var height = this.getPlayHeight();
+                if (width <= 0 || height <= 0) {
+                    return;
+                }
+                if (!this.isPlayed && posterData) {
+                    node.image = posterData;
+                    node.drawImage(0, 0, posterData.width, posterData.height, 0, 0, width, height);
+                }
+                else if (this.isPlayed) {
+                    this.setVideoSize();
+                }
+            };
+            p.markDirty = function () {
+                this.$invalidate();
+                return true;
+            };
+            return NativeVideo;
+        }(egret.DisplayObject));
+        native.NativeVideo = NativeVideo;
+        egret.registerClass(NativeVideo,'egret.native.NativeVideo',["egret.Video"]);
+        if (__global.Video) {
+            egret.Video = NativeVideo;
+        }
+        else {
+            egret.$warn(1044);
+        }
+    })(native = egret.native || (egret.native = {}));
+})(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var egret;
+(function (egret) {
     var localStorage;
     (function (localStorage) {
         var native;
@@ -3679,7 +4307,12 @@ var egret;
                     self.urlData.type = self._method;
                     //写入POST数据
                     if (self._method == egret.HttpMethod.POST && data) {
-                        self.urlData.data = data.toString();
+                        if (data instanceof ArrayBuffer) {
+                            self.urlData.data = data;
+                        }
+                        else {
+                            self.urlData.data = data.toString();
+                        }
                     }
                     else {
                         delete self.urlData["data"];
@@ -4069,11 +4702,32 @@ var egret;
                 egret_native.EGT_deleteBackward = function () {
                 };
                 var textfield = this.$textfield;
-                var inputMode = textfield.multiline ? 0 : 6;
+                var values = textfield.$TextField;
+                var inputType = values[37 /* inputType */];
+                var inputMode = values[30 /* multiline */] ? 0 : 6;
                 var inputFlag = -1; //textfield.displayAsPassword ? 0 : -1;
+                if (inputType == egret.TextFieldInputType.PASSWORD) {
+                    inputFlag = 0;
+                }
+                else if (inputType == egret.TextFieldInputType.TEL) {
+                    inputMode = 3;
+                }
                 var returnType = 1;
-                var maxLength = textfield.maxChars <= 0 ? -1 : textfield.maxChars;
-                egret_native.TextInputOp.setKeybordOpen(true, JSON.stringify({ "inputMode": inputMode, "inputFlag": inputFlag, "returnType": returnType, "maxLength": maxLength }));
+                var maxLength = values[21 /* maxChars */] <= 0 ? -1 : values[21 /* maxChars */];
+                var node = textfield.$getRenderNode();
+                var matrix = node.renderMatrix;
+                egret_native.TextInputOp.setKeybordOpen(true, JSON.stringify({
+                    "inputMode": inputMode,
+                    "inputFlag": inputFlag,
+                    "returnType": returnType,
+                    "maxLength": maxLength,
+                    "x": matrix.tx,
+                    "y": matrix.ty,
+                    "width": textfield.width,
+                    "height": textfield.height,
+                    "font_size": values[0 /* fontSize */],
+                    "font_color": values[2 /* textColor */]
+                }));
             };
             /**
              * @private

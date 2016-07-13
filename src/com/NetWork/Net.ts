@@ -5,138 +5,196 @@
  */
 module NetWork{
     export class Net extends egret.EventDispatcher{
-        webSocket:egret.WebSocket = new egret.WebSocket();
-        netPackageHandler:NetPackageHandler=new NetPackageHandler();
+        //webSocket:egret.WebSocket = new egret.WebSocket();
+        //netPackageHandler:NetPackageHandler=new NetPackageHandler();
         public static NetSrcName: string = "Net";
+        
         public constructor() {
             super();
+            this.commands = new NetWork.Commands();
         }
-        Init(): void {
-            Main.debugView.addLog("");
-            // this.webSocket.addEventListener( egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this );
-            // this.webSocket.addEventListener( egret.Event.CONNECT, this.onSocketOpen, this );
-            // this.webSocket.connect("localhost", 9003);
-            //this.webSocket.connect("119.29.66.119", 8001);
+        connection;
+        commands:NetWork.Commands;
+        fail_callback=null;
+        spawn_callback = null;
+        movement_callback = null;
+        connect(host,port): void {
+            var self = this;
+            this.connection = io('http://127.0.0.1:8000/');
+            this.connection.on('news', function (data) {
+                Main.debugView.log("receive message: " + data,Net.NetSrcName);
+            });
+            this.connection.on('connection', function() {
+                Main.debugView.log("Connected to server",Net.NetSrcName);
+            });
+
+            this.connection.on('message', function(e) {
+                if(e === 'go') {
+                    //Starting client/server handshake
+                    if(self.connected_callback) {
+                            self.connected_callback();
+                    }
+                    return;
+                }
+                if(e === 'timeout') {
+                    return;
+                }
+                if(e === 'invalidlogin' || e === 'userexists' || e === 'loggedin' || e === 'invalidusername'){
+                    return;
+                }
+
+                self.receiveMessage(e);
+            });
+            this.connection.on('error', function(e) {
+                Main.debugView.log(""+e,Net.NetSrcName);
+            });
+
+            this.connection.on('disconnect', function() {
+                Main.debugView.log("Connection closed",Net.NetSrcName);
+            });
+            this.enable();
         }
-        //网络包的设定
-        //交互流程，
-        //服务端完成对象的创建
-        //服务器要计算碰撞和更新位置
-        //接收客户端发送的触摸点
-        onSocketOpen():void {
-            //var cmd = "Hello Egret WebSocket";
-            //console.log("连接成功，发送数据(Text)：" + cmd);
-            //webSocket.writeUTF(cmd);
-            //webSocket.flush();
-            // this.webSocket.type = egret.WebSocket.TYPE_BINARY;
-            // var bytes:egret.ByteArray=new egret.ByteArray();
-            // bytes.writeUTFBytes(data);
-            // this.webSocket.writeBytes(bytes);
-            // this.webSocket.flush();
-            //this.netPackageHandler.sendByteArray(this.webSocket,NetPackageHandler.PosDataID,100,300);
+        isListening:boolean=true;
+        enable():void {
+            this.isListening = true;
         }
-        onReceiveMessage(e:egret.Event):void {
-            //if(this.webSocket.type == egret.WebSocket.TYPE_STRING) {
-                //var msg = this.webSocket.readUTF();
-                //console.log("收到数据：" + msg);
-                //var user = JSON.parse(msg);
-                //this.userData =new Array();
-                //this.userData.push(user);
-                //console.log("UData:"+this.userData[0].password);
-            //} else {
-                // var bmsg: egret.ByteArray = new egret.ByteArray;
-                // this.webSocket.readBytes(bmsg,0,0);
-                // //读字符串 ->JSON 解析数据
-                // var str:string = bmsg.readUTFBytes(bmsg.bytesAvailable);
-                // Main.debugView.addLog("读str "+str,Net.NetSrcName);
-                // var user:ModelVO.UserVO = JSON.parse(str);
-                // Main.debugView.addLog("Get Object To String:"+user.ToString(),Net.NetSrcName);
-                // //读int
-                //var num:number=bmsg.readUnsignedShort();
-                //Main.debugView.addLog("读Num"+num);
-                //this.Readbytes(bmsg);
-                //读bytes
-                //console.log("收到数据长度"+bmsg.length);
-                //var bit: number = bmsg.readByte();
-                //console.log("读一个byte "+bit+" 转化为字符:"+ String.fromCharCode(bit));
-                //console.log("读取后位置" + bmsg.bytesAvailable);
-                //while(bmsg.bytesAvailable>0)
-                //{
-                //    var bit: number = bmsg.readByte();
-                //    console.log("读一个byte "+bit+"  读取后位置" + bmsg.bytesAvailable);
-                //    console.log();
-                //}
+
+        disable():void {
+            this.isListening = false;
+        }
+        receiveMessage(message):void {
+            var data, action;
+            if(this.isListening) {
+              data = JSON.parse(message);
+              Main.debugView.log("data: " + message,Net.NetSrcName);
+              
+              if(data instanceof Array) {
+                    if(data[0] instanceof Array) {
+                        // Multiple actions received
+                        this.receiveActionBatch(data);
+                    } else {
+                        // Only one action received
+                        this.receiveAction(data);
+                    }
+                }
             }
         }
-    //     Readbytes(bytes:egret.ByteArray):void{
-    //         var bytesArr: Array<number> = new Array<number>();
-    //         for(var i: number = 0;i < bytes.length;i++){
-    //             var byte: number = bytes.readByte();
-    //             //Main.debugView.addLog("bytes[" + i + "]" + byte,Net.NetSrcName);
-    //             bytesArr.push(byte);
-    //         }
-    //         this.BinaryToInt(bytesArr);
-    //     }
-    //     SendMessage(): void { 
-    //         //var bytes: egret.ByteArray = new egret.ByteArray();
-    //         //bytes.writeByte(2);
-    //         //this.webSocket.writeBytes(bytes);
-    //         //this.webSocket.flush();
-    //     }
-    //     BinaryToInt(bytes:Array<number>){
-    //         var intNum: number = (bytes[0] & 0xFF) << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
-    //         Main.debugView.addLog("After cal:"+intNum,Net.NetSrcName);
-    //     }
-        
-    //     ToUTF8Array(str) {
-    //     var utf8 = [];
-    //     for (var i=0; i < str.length; i++) {
-    //         var charcode = str.charCodeAt(i);
-    //         if (charcode < 0x80) utf8.push(charcode);
-    //         else if (charcode < 0x800) {
-    //             utf8.push(0xc0 | (charcode >> 6),
-    //                 0x80 | (charcode & 0x3f));
-    //         }
-    //         else if (charcode < 0xd800 || charcode >= 0xe000) {
-    //             utf8.push(0xe0 | (charcode >> 12),
-    //                 0x80 | ((charcode>>6) & 0x3f),
-    //                 0x80 | (charcode & 0x3f));
-    //         }
-    //         // surrogate pair
-    //         else {
-    //             i++;
-    //             // UTF-16 encodes 0x10000-0x10FFFF by
-    //             // subtracting 0x10000 and splitting the
-    //             // 20 bits of 0x0-0xFFFFF into two halves
-    //             charcode = 0x10000 + (((charcode & 0x3ff)<<10)
-    //             | (str.charCodeAt(i) & 0x3ff));
-    //             utf8.push(0xf0 | (charcode >>18),
-    //                 0x80 | ((charcode>>12) & 0x3f),
-    //                 0x80 | ((charcode>>6) & 0x3f),
-    //                 0x80 | (charcode & 0x3f));
-    //         }
-    //         }
-    //         return utf8;
-    //     }
-    // }
+        receiveAction(data) {
+            var action = data[0];
+            if(this.commands.CommandMap.get(action) &&typeof(this.commands.CommandMap.get(action))=="function")
+            {
+                var fun = this.commands.CommandMap.get(action);
+                new fun(data,this);
+            }else{
+                //Main.debugView.log("Unknown action : " + action,Net.NetSrcName); 
+            }
+        }
 
-    //PHP
-    //        var urlloader:egret.URLLoader;
-    //        urlloader = new egret.URLLoader();
-    //        var urlReq:egret.URLRequest = new egret.URLRequest();
-    //        urlReq.url = " http://localhost/demo/s.php";
-    //        urlloader.dataFormat = egret.URLLoaderDataFormat.VARIABLES;
-    //        urlReq.method = egret.URLRequestMethod.POST;
-    //        urlReq.data = new egret.URLVariables("test=ok");
-    //        urlloader.load(urlReq);
-    //        urlloader.addEventListener(egret.Event.COMPLETE,onComplete,this);
-    //        function onComplete(event:egret.Event):void
-    //        {
-    //            console.log("Receive");
-    //            var loader:egret.URLLoader = <egret.URLLoader> event.target;
-    //            var data:egret.URLVariables = loader.data;
-    //            console.log( data.toString() );
-    //            console.log( urlloader.data );
-    //        }
+        receiveActionBatch(actions) {
+            var self = this;
+            for(var action of actions)
+            {
+                self.receiveAction(action);
+            }
+        }
+        sendMessage(json) {
+            var data;
+            if(this.connection.connected === true) {
+               data = JSON.stringify(json);
+               this.connection.send(data);
+            }
+        }
+
+        sendLogin() {
+            var user=new Model.User();
+            user.setData("Demo","123456");
+            Model.ModelBase.instance.user = user;
+            this.sendMessage([Types.Messages.LOGIN,user.name,user.pw]);
+        }
+        connected_callback = null;
+        onConnected(callback) {
+            this.connected_callback = callback;
+        }
+        disconnected_callback;
+        onDisconnected(callback) {
+            this.disconnected_callback = callback;
+        }
+        list_callback;
+        onEntityList(callback) {
+            this.list_callback = callback;
+        }
+        welcome_callback;
+        onWelcome(callback) {
+            this.welcome_callback = callback;
+        }
+
+        sendMove(x, y) {
+            this.sendMessage([Types.Messages.MOVE,
+                              x,
+                              y]);
+        }
+
+        sendLootMove(item, x, y) {
+            this.sendMessage([Types.Messages.LOOTMOVE,
+                              x,
+                              y,
+                              item.id]);
+        }
+
+        sendAggro(mob) {
+            this.sendMessage([Types.Messages.AGGRO,
+                              mob.id]);
+        }
+
+        sendAttack(mob) {
+            this.sendMessage([Types.Messages.ATTACK,
+                              mob.id]);
+        }
+
+        sendHit(mob) {
+            this.sendMessage([Types.Messages.HIT,
+                              mob.id]);
+        }
+
+        sendHurt(mob) {
+            this.sendMessage([Types.Messages.HURT,
+                              mob.id]);
+        }
+
+        sendChat(text) {
+            this.sendMessage([Types.Messages.CHAT,
+                              text]);
+        }
+
+        sendLoot(item) {
+            this.sendMessage([Types.Messages.LOOT,
+                              item.id]);
+        }
+
+        sendTeleport(x, y) {
+            this.sendMessage([Types.Messages.TELEPORT,
+                              x,
+                              y]);
+        }
+
+        sendZone() {
+            this.sendMessage([Types.Messages.ZONE]);
+        }
+
+        sendOpen(chest) {
+            this.sendMessage([Types.Messages.OPEN,
+                              chest.id]);
+        }
+
+        sendCheck(id) {
+            this.sendMessage([Types.Messages.CHECK,
+                              id]);
+        }
+        
+        sendWho(ids) {
+            ids.unshift(Types.Messages.WHO);
+            this.sendMessage(ids);
+        }
+    }
 }
     

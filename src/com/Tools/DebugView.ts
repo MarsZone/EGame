@@ -86,24 +86,27 @@ module Tools {
         onTouchEndTF(event:egret.TouchEvent):void{
             
         }
-        addLog(word:string,from:string="Src"):void{
+        log(word:string,src:string="Src",onDisplay:boolean=false):void{
             //var dateTime: string = (new Date()).toDateString()+(new Date()).toTimeString();
             var dateTime: string = ""+(new Date()).getHours()+":"+(new Date()).getMinutes()+":"+(new Date()).getSeconds();
-                        
-            this.tf.appendText("["+from+"]: "+"["+dateTime+"]");
-            this.tf.appendText(" "+word+"\n");
-            console.log("["+from+"]: "+"["+dateTime+"]"+" "+word);
-            
-            this.LineHeightGap = this.tf.textHeight / this.tf.maxScrollV;
-            this.tf.scrollV = parseInt(((this.tf.textHeight- Main.StageHeight) / this.LineHeightGap).toString()) ;
-            this.MaxScrollV = this.tf.scrollV;
-            
-            if (this.tf.numLines>500)
+            console.log("["+src+"]: "+"["+dateTime+"]"+" "+word);
+            if(onDisplay)
             {
-                var firstLineEnd: number = this.tf.text.indexOf("\n")+1;
-                this.tf.text = this.tf.text.substring(firstLineEnd,this.tf.text.length);
+                this.tf.appendText("["+src+"]: "+"["+dateTime+"]");
+                this.tf.appendText(" "+word+"\n");
+                this.LineHeightGap = this.tf.textHeight / this.tf.maxScrollV;
+                this.tf.scrollV = parseInt(((this.tf.textHeight- Main.StageHeight) / this.LineHeightGap).toString()) ;
+                this.MaxScrollV = this.tf.scrollV;
+                
+                if (this.tf.numLines>500)
+                {
+                   var firstLineEnd: number = this.tf.text.indexOf("\n")+1;
+                   this.tf.text = this.tf.text.substring(firstLineEnd,this.tf.text.length);
+                }
             }
+            
         }
+        
         toStringLog():void{
             console.log(this.tf.text.toString());
         }
