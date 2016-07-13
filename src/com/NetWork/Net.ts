@@ -15,23 +15,25 @@ module NetWork{
         }
         connection;
         commands:NetWork.Commands;
-        Init(): void {
+        fail_callback=null;
+        spawn_callback = null;
+        movement_callback = null;
+        connect(host,port): void {
             var self = this;
             this.connection = io('http://127.0.0.1:8000/');
             this.connection.on('news', function (data) {
-                Main.debugView.log("receive message: " + data);
+                Main.debugView.log("receive message: " + data,Net.NetSrcName);
             });
             this.connection.on('connection', function() {
-                Main.debugView.log("Connected to server");
+                Main.debugView.log("Connected to server",Net.NetSrcName);
             });
 
             this.connection.on('message', function(e) {
                 if(e === 'go') {
                     //Starting client/server handshake
-                    var user=new Model.User();
-                    user.setData("Demo","123456");
-                    Model.ModelBase.instance.user = user;
-                    self.sendMessage([Types.Messages.LOGIN,user.name,user.pw]);
+                    if(self.connected_callback) {
+                            self.connected_callback();
+                    }
                     return;
                 }
                 if(e === 'timeout') {
@@ -44,11 +46,11 @@ module NetWork{
                 self.receiveMessage(e);
             });
             this.connection.on('error', function(e) {
-                Main.debugView.log(""+e);
+                Main.debugView.log(""+e,Net.NetSrcName);
             });
 
             this.connection.on('disconnect', function() {
-                Main.debugView.log("Connection closed");
+                Main.debugView.log("Connection closed",Net.NetSrcName);
             });
             this.enable();
         }
@@ -64,7 +66,7 @@ module NetWork{
             var data, action;
             if(this.isListening) {
               data = JSON.parse(message);
-              Main.debugView.log("data: " + message);
+              Main.debugView.log("data: " + message,Net.NetSrcName);
               
               if(data instanceof Array) {
                     if(data[0] instanceof Array) {
@@ -84,7 +86,7 @@ module NetWork{
                 var fun = this.commands.CommandMap.get(action);
                 new fun();
             }else{
-                Main.debugView.log("Unknown action : " + action); 
+                //Main.debugView.log("Unknown action : " + action,Net.NetSrcName); 
             }
         }
 
@@ -101,6 +103,93 @@ module NetWork{
                data = JSON.stringify(json);
                this.connection.send(data);
             }
+        }
+
+        sendLogin() {
+            var user=new Model.User();
+            user.setData("Demo","123456");
+            Model.ModelBase.instance.user = user;
+            this.sendMessage([Types.Messages.LOGIN,user.name,user.pw]);
+        }
+        connected_callback = null;
+        onConnected(callback) {
+            this.connected_callback = callback;
+        }
+        disconnected_callback;
+        onDisconnected(callback) {
+            this.disconnected_callback = callback;
+        }
+        list_callback;
+        onEntityList(callback) {
+            this.list_callback = callback;
+        }
+
+        		sendMove(x, y) {
+            this.sendMessage([Types.Messages.MOVE,
+                              x,
+                              y]);
+        }
+
+        sendLootMove(item, x, y) {
+            this.sendMessage([Types.Messages.LOOTMOVE,
+                              x,
+                              y,
+                              item.id]);
+        }
+
+        sendAggro(mob) {
+            this.sendMessage([Types.Messages.AGGRO,
+                              mob.id]);
+        }
+
+        sendAttack(mob) {
+            this.sendMessage([Types.Messages.ATTACK,
+                              mob.id]);
+        }
+
+        sendHit(mob) {
+            this.sendMessage([Types.Messages.HIT,
+                              mob.id]);
+        }
+
+        sendHurt(mob) {
+            this.sendMessage([Types.Messages.HURT,
+                              mob.id]);
+        }
+
+        sendChat(text) {
+            this.sendMessage([Types.Messages.CHAT,
+                              text]);
+        }
+
+        sendLoot(item) {
+            this.sendMessage([Types.Messages.LOOT,
+                              item.id]);
+        }
+
+        sendTeleport(x, y) {
+            this.sendMessage([Types.Messages.TELEPORT,
+                              x,
+                              y]);
+        }
+
+        sendZone() {
+            this.sendMessage([Types.Messages.ZONE]);
+        }
+
+        sendOpen(chest) {
+            this.sendMessage([Types.Messages.OPEN,
+                              chest.id]);
+        }
+
+        sendCheck(id) {
+            this.sendMessage([Types.Messages.CHECK,
+                              id]);
+        }
+        
+        sendWho(ids) {
+            ids.unshift(Types.Messages.WHO);
+            this.sendMessage(ids);
         }
     }
 }

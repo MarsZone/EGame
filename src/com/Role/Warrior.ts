@@ -3,5 +3,10 @@ module Role {
 		public constructor(id,name) {
 			super(id,name);
 		}
+		moveUp;
+		moveDown;
+		moveLeft;
+		moveRight;
+		disableKeyboardNpcTalk;
 	}
 }

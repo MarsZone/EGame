@@ -78,5 +78,24 @@ module Gmap {
 			Main.debugView.log("MapTileSets was Loaded"+" Row:"+this.row
 			+"Col:"+this.col,"Map");
 		}
+		isColliding(x, y) {
+            if(this.isOutOfBounds(x, y) || !this.grid) {
+                return false;
+            }
+            return (this.grid[y][x] === 1);
+        }
+
+        isPlateau(x, y) {
+            if(this.isOutOfBounds(x, y) || !this.plateauGrid) {
+                return false;
+            }
+            return (this.plateauGrid[y][x] === 1);
+        }
+		isOutOfBounds(x, y) {
+            return this.isInt(x) && this.isInt(y) && (x < 0 || x >= this.width || y < 0 || y >= this.height);
+        }
+		isInt = function(n) {
+   		 return (n % 1) === 0;
+		};
 	}
 }

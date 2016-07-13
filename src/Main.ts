@@ -133,7 +133,7 @@ class Main extends egret.DisplayObjectContainer {
         Main.debugView.log("Start: StageWidth:"+Main.StageWidth+"_ StageHeight:"+Main.StageHeight);
         
         //网络初始化
-        //this.net = new NetWork.Net();
+        this.net = new NetWork.Net();
         //this.net.Init();
 
         //加载地图
@@ -150,7 +150,7 @@ class Main extends egret.DisplayObjectContainer {
         this.gameLayer.graphics.endFill();
         
         this.addChild(this.gameLayer);
-        this.game = new Content.Game(this.map);
+        this.game = new Content.Game(this.map,this.net);
         //游戏内容
         this.gameLayer.addChild(this.game);
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));
