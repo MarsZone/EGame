@@ -108,10 +108,25 @@ module Content {
 		}
 
 		renderStaticCanvases():void{
+			this.setCameraView(this.backGound);
 			this.drawTerrain();
 			//this.drawHighTiles(this.foreground);
 		}
 		GridS:Array<egret.Sprite>;
+
+		// drawHighTiles(ctx) {
+        //     var self = this,
+        //         m = this.core.map,
+        //         tilesetwidth = this.map.tileSetWidth / this.map.tilesize;
+
+        //     this.highTileCount = 0;
+        //     this.core.forEachVisibleTile(function (id, index) {
+        //         if(m.isHighTile(id)) {
+        //             //self.drawTile(ctx, id, self.tileset, tilesetwidth, m.width, index);
+        //             self.highTileCount += 1;
+        //         }
+        //     }, 1);
+        // }
 
 		drawTerrain():void{
 			var tilesetwidth:number = this.map.tileSetWidth / this.map.tilesize;
@@ -175,10 +190,6 @@ module Content {
 					}
 				}
 			}
-		}
-
-		drawTile(index):void{
-
 		}
 		forEachVisibleTile():void{
 			if(this.map.mapLoaded)
@@ -259,8 +270,7 @@ module Content {
 
 		setCameraView(ctx:egret.Sprite) {
 			ctx.x = -this.camera.x * this.scale;
-			ctx.y = -this.camera.y * this.scale;
-			
+			ctx.y = -this.camera.y * this.scale;			
         }
 
 		renderFrame() {
@@ -275,7 +285,7 @@ module Content {
         renderFrameDesktop() {
             this.clearScreen();
 			this.setCameraView(this.context);
-			this.drawTerrain();
+			//this.drawTerrain();
 
 			//this.drawOccupiedCells();
 			this.drawPathingCells();

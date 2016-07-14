@@ -314,91 +314,80 @@ module Content {
             }
         }
 
-            connecting;
-            host="127.0.0.1";
-            port="8000";
-            obsoleteEntities=<any>{};
-            playerId;
-            connect(action, started_callback){
-                var self = this;            
-                this.connecting = false; // always in dispatcher mode in the build version
-                this.net.connect(this.host, this.port);
-                this.net.fail_callback = function(reason){
-                    started_callback({
-                        success: false,
-                        reason: reason
-                    });
-                    self.started = false;
-                };
-                
-                this.net.onConnected(function() {
-                    Main.debugView.log("Starting client/server handshake",this.CoreSrcName);
-
-                    self.started = true;
-                    if(action === 'create') {
-                        //self.client.sendCreate(self.player);
-                    } else {
-                        //self.client.sendLogin(self.player);
-                    }
-                    self.net.sendLogin();
+        connecting;
+        host="127.0.0.1";
+        port="8000";
+        obsoleteEntities=<any>{};
+        playerId;
+        connect(action, started_callback){
+            var self = this;            
+            this.connecting = false; // always in dispatcher mode in the build version
+            this.net.connect(this.host, this.port);
+            this.net.fail_callback = function(reason){
+                started_callback({
+                    success: false,
+                    reason: reason
                 });
-                this.net.onEntityList(function(list) {
-                    var entityIds = _.pluck(self.entities, 'id'),
-                        knownIds = _.intersection(entityIds, list),
-                        newIds = _.difference(list, knownIds);
-
-                    self.obsoleteEntities = _.reject(self.entities, function(entity:Common.Entity) {
-                        return _.include(knownIds, entity.id) || entity.id === self.player.id;
-                    });
-
-                    // Destroy entities outside of the player's zone group
-                    self.removeObsoleteEntities();
-
-                    // Ask the server for spawn information about unknown entities
-                    if(_.size(newIds) > 0) {
-                        self.net.sendWho(newIds);
-                    }
-                });
-                
-                this.net.onWelcome(function(id, name, x, y, hp, armor, weapon,
-                                           avatar, weaponAvatar, experience) {
-                     //Main.debugView.log("id"+id+"|name:"+name,Core.CoreSrcName);
-                    Main.debugView.log("Received player ID from server : "+ id,Core.CoreSrcName);
-                    self.player.id = id;
-                    self.playerId = id;
-                    // Always accept name received from the server which will
-                    // sanitize and shorten names exceeding the allowed length.
-                    self.player.name = name;
-                    self.player.setGridPosition(x, y);
-                    self.player.setMaxHitPoints(hp);
-                    self.player.setArmorName(armor);
-                    self.player.setSpriteName(avatar);
-                    self.player.setWeaponName(weapon);
-                    self.initPlayer();
-                    self.player.experience = experience;
-                    self.player.level = Types.getLevel(experience);
-
-                    self.updateBars();
-                    self.updateExpBar();
-                    self.resetCamera();
-                    self.updatePlateauMode();
-                    self.audioManager.updateMusic();
-
-                    self.addEntity(self.player);
-
-
-
-                    self.gamestart_callback();
-                });
-            }
+                self.started = false;
+            };
             
-            gamestart_callback;
-            onGameStart(callback) {
-             this.gamestart_callback = callback;
-            }
-            update():boolean{
-                return true;
-            }
+            this.net.onConnected(function() {
+                Main.debugView.log("Starting client/server handshake",this.CoreSrcName);
+
+                self.started = true;
+                if(action === 'create') {
+                    //self.client.sendCreate(self.player);
+                } else {
+                    //self.client.sendLogin(self.player);
+                }
+                self.net.sendLogin();
+            });
+            this.net.onEntityList(function(list) {
+                var entityIds = _.pluck(self.entities, 'id'),
+                    knownIds = _.intersection(entityIds, list),
+                    newIds = _.difference(list, knownIds);
+
+                self.obsoleteEntities = _.reject(self.entities, function(entity:Common.Entity) {
+                    return _.include(knownIds, entity.id) || entity.id === self.player.id;
+                });
+
+                // Destroy entities outside of the player's zone group
+                self.removeObsoleteEntities();
+
+                // Ask the server for spawn information about unknown entities
+                if(_.size(newIds) > 0) {
+                    self.net.sendWho(newIds);
+                }
+            });
+            
+            this.net.onWelcome(function(id, name, x, y, hp, armor, weapon,
+                                        avatar, weaponAvatar, experience) {
+                    //Main.debugView.log("id"+id+"|name:"+name,Core.CoreSrcName);
+                Main.debugView.log("Received player ID from server : "+ id,Core.CoreSrcName);
+                self.player.id = id;
+                self.playerId = id;
+                // Always accept name received from the server which will
+                // sanitize and shorten names exceeding the allowed length.
+                self.player.name = name;
+                self.player.setGridPosition(x, y);
+                self.player.setMaxHitPoints(hp);
+                self.player.setArmorName(armor);
+                self.player.setSpriteName(avatar);
+                self.player.setWeaponName(weapon);
+                self.initPlayer();
+                self.player.experience = experience;
+                self.player.level = Types.getLevel(experience);
+
+                self.updateBars();
+                self.updateExpBar();
+                self.resetCamera();
+                self.updatePlateauMode();
+                //self.audioManager.updateMusic();
+
+                self.addEntity(self.player);
+                self.start();
+            });
+        }
            
         /**
          * Loops through all the entities currently present in the game.
