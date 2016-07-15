@@ -143,13 +143,14 @@ module Gmap {
         }
 		checkpoints= [];
 		 _getCheckpoints(map) {
-			 this.checkpoints=[];
+             var self = this;
+			 self.checkpoints=new Array();
             _.each(map.checkpoints, function(cp:any) {
                 var area = new Gmap.Area(cp.id,cp.x, cp.y, cp.w, cp.h);
                 //area.id = cp.id;
-                this.checkpoints.push(area);
+                self.checkpoints.push(area);
             });
-            return this.checkpoints;
+            return self.checkpoints;
         }
 
         getCurrentCheckpoint(entity) {

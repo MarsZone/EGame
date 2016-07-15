@@ -1,6 +1,6 @@
 module Role {
 	export class Mob extends Common.Character{
-		public constructor(id, kind) {
+		public constructor(id, kind?) {
 			super(id, kind);
 
 			this.aggroRange = 1;

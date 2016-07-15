@@ -177,7 +177,7 @@ module Content {
 				}else{
 					self.GridS[index].addChild(bitmap);
 				}
-				Main.debugView.log("x:"+bitmap.x+"|y:"+bitmap.y+"|id:"+id+"|tilesetwidth:"+tilesetwidth);
+				//Main.debugView.log("x:"+GridBits.x+"|y:"+GridBits.y+"|id:"+id+"|tilesetwidth:"+tilesetwidth);
             }, 1);
 			
 			

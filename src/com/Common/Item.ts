@@ -1,6 +1,6 @@
 module Common {
 	export class Item extends Entity{
-		public constructor(id, kind, type) {
+		public constructor(id, kind?, type?) {
 			super(id, kind);
 			this.itemKind = Types.getKindAsString(kind);
             this.type = type;

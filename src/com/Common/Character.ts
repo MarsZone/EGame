@@ -3,7 +3,7 @@ module Common {
 		public constructor(id,kind) {
 			super(id,kind);
 			var self = this;
-			this.init;
+			this.init();
 		}
 		// Position and orientation
 		nextGridX = -1;
@@ -15,6 +15,7 @@ module Common {
 		moveSpeed = 120;
 		walkSpeed = 100;
 		idleSpeed = 450;
+        atkRate=0;
 		// Pathing
 		movement = new Transition();
 		path = null;
@@ -64,7 +65,7 @@ module Common {
             return true;
         }
 
-		animate(animation, speed=0, count=0, onEndCount=0) {
+		animate(animation, speed=0, count=0, onEndCount?) {
             var oriented = ['atk', 'walk', 'idle'],
                 o = this.orientation;
 

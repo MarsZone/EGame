@@ -10,6 +10,8 @@ module Content {
                 this.renderer = render;
                 this.map = map;
                 this.net = net;
+                var bubbleSp = new egret.Sprite();
+                this.bubbleManager = new Tools.BubbleManager(bubbleSp);
                 // Player
                 this.player = new Role.Warrior("player", "");
                 this.player.moveUp = false;
@@ -18,7 +20,7 @@ module Content {
                 this.player.moveRight = false;
                 this.player.disableKeyboardNpcTalk = false;
                 this.renderer.setCore(this);
-                this.init("",this.started_callback);              
+                this.init("",this.started_callback);    
             }
             
             map:Gmap.Map;
@@ -494,81 +496,150 @@ module Content {
                     }
                 });
 
-                // self.player.onStopPathing(function(x, y) {
-                //     if(self.player.hasTarget()) {
-                //         self.player.lookAtTarget();
+                self.player.onStopPathing(function(x, y) {
+                    if(self.player.hasTarget()) {
+                        self.player.lookAtTarget();
+                    }
+
+                    self.selectedCellVisible = false;
+
+                    if(self.isItemAt(x, y)) {
+                        var item = self.getItemAt(x, y);
+                        self.tryLootingItem(item);
+                    }
+
+                    if(!self.player.hasTarget() && self.map.isDoor(x, y)) {
+                        var dest = self.map.getDoorDestination(x, y);
+
+                        self.player.setGridPosition(dest.x, dest.y);
+                        self.player.nextGridX = dest.x;
+                        self.player.nextGridY = dest.y;
+                        self.player.turnTo(dest.orientation);
+                        self.net.sendTeleport(dest.x, dest.y);
+
+                        if(Render.mobile && dest.cameraX && dest.cameraY) {
+                            self.camera.setGridPosition(dest.cameraX, dest.cameraY);
+                            self.resetZone();
+                        } else {
+                            if(dest.portal) {
+                                self.assignBubbleTo(self.player);
+                            } else {
+                                self.camera.focusEntity(self.player);
+                                self.resetZone();
+                            }
+                        }
+
+                        self.player.forEachAttacker(function(attacker) {
+                            attacker.disengage();
+                            attacker.idle();
+                        });
+
+                        self.updatePlateauMode();
+
+                        if(Render.mobile || Render.tablet) {
+                            // When rendering with dirty rects, clear the whole screen when entering a door.
+                            self.renderer.clearScreen();
+                        }
+
+                        if(dest.portal) {
+                            self.audioManager.playSound("teleport");
+                        }
+
+                        if(!self.player.isDead) {
+                            self.audioManager.updateMusic();
+                        }
+                    }
+
+                    if(self.player.target instanceof Role.Npc) {
+                        self.makeNpcTalk(self.player.target);
+                    } else if(self.player.target instanceof Common.Chest) {
+                        self.net.sendOpen(self.player.target);
+                        self.audioManager.playSound("chest");
+                    }
+
+                    self.player.forEachAttacker(function(attacker) {
+                        if(!attacker.isAdjacentNonDiagonal(self.player)) {
+                            attacker.follow(self.player);
+                        }
+                    });
+
+                    self.unregisterEntityPosition(self.player);
+                    self.registerEntityPosition(self.player);
+                });
+
+                self.player.onRequestPath(function(x, y) {
+                    var ignored = [self.player]; // Always ignore self
+
+                    if(self.player.hasTarget()) {
+                        ignored.push(self.player.target);
+                    }
+                    return self.findPath(self.player, x, y, ignored);
+                });
+
+                 self.player.onDeath(function() {
+                    Main.debugView.log(self.playerId + " is dead",Core.CoreSrcName);
+
+                    self.player.stopBlinking();
+                    self.player.setSprite(self.sprites["death"]);
+                    self.player.animate("death", 120, 1, function() {
+                        Main.debugView.log(self.playerId + " was removed",Core.CoreSrcName);
+
+                        self.removeEntity(self.player);
+                        self.removeFromRenderingGrid(self.player, self.player.gridX, self.player.gridY);
+
+                        self.player = null;
+                        self.net.disable();
+
+                        setTimeout(function() {
+                            self.playerdeath_callback();
+                        }, 1000);
+                    });
+
+                    self.player.forEachAttacker(function(attacker) {
+                        attacker.disengage();
+                        attacker.idle();
+                    });
+
+                    //self.audioManager.fadeOutCurrentMusic();
+                    //self.audioManager.playSound("death");
+                });
+
+                self.player.onHasMoved(function(player) {
+                    self.assignBubbleTo(player);
+                });
+                // self.net.onPVPChange(function(pvpFlag){
+                //     self.player.flagPVP(pvpFlag);
+                //     if(pvpFlag){
+                //         self.showNotification("PVP is on.");
+                //     } else{
+                //         self.showNotification("PVP is off.");
                 //     }
-
-                //     self.selectedCellVisible = false;
-
-                //     if(self.isItemAt(x, y)) {
-                //         var item = self.getItemAt(x, y);
-                //         self.tryLootingItem(item);
-                //     }
-
-                //     if(!self.player.hasTarget() && self.map.isDoor(x, y)) {
-                //         var dest = self.map.getDoorDestination(x, y);
-
-                //         self.player.setGridPosition(dest.x, dest.y);
-                //         self.player.nextGridX = dest.x;
-                //         self.player.nextGridY = dest.y;
-                //         self.player.turnTo(dest.orientation);
-                //         self.net.sendTeleport(dest.x, dest.y);
-
-                //         if(Render.mobile && dest.cameraX && dest.cameraY) {
-                //             self.camera.setGridPosition(dest.cameraX, dest.cameraY);
-                //             self.resetZone();
-                //         } else {
-                //             if(dest.portal) {
-                //                 self.assignBubbleTo(self.player);
-                //             } else {
-                //                 self.camera.focusEntity(self.player);
-                //                 self.resetZone();
-                //             }
-                //         }
-
-                //         if(_.size(self.player.attackers) > 0) {
-                //             setTimeout(function() { self.tryUnlockingAchievement("COWARD"); }, 500);
-                //         }
-                //         self.player.forEachAttacker(function(attacker) {
-                //             attacker.disengage();
-                //             attacker.idle();
-                //         });
-
-                //         self.updatePlateauMode();
-
-                //         self.checkUndergroundAchievement();
-
-                //         if(self.renderer.mobile || self.renderer.tablet) {
-                //             // When rendering with dirty rects, clear the whole screen when entering a door.
-                //             self.renderer.clearScreen(self.renderer.context);
-                //         }
-
-                //         if(dest.portal) {
-                //             self.audioManager.playSound("teleport");
-                //         }
-
-                //         if(!self.player.isDead) {
-                //             self.audioManager.updateMusic();
-                //         }
-                //     }
-
-                //     if(self.player.target instanceof Npc) {
-                //         self.makeNpcTalk(self.player.target);
-                //     } else if(self.player.target instanceof Chest) {
-                //         self.client.sendOpen(self.player.target);
-                //         self.audioManager.playSound("chest");
-                //     }
-
-                //     self.player.forEachAttacker(function(attacker) {
-                //         if(!attacker.isAdjacentNonDiagonal(self.player)) {
-                //             attacker.follow(self.player);
-                //         }
-                //     });
-
-                //     self.unregisterEntityPosition(self.player);
-                //     self.registerEntityPosition(self.player);
                 // });
+
+                self.player.onArmorLoot(function(armorName) {
+                    //self.player.switchArmor(self.sprites[armorName]);
+                });
+
+                self.player.onSwitchItem(function() {
+                    // self.storage.savePlayer(self.renderer.getPlayerImage(),
+                    //                         self.player.getArmorName(),
+                    //                         self.player.getWeaponName(),
+                    //                         self.player.getGuild());
+                    if(self.equipment_callback) {
+                        self.equipment_callback();
+                    }
+                });
+
+                self.player.onInvincible(function() {
+                    //self.invincible_callback();
+                    //self.player.switchArmor(self.sprites["firefox"]);
+                });
+
+                self.net.onSpawnItem(function(item, x, y) {
+                    Main.debugView.log("Spawned " + Types.getKindAsString(item.kind) + " (" + item.id + ") at "+x+", "+y);
+                    self.addItem(item, x, y);
+                });
+
                 
                 //self.start();
             });
@@ -580,6 +651,8 @@ module Content {
         port="8000";
         obsoleteEntities=<any>{};
         playerId;
+        playerdeath_callback;
+        equipment_callback;
         /**
          * Loops through all the entities currently present in the game.
          * @param {Function} callback The function to call back (must accept one entity argument).
@@ -1119,6 +1192,100 @@ module Content {
             if(this.notification_callback) {
                 this.notification_callback(message);
             }
+        }
+
+        createBubble(id, message) {
+            this.bubbleManager.create(id, message, this.currentTime);
+        }
+
+        destroyBubble(id) {
+            this.bubbleManager.destroyBubble(id);
+        }
+
+        assignBubbleTo(character) {
+            var bubble = this.bubbleManager.getBubbleById(character.id);
+
+            if(bubble) {
+                var s = this.renderer.scale,
+                    t = 16 * s, // tile size
+                    x = ((character.x - this.camera.x) * s),
+                    w = parseInt(bubble.element.css('width')) + 24,
+                    offset = (w / 2) - (t / 2),
+                    offsetY,
+                    y;
+
+                if(character instanceof Role.Npc) {
+                    offsetY = 0;
+                } else {
+                    if(s === 2) {
+                        if(Render.mobile) {
+                            offsetY = 0;
+                        } else {
+                            offsetY = 15;
+                        }
+                    } else {
+                        offsetY = 12;
+                    }
+                }
+
+                y = ((character.y - this.camera.y) * s) - (t * 2) - offsetY;
+
+                bubble.element.css('left', x - offset + 'px');
+                bubble.element.css('top', y + 'px');
+            }
+        }
+
+        
+        /**
+         *
+         */
+        makeNpcTalk(npc) {
+            var msg;
+
+            if(npc) {
+                msg = npc.talk(this);
+                this.previousClickPosition = {};
+                if(msg) {
+                    this.createBubble(npc.id, msg);
+                    this.assignBubbleTo(npc);
+                    this.audioManager.playSound("npc");
+                } else {
+                    this.destroyBubble(npc.id);
+                    this.audioManager.playSound("npc-end");
+                }
+            }
+        }
+
+        /**
+         * Finds a path to a grid position for the specified character.
+         * The path will pass through any entity present in the ignore list.
+         */
+        findPath(character, x, y, ignoreList) {
+            var self = this,
+                grid = this.pathingGrid,
+                path = [],
+                isPlayer = (character === this.player);
+
+            if(this.map.isColliding(x, y)) {
+                return path;
+            }
+
+            if(this.pathfinder && character) {
+                if(ignoreList) {
+                    _.each(ignoreList, function(entity) {
+                        self.pathfinder.ignoreEntity(entity);
+                    });
+                }
+
+                path = this.pathfinder.findPath(grid, character, x, y, false);
+
+                if(ignoreList) {
+                    this.pathfinder.clearIgnoreList();
+                }
+            } else {
+                Main.debugView.log("Error while finding the path to "+x+", "+y+" for "+character.id,Core.CoreSrcName);
+            }
+            return path;
         }
     }
 }
