@@ -2,7 +2,7 @@ module Common {
 	export class Updater {
 		public constructor(game) {
 			this.game = game;
-            this.playerAggroTimer = new ETimer(1000);
+            this.playerAggroTimer = new Tools.ETimer(1000);
 		}
 		game;
         playerAggroTimer;

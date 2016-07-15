@@ -167,3 +167,57 @@ sqGroup: egret.Sprite;
     //            console.log( data.toString() );
     //            console.log( urlloader.data );
     //        }
+
+
+    // var offsetX = Math.floor(horizontal_tiles/2);
+			// var offsetY = Math.floor(vertical_tiles/2);
+			// for (var row = 0; row < vertical_tiles; row++) {
+			// 	for(var col=0; col<horizontal_tiles;col++)
+			// 	{
+			// 		var GridBits:egret.Sprite = new egret.Sprite();
+			// 		this.GridS.push(GridBits);
+			// 		this.backGound.addChild(GridBits);
+			// 		GridBits.x = col * tilesetwidth;
+			// 		GridBits.y = row * tilesetwidth;
+			// 		GridBits.width = tilesetwidth;
+			// 		GridBits.height = tilesetwidth;
+			// 		var index:string ="";
+			// 		var ix = CenterX + col -offsetX;
+			// 		var iy = (CenterY + row -offsetY) * this.map.width;
+			// 		if(CenterX<offsetX)
+			// 		{
+			// 			ix =CenterX + col;
+			// 		}
+			// 		if(CenterY<offsetY)
+			// 		{
+			// 			iy = (CenterY + row)* this.map.width;
+			// 		}
+					
+			// 		index = ""+(ix+iy);
+			// 		//Main.debugView.log("ix:"+ix+"|iy:"+iy+"|index:"+index);
+			// 		var txData = this.map.data[index];
+			// 		if(txData instanceof Array)
+			// 		{
+			// 			for(var tx of txData)
+			// 			{
+			// 				var bitmap:egret.Bitmap = new egret.Bitmap();
+			// 				bitmap.texture = this.map.SpritesSheet.getTexture(tx);
+			// 				bitmap.width = GridBits.width;
+			// 				bitmap.height = GridBits.height;
+			// 				GridBits.addChild(bitmap);
+			// 			}
+			// 		}else{
+			// 			if(txData!=0)
+			// 			{
+			// 				var bitmap:egret.Bitmap = new egret.Bitmap();
+			// 				bitmap.width = GridBits.width;
+			// 				bitmap.height = GridBits.height;
+			// 				//Main.debugView.log("TxData:"+txData);
+			// 				bitmap.texture = this.map.SpritesSheet.getTexture(txData);
+			// 				GridBits.addChild(bitmap);
+			// 			}else{
+
+			// 			}
+			// 		}
+			// 	}
+			// }

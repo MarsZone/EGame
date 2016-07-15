@@ -1,4 +1,4 @@
-module Common {
+module Tools {
 	export class ETimer extends egret.EventDispatcher{
 		public constructor(duration, startTime=0) {
 			super();

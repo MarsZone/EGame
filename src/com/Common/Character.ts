@@ -572,7 +572,7 @@ module Common {
         }
 		attackCooldown;
         setAttackRate(rate) {
-            this.attackCooldown = new Common.ETimer(rate);
+            this.attackCooldown = new Tools.ETimer(rate);
         }
 	}
 }

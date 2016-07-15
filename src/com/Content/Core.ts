@@ -4,8 +4,8 @@ module Content {
 	 * @author mars
 	 *
 	 */
-	export class Core extends egret.DisplayObjectContainer{
-            public constructor(render:Content.Render,map:Gmap.Map,net:NetWork.Net) {
+	export class Core extends egret.EventDispatcher{
+            public constructor(render:Render,map:Gmap.Map,net:NetWork.Net) {
                 super();
                 this.renderer = render;
                 this.map = map;
@@ -17,13 +17,23 @@ module Content {
                 this.player.moveLeft = false;
                 this.player.moveRight = false;
                 this.player.disableKeyboardNpcTalk = false;
-                this.init("",this.started_callback);
+                this.renderer.setCore(this);
+                this.init("",this.started_callback);              
             }
+            
+            map:Gmap.Map;
+            net:NetWork.Net;
+            renderer:Content.Render;
+            index=0;
+            frameControler:boolean=true;
+            private time:number = 0;
+            camera:Camera;
+
             player:Role.Warrior;
             ready = false;
             started = false;
             hasNeverStarted = true;
-            updater = null;
+            updater:Common.Updater = null;
             pathfinder = null;
             chatinput = null;
             bubbleManager = null;
@@ -110,14 +120,6 @@ module Content {
                     }
                 }
             }
-            map:Gmap.Map;
-            net:NetWork.Net;
-            renderer:Content.Render;
-            index=0;
-            frameControler:boolean=true;
-            private time:number = 0;
-            camera;
-
             setUpdater(updater:Common.Updater) {
                 this.updater = updater;
             }
@@ -159,6 +161,22 @@ module Content {
                         clearInterval(wait);
                     }
                 }, 100);
+            }
+            addItem(item, x, y) {
+                item.setSprite(this.sprites[item.getSpriteName()]);
+                item.setGridPosition(x, y);
+                item.setAnimation("idle", 150);
+                this.addEntity(item);
+            }
+
+            removeItem(item) {
+                if(item) {
+                    this.removeFromItemGrid(item, item.gridX, item.gridY);
+                    this.removeFromRenderingGrid(item, item.gridX, item.gridY);
+                    delete this.entities[item.id];
+                } else {
+                    Main.debugView.log("Cannot remove item. Unknown ID : " + item.id);
+                }
             }
             targetAnimation;
             sparksAnimation;
@@ -250,12 +268,33 @@ module Content {
                 _.map(this.spriteNames, this.loadSprite, this);
             }
             loadSprite(name) {
-                if(this.renderer.upscaledRendering) {
+                if(Render.upscaledRendering) {
                     this.spritesets[0][name] = new Assets.Sprite(name, 1);
                 } else {
                     this.spritesets[1][name] = new Assets.Sprite(name, 2);
-                    if(!this.renderer.mobile && !this.renderer.tablet) {
+                    if(!Render.mobile && !Render.tablet) {
                         this.spritesets[2][name] = new Assets.Sprite(name, 3);
+                    }
+                }
+            }
+            /**
+             * Registers the entity at two adjacent positions on the grid at the same time.
+             * This situation is temporary and should only occur when the entity is moving.
+             * This is useful for the hit testing algorithm used when hovering entities with the mouse cursor.
+             *
+             * @param {Entity} entity The moving entity
+             */
+            registerEntityDualPosition(entity) {
+                if(entity) {
+                    this.entityGrid[entity.gridY][entity.gridX][entity.id] = entity;
+
+                    this.addToRenderingGrid(entity, entity.gridX, entity.gridY);
+
+                    if(entity.nextGridX >= 0 && entity.nextGridY >= 0) {
+                        this.entityGrid[entity.nextGridY][entity.nextGridX][entity.id] = entity;
+                        if(!(entity instanceof Player)) {
+                            this.pathingGrid[entity.nextGridY][entity.nextGridX] = 1;
+                        }
                     }
                 }
             }
@@ -314,11 +353,6 @@ module Content {
             }
         }
 
-        connecting;
-        host="127.0.0.1";
-        port="8000";
-        obsoleteEntities=<any>{};
-        playerId;
         connect(action, started_callback){
             var self = this;            
             this.connecting = false; // always in dispatcher mode in the build version
@@ -385,10 +419,167 @@ module Content {
                 //self.audioManager.updateMusic();
 
                 self.addEntity(self.player);
-                self.start();
+                self.showNotification("Welcome to BrowserQuest!");
+
+                self.player.onStartPathing(function(path) {
+                    var i = path.length - 1,
+                        x =  path[i][0],
+                        y =  path[i][1];
+
+                    if(self.player.isMovingToLoot()) {
+                        self.player.isLootMoving = false;
+                    }
+                    else if(!self.player.isAttacking()) {
+                        self.net.sendMove(x, y);
+                    }
+
+                    // Target cursor position
+                    self.selectedX = x;
+                    self.selectedY = y;
+
+                    self.selectedCellVisible = true;
+
+                    if(Render.mobile || Render.tablet) {
+                        self.drawTarget = true;
+                        self.clearTarget = true;
+                        self.renderer.targetRect = self.renderer.getTargetBoundingRect();
+                        self.checkOtherDirtyRects(self.renderer.targetRect, null, self.selectedX, self.selectedY);
+                    }
+                });
+
+                self.player.onCheckAggro(function() {
+                    self.forEachMob(function(mob) {
+                        if(mob.isAggressive && !mob.isAttacking() && self.player.isNear(mob, mob.aggroRange)) {
+                            self.player.aggro(mob);
+                        }
+                    });
+                });
+
+                self.player.onAggro(function(mob) {
+                    if(!mob.isWaitingToAttack(self.player) && !self.player.isAttackedBy(mob)) {
+                        self.player.log_info("Aggroed by " + mob.id + " at ("+self.player.gridX+", "+self.player.gridY+")");
+                        self.net.sendAggro(mob);
+                        mob.waitToAttack(self.player);
+                    }
+                });
+
+                self.player.onBeforeStep(function() {
+                    var blockingEntity = self.getEntityAt(self.player.nextGridX, self.player.nextGridY);
+                    if(blockingEntity && blockingEntity.id !== self.playerId) {
+                        Main.debugView.log("Blocked by " + blockingEntity.id);
+                    }
+                    self.unregisterEntityPosition(self.player);
+                });
+
+                self.player.onStep(function() {
+                    if(self.player.hasNextStep()) {
+                        self.registerEntityDualPosition(self.player);
+                    }
+
+                    if(self.isZoningTile(self.player.gridX, self.player.gridY)) {
+                        self.enqueueZoningFrom(self.player.gridX, self.player.gridY);
+                    }
+
+                    self.player.forEachAttacker(self.makeAttackerFollow);
+
+                    var item = self.getItemAt(self.player.gridX, self.player.gridY);
+                    if(item instanceof Common.Item) {
+                        self.tryLootingItem(item);
+                    }
+
+                    self.updatePlayerCheckpoint();
+
+                    if(!self.player.isDead) {
+                        self.audioManager.updateMusic();
+                    }
+                });
+
+                // self.player.onStopPathing(function(x, y) {
+                //     if(self.player.hasTarget()) {
+                //         self.player.lookAtTarget();
+                //     }
+
+                //     self.selectedCellVisible = false;
+
+                //     if(self.isItemAt(x, y)) {
+                //         var item = self.getItemAt(x, y);
+                //         self.tryLootingItem(item);
+                //     }
+
+                //     if(!self.player.hasTarget() && self.map.isDoor(x, y)) {
+                //         var dest = self.map.getDoorDestination(x, y);
+
+                //         self.player.setGridPosition(dest.x, dest.y);
+                //         self.player.nextGridX = dest.x;
+                //         self.player.nextGridY = dest.y;
+                //         self.player.turnTo(dest.orientation);
+                //         self.net.sendTeleport(dest.x, dest.y);
+
+                //         if(Render.mobile && dest.cameraX && dest.cameraY) {
+                //             self.camera.setGridPosition(dest.cameraX, dest.cameraY);
+                //             self.resetZone();
+                //         } else {
+                //             if(dest.portal) {
+                //                 self.assignBubbleTo(self.player);
+                //             } else {
+                //                 self.camera.focusEntity(self.player);
+                //                 self.resetZone();
+                //             }
+                //         }
+
+                //         if(_.size(self.player.attackers) > 0) {
+                //             setTimeout(function() { self.tryUnlockingAchievement("COWARD"); }, 500);
+                //         }
+                //         self.player.forEachAttacker(function(attacker) {
+                //             attacker.disengage();
+                //             attacker.idle();
+                //         });
+
+                //         self.updatePlateauMode();
+
+                //         self.checkUndergroundAchievement();
+
+                //         if(self.renderer.mobile || self.renderer.tablet) {
+                //             // When rendering with dirty rects, clear the whole screen when entering a door.
+                //             self.renderer.clearScreen(self.renderer.context);
+                //         }
+
+                //         if(dest.portal) {
+                //             self.audioManager.playSound("teleport");
+                //         }
+
+                //         if(!self.player.isDead) {
+                //             self.audioManager.updateMusic();
+                //         }
+                //     }
+
+                //     if(self.player.target instanceof Npc) {
+                //         self.makeNpcTalk(self.player.target);
+                //     } else if(self.player.target instanceof Chest) {
+                //         self.client.sendOpen(self.player.target);
+                //         self.audioManager.playSound("chest");
+                //     }
+
+                //     self.player.forEachAttacker(function(attacker) {
+                //         if(!attacker.isAdjacentNonDiagonal(self.player)) {
+                //             attacker.follow(self.player);
+                //         }
+                //     });
+
+                //     self.unregisterEntityPosition(self.player);
+                //     self.registerEntityPosition(self.player);
+                // });
+                
+                //self.start();
             });
         }
-           
+        clearTarget;
+        drawTarget;;
+        connecting;
+        host="127.0.0.1";
+        port="8000";
+        obsoleteEntities=<any>{};
+        playerId;
         /**
          * Loops through all the entities currently present in the game.
          * @param {Function} callback The function to call back (must accept one entity argument).
@@ -428,7 +619,7 @@ module Content {
                         });
                     }
                 }
-            }, this.renderer.mobile ? 0 : 2);
+            }, Render.mobile ? 0 : 2);
         }
 
         /**
@@ -479,6 +670,106 @@ module Content {
                 });
             }
         }
+        /**
+         * Returns the entity located at the given position on the world grid.
+         * @returns {Entity} the entity located at (x, y) or null if there is none.
+         */
+        getEntityAt(x, y) {
+            if(this.map.isOutOfBounds(x, y) || !this.entityGrid) {
+                return null;
+            }
+
+            var entities = this.entityGrid[y][x],
+                entity = null;
+            if(_.size(entities) > 0) {
+                entity = entities[_.keys(entities)[0]];
+            } else {
+                entity = this.getItemAt(x, y);
+            }
+            return entity;
+        }
+
+        getMobAt(x, y) {
+            var entity = this.getEntityAt(x, y);
+            if(entity && (entity instanceof Role.Mob)) {
+                return entity;
+            }
+            return null;
+        }
+
+        getPlayerAt(x, y) {
+          var entity = this.getEntityAt(x, y);
+            if(entity && (entity instanceof Player) && (entity !== this.player) && this.player.pvpFlag) {
+                return entity;
+            }
+            return null;
+        }
+
+       getNpcAt(x, y) {
+            var entity = this.getEntityAt(x, y);
+            if(entity && (entity instanceof Role.Npc)) {
+                return entity;
+            }
+            return null;
+        }
+
+        getChestAt(x, y) {
+            var entity = this.getEntityAt(x, y);
+            if(entity && (entity instanceof Common.Chest)) {
+                return entity;
+            }
+            return null;
+        }
+
+        getItemAt(x, y) {
+            if(this.map.isOutOfBounds(x, y) || !this.itemGrid) {
+                return null;
+            }
+            var items = this.itemGrid[y][x],
+                item = null;
+
+            if(_.size(items) > 0) {
+                // If there are potions/burgers stacked with equipment items on the same tile, always get expendable items first.
+                _.each(items, function(i:any) {
+                    if(Types.isExpendableItem(i.kind)) {
+                        item = i;
+                    };
+                });
+
+                // Else, get the first item of the stack
+                if(!item) {
+                    item = items[_.keys(items)[0]];
+                }
+            }
+            return item;
+        }
+
+        /**
+         * Returns true if an entity is located at the given position on the world grid.
+         * @returns {Boolean} Whether an entity is at (x, y).
+         */
+        isEntityAt(x, y) {
+            return !_.isNull(this.getEntityAt(x, y));
+        }
+
+        isMobAt(x, y) {
+            return !_.isNull(this.getMobAt(x, y));
+        }
+        isPlayerAt(x, y) {
+            return !_.isNull(this.getPlayerAt(x, y));
+        }
+
+        isItemAt(x, y) {
+            return !_.isNull(this.getItemAt(x, y));
+        }
+
+        isNpcAt(x, y) {
+            return !_.isNull(this.getNpcAt(x, y));
+        }
+
+        isChestAt(x, y) {
+            return !_.isNull(this.getChestAt(x, y));
+        }
 
 
         removeObsoleteEntities() {
@@ -504,11 +795,11 @@ module Content {
                 this.registerEntityPosition(entity);
 
                 if(!(entity instanceof Common.Item && entity.wasDropped)
-                && !(this.renderer.mobile || this.renderer.tablet)) {
+                && !(Render.mobile || Render.tablet)) {
                     entity.fadeIn(this.currentTime);
                 }
 
-                if(this.renderer.mobile || this.renderer.tablet) {
+                if(Render.mobile || Render.tablet) {
                     entity.onDirty(function(e) {
                         if(self.camera.isVisible(e)) {
                             e.dirtyRect = self.renderer.getEntityBoundingRect(e);
@@ -653,10 +944,10 @@ module Content {
             return orientation;
         }
         zoningOrientation;
-        startZoningFrom(x, y) {
+        startZoningFrom(x:number, y:number) {
             this.zoningOrientation = this.getZoningOrientation(x, y);
 
-            if(this.renderer.mobile || this.renderer.tablet) {
+            if(Render.mobile || Render.tablet) {
                 var z = this.zoningOrientation,
                     c = this.camera,
                     ts = this.renderer.tilesize,
@@ -741,6 +1032,92 @@ module Content {
                     this.player.lastCheckpoint = checkpoint;
                     this.net.sendCheck(checkpoint.id);
                 }
+            }
+        }
+
+        makeAttackerFollow(attacker) {
+              var target = attacker.target;
+
+              if(attacker.isAdjacent(attacker.target)) {
+                    attacker.lookAtTarget();
+              } else {
+                  attacker.follow(target);
+              }
+        }
+
+        forEachEntityAround(x, y, r, callback) {
+            for(var i = x-r, max_i = x+r; i <= max_i; i += 1) {
+                for(var j = y-r, max_j = y+r; j <= max_j; j += 1) {
+                    if(!this.map.isOutOfBounds(i, j)) {
+                        _.each(this.renderingGrid[j][i], function(entity) {
+                            callback(entity);
+                        });
+                    }
+                }
+            }
+        }
+
+        
+
+        checkOtherDirtyRects(r1, source, x, y) {
+            var r = this.renderer;
+
+            this.forEachEntityAround(x, y, 2, function(e2) {
+                if(source && source.id && e2.id === source.id) {
+                    return;
+                }
+                if(!e2.isDirty) {
+                    var r2 = r.getEntityBoundingRect(e2);
+                    if(r.isIntersecting(r1, r2)) {
+                        e2.setDirty();
+                    }
+                }
+            });
+
+            if(source && !(source.hasOwnProperty("index"))) {
+                this.forEachAnimatedTile(function(tile) {
+                    if(!tile.isDirty) {
+                        var r2 = r.getTileBoundingRect(tile);
+                        if(r.isIntersecting(r1, r2)) {
+                            tile.isDirty = true;
+                        }
+                    }
+                });
+            }
+
+            if(!this.drawTarget && this.selectedCellVisible) {
+                var targetRect = r.getTargetBoundingRect();
+                if(r.isIntersecting(r1, targetRect)) {
+                    this.drawTarget = true;
+                    this.renderer.targetRect = targetRect;
+                }
+            }
+        }
+
+        tryLootingItem(item) {
+            try {
+                this.player.loot(item);
+                this.net.sendLoot(item); // Notify the server that this item has been looted
+                this.removeItem(item);
+                this.showNotification(item.getLootMessage());
+                if(Types.isHealingItem(item.kind)) {
+                    this.audioManager.playSound("heal");
+                } else {
+                    this.audioManager.playSound("loot");
+                }
+            } catch(e) {
+                if(e instanceof Exceptions.LootException) {
+                    this.showNotification(e.message);
+                    this.audioManager.playSound("noloot");
+                } else {
+                    throw e;
+                }
+            }
+        }
+        notification_callback;
+        showNotification(message) {
+            if(this.notification_callback) {
+                this.notification_callback(message);
             }
         }
     }

@@ -5,25 +5,24 @@ module Content {
 	 *
 	 */
 	export class Render extends egret.Sprite {
-		public constructor(map:Gmap.Map,core:Content.Core) {
+		public constructor(map:Gmap.Map) {
 			super();
 			this.map = map;
-			this.core = core;
 			this.init();
 		}
-		core;
+		core:Core;
 		chara: Assets.ECharacter;
 		context:egret.Sprite;
         backGound:egret.Sprite;
 		foreground:egret.Sprite;
 		map:Gmap.Map;
 		camera:Content.Camera;
-		mobile:boolean=false;
-		tablet=false;
-		tilesize=32;
+		static mobile:boolean=false;
+		static tablet=false;
+		tilesize=16;
 		animatedTileCount=0;
 		highTileCount=0;
-		upscaledRendering=false;
+		static upscaledRendering=false;
 		supportsSilhouettes;
 		init(): void {
 			
@@ -39,8 +38,11 @@ module Content {
 			
 			this.camera =new Content.Camera(this);
 			//this.upscaledRendering = this.context.mozImageSmoothingEnabled !== undefined;
-			this.upscaledRendering = false;
-            this.supportsSilhouettes = this.upscaledRendering;
+			Render.upscaledRendering = false;
+            this.supportsSilhouettes = Render.upscaledRendering;
+		}
+		setCore(core:Core){
+			this.core = core;
 		}
 		addSP(sp:egret.Sprite,width,height){
 			sp.width = width;
@@ -127,69 +129,58 @@ module Content {
         //         }
         //     }, 1);
         // }
-
+		EgetX(id, w):number {
+			if(id == 0) {
+				return 0;
+			}
+			return (id % w == 0) ? w - 1 : (id % w) - 1;
+   		}
 		drawTerrain():void{
+			var self = this;
 			var tilesetwidth:number = this.map.tileSetWidth / this.map.tilesize;
 			var horizontal_tiles = Main.StageWidth / tilesetwidth;
 			var vertical_tiles = Math.floor(Main.StageHeight / tilesetwidth);
 			Main.debugView.log("H:"+horizontal_tiles+"|V:"+vertical_tiles);
-			
+			var s = Render.upscaledRendering ? 1 : this.scale;
+
 			this.GridS = new Array();
 			var CenterX = 0;
 			var CenterY = 0;
-			var offsetX = Math.floor(horizontal_tiles/2);
-			var offsetY = Math.floor(vertical_tiles/2);
 			
-			for (var row = 0; row < vertical_tiles; row++) {
-				for(var col=0; col<horizontal_tiles;col++)
+			//GridBits.width=self.backGound.width;
+			//GridBits.height=self.backGound.height;
+			//self.backGound.addChild(GridBits);
+			//id tileset |  index map index arr or one
+			
+			this.core.forEachVisibleTile(function (id, index) {
+				// Main.debugView.log("___________________________________________");
+				// Main.debugView.log("draw index:"+index+"|id:"+id);
+				// Main.debugView.log(":"+self.EgetX(id + 1, (tilesetwidth / s)) * self.map.tilesize+"|:"+ Math.floor(id / (tilesetwidth / s)) * self.tilesize);
+				// Main.debugView.log(":"+self.EgetX(index+1,tilesetwidth)* self.map.tilesize +"|:"+Math.floor(index/tilesetwidth)*self.map.tilesize);
+                //if(!m.isHighTile(id) && !m.isAnimatedTile(id)) { // Don't draw unnecessary tiles
+                    //self.drawTile(self.background, id, self.tileset, tilesetwidth, m.width, index);
+                //}
+				var bitmap:egret.Bitmap = new egret.Bitmap();
+				bitmap.width = self.tilesize * self.scale;
+				bitmap.height = self.tilesize * self.scale;
+				bitmap.x = 0;
+				bitmap.y = 0;
+				bitmap.texture = self.map.SpritesSheet.getTexture((id+1));
+				if(!self.GridS[index])
 				{
 					var GridBits:egret.Sprite = new egret.Sprite();
-					this.GridS.push(GridBits);
-					this.backGound.addChild(GridBits);
-					GridBits.x = col * tilesetwidth;
-					GridBits.y = row * tilesetwidth;
-					GridBits.width = tilesetwidth;
-					GridBits.height = tilesetwidth;
-					var index:string ="";
-					var ix = CenterX + col -offsetX;
-					var iy = (CenterY + row -offsetY) * this.map.width;
-					if(CenterX<offsetX)
-					{
-						ix =CenterX + col;
-					}
-					if(CenterY<offsetY)
-					{
-						iy = (CenterY + row)* this.map.width;
-					}
-					
-					index = ""+(ix+iy);
-					//Main.debugView.log("ix:"+ix+"|iy:"+iy+"|index:"+index);
-					var txData = this.map.data[index];
-					if(txData instanceof Array)
-					{
-						for(var tx of txData)
-						{
-							var bitmap:egret.Bitmap = new egret.Bitmap();
-							bitmap.texture = this.map.SpritesSheet.getTexture(tx);
-							bitmap.width = GridBits.width;
-							bitmap.height = GridBits.height;
-							GridBits.addChild(bitmap);
-						}
-					}else{
-						if(txData!=0)
-						{
-							var bitmap:egret.Bitmap = new egret.Bitmap();
-							bitmap.width = GridBits.width;
-							bitmap.height = GridBits.height;
-							//Main.debugView.log("TxData:"+txData);
-							bitmap.texture = this.map.SpritesSheet.getTexture(txData);
-							GridBits.addChild(bitmap);
-						}else{
-
-						}
-					}
+					GridBits.x = self.EgetX(index + 1, self.map.width) * (self.map.tilesize*self.scale);
+					GridBits.y = Math.floor(index / self.map.width) * (self.map.tilesize*self.scale);
+					GridBits.addChild(bitmap);
+					self.GridS.push(GridBits);
+					self.backGound.addChild(GridBits);
+				}else{
+					self.GridS[index].addChild(bitmap);
 				}
-			}
+				Main.debugView.log("x:"+bitmap.x+"|y:"+bitmap.y+"|id:"+id+"|tilesetwidth:"+tilesetwidth);
+            }, 1);
+			
+			
 		}
 		forEachVisibleTile():void{
 			if(this.map.mapLoaded)
@@ -242,7 +233,8 @@ module Content {
 		clearScreen() {
             this.context.graphics.clear();
         }
-		scale=1;
+
+		scale=2;
 		getEntityBoundingRect(entity) {
             var rect = <any>{},
                 s = this.scale,
@@ -274,7 +266,7 @@ module Content {
         }
 
 		renderFrame() {
-            if(this.mobile || this.tablet) {
+            if(Render.mobile || Render.tablet) {
                 this.renderFrameMobile();
             }
             else {
@@ -294,5 +286,49 @@ module Content {
 
         }
 		renderFrameMobile(){};
+
+		isIntersecting(rect1, rect2) {
+            return !((rect2.left > rect1.right) ||
+                     (rect2.right < rect1.left) ||
+                     (rect2.top > rect1.bottom) ||
+                     (rect2.bottom < rect1.top));
+        }
+		targetRect;
+		getTargetBoundingRect(x?, y?) {
+            var rect = <any>{},
+                s = this.scale,
+                ts = this.tilesize,
+                tx = x || this.core.selectedX,
+                ty = y || this.core.selectedY;
+
+            rect.x = ((tx * ts) - this.camera.x) * s;
+            rect.y = ((ty * ts) - this.camera.y) * s;
+            rect.w = ts * s;
+            rect.h = ts * s;
+            rect.left = rect.x;
+            rect.right = rect.x + rect.w;
+            rect.top = rect.y;
+            rect.bottom = rect.y + rect.h;
+
+            return rect;
+        }
+		getTileBoundingRect(tile) {
+            var rect = <any>{},
+                gridW = this.core.map.width,
+                s = this.scale,
+                ts = this.tilesize,
+                cellid = tile.index;
+
+            rect.x = ((this.EgetX(cellid + 1, gridW) * ts) - this.camera.x) * s;
+            rect.y = ((Math.floor(cellid / gridW) * ts) - this.camera.y) * s;
+            rect.w = ts * s;
+            rect.h = ts * s;
+            rect.left = rect.x;
+            rect.right = rect.x + rect.w;
+            rect.top = rect.y;
+            rect.bottom = rect.y + rect.h;
+
+            return rect;
+        }
 	}
 }

@@ -8,7 +8,7 @@ module Content {
         map:Gmap.Map;
         net:NetWork.Net;
         core:Content.Core;
-        render:Content.Render;
+        render:Render;
 		public constructor(map:Gmap.Map,net:NetWork.Net) {
             super();
             this.map = map;
@@ -19,9 +19,9 @@ module Content {
         Init():void{
             //init view
             //init core
-            this.render = new Content.Render(this.map,this.core);
-            this.addChild(this.render);
+            this.render = new Content.Render(this.map);     
             this.core=new Content.Core(this.render,this.map,this.net);
+            this.addChild(this.render);
             //this.core.start();
         }
 	}
