@@ -1,6 +1,6 @@
 module Common {
 	export class Chest extends Entity{
-		public constructor(id, kind) {
+		public constructor(id, kind?) {
 			super(id, Types.Entities.CHEST);
 		}
 

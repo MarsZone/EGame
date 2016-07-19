@@ -51,7 +51,7 @@ module Content {
             currentCursor = null;
             mouse = { x: 0, y: 0 };
             zoningQueue = [];
-            previousClickPosition = {};
+            previousClickPosition = <any>{};
 
             cursorVisible = true;
             selectedX = 0;
@@ -120,6 +120,24 @@ module Content {
                             //self.addValidationError(null, 'Failed to launch the game: ' + (result.reason ? result.reason : '(reason unknown)'));
                             break;
                     }
+                    Main.debugView.log("started_callback:"+result,Core.CoreSrcName);
+                }
+            }
+            setSpriteScale(scale) {
+                var self = this;
+
+                if(Render.upscaledRendering) {
+                    this.sprites = this.spritesets[0];
+                } else {
+                    this.sprites = this.spritesets[scale - 1];
+
+                    _.each(this.entities, function(entity:Common.Entity) {
+                        entity.sprite = null;
+                        entity.setSprite(self.sprites[entity.getSpriteName()]);
+                    });
+                    //this.initHurtSprites(); -*-
+                    this.initShadows();
+                    //this.initCursors();
                 }
             }
             setUpdater(updater:Common.Updater) {
@@ -137,6 +155,7 @@ module Content {
                 this.loadSprites();
                 this.setUpdater(new Common.Updater(this));
                 this.camera = this.renderer.camera;
+                this.setSpriteScale(this.renderer.scale);
                 //this.dotest=setInterval(this.intervalTest(this),100);
                 //Main.debugView.log("Begin "+this.dotest);
 
@@ -273,9 +292,11 @@ module Content {
                 if(Render.upscaledRendering) {
                     this.spritesets[0][name] = new Assets.Sprite(name, 1);
                 } else {
+                    
                     this.spritesets[1][name] = new Assets.Sprite(name, 2);
+                    
                     if(!Render.mobile && !Render.tablet) {
-                        this.spritesets[2][name] = new Assets.Sprite(name, 3);
+                        //this.spritesets[2][name] = new Assets.Sprite(name, 3);
                     }
                 }
             }
@@ -404,7 +425,7 @@ module Content {
                 self.playerId = id;
                 // Always accept name received from the server which will
                 // sanitize and shorten names exceeding the allowed length.
-                self.player.name = name;
+                self.player.Ename = name;
                 self.player.setGridPosition(x, y);
                 self.player.setMaxHitPoints(hp);
                 self.player.setArmorName(armor);
@@ -640,10 +661,429 @@ module Content {
                     self.addItem(item, x, y);
                 });
 
-                
-                //self.start();
+                // self.net.onSpawnChest(function(chest, x, y) {
+                //     Main.debugView.log("Spawned chest (" + chest.id + ") at "+x+", "+y);
+                //     chest.setSprite(self.sprites[chest.getSpriteName()]);
+                //     chest.setGridPosition(x, y);
+                //     chest.setAnimation("idle_down", 150);
+                //     self.addEntity(chest);
+
+                //     chest.onOpen(function() {
+                //         chest.stopBlinking();
+                //         chest.setSprite(self.sprites["death"]);
+                //         chest.setAnimation("death", 120, 1, function() {
+                //             Main.debugView.log(chest.id + " was removed");
+                //             self.removeEntity(chest);
+                //             self.removeFromRenderingGrid(chest, chest.gridX, chest.gridY);
+                //             self.previousClickPosition = {};
+                //         });
+                //     });
+                // });
+
+                 self.net.onSpawnCharacter(function(entity, x, y, orientation, targetId) {
+                    if(!self.entityIdExists(entity.id)) {
+                        try {
+                            if(entity.id !== self.playerId) {
+                                entity.setSprite(self.sprites[entity.getSpriteName()]);
+                                entity.setGridPosition(x, y);
+                                entity.setOrientation(orientation);
+                                entity.idle();
+
+                                self.addEntity(entity);
+
+                                Main.debugView.log("Spawned " + Types.getKindAsString(entity.kind) + " (" + entity.id + ") at "+entity.gridX+", "+entity.gridY);
+
+                                if(entity instanceof Common.Character) {
+                                    entity.onBeforeStep(function() {
+                                        self.unregisterEntityPosition(entity);
+                                    });
+
+                                    entity.onStep(function() {
+                                        if(!entity.isDying) {
+                                            self.registerEntityDualPosition(entity);
+
+                                            if(self.player && self.player.target === entity) {
+                                                self.makeAttackerFollow(self.player)
+                                            }
+
+
+                                            entity.forEachAttacker(function(attacker) {
+                                                if(attacker.isAdjacent(attacker.target)) {
+                                                    attacker.lookAtTarget();
+                                                } else {
+                                                    attacker.follow(entity);
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                    entity.onStopPathing(function(x, y) {
+                                        if(!entity.isDying) {
+                                            if(entity.hasTarget() && entity.isAdjacent(entity.target)) {
+                                                entity.lookAtTarget();
+                                            }
+
+                                            if(entity instanceof Player) {
+                                                var gridX = entity.destination.gridX,
+                                                    gridY = entity.destination.gridY;
+
+                                                if(self.map.isDoor(gridX, gridY)) {
+                                                    var dest = self.map.getDoorDestination(gridX, gridY);
+                                                    entity.setGridPosition(dest.x, dest.y);
+                                                }
+                                            }
+
+                                            entity.forEachAttacker(function(attacker) {
+                                                if(!attacker.isAdjacentNonDiagonal(entity) && attacker.id !== self.playerId) {
+                                                    attacker.follow(entity);
+                                                }
+                                            });
+
+                                            self.unregisterEntityPosition(entity);
+                                            self.registerEntityPosition(entity);
+                                        }
+                                    });
+
+                                    entity.onRequestPath(function(x, y) {
+                                        var ignored = [entity], // Always ignore self
+                                            ignoreTarget = function(target) {
+                                                ignored.push(target);
+
+                                                // also ignore other attackers of the target entity
+                                                target.forEachAttacker(function(attacker) {
+                                                    ignored.push(attacker);
+                                                });
+                                            };
+
+                                        if(entity.hasTarget()) {
+                                            ignoreTarget(entity.target);
+                                        } else if(entity.previousTarget) {
+                                            // If repositioning before attacking again, ignore previous target
+                                            // See: tryMovingToADifferentTile()
+                                            ignoreTarget(entity.previousTarget);
+                                        }
+
+                                        return self.findPath(entity, x, y, ignored);
+                                    });
+
+                                    entity.onDeath(function() {
+                                        Main.debugView.log(entity.id + " is dead");
+
+                                        if(entity instanceof Role.Mob) {
+                                            // Keep track of where mobs die in order to spawn their dropped items
+                                            // at the right position later.
+                                            self.deathpositions[entity.id] = {x: entity.gridX, y: entity.gridY};
+                                        }
+
+                                        entity.isDying = true;
+                                        entity.setSprite(self.sprites[entity instanceof Mobs.Rat ? "rat" : "death"]);
+                                        entity.animate("death", 120, 1, function() {
+                                            Main.debugView.log(entity.id + " was removed");
+
+                                            self.removeEntity(entity);
+                                            self.removeFromRenderingGrid(entity, entity.gridX, entity.gridY);
+                                        });
+
+                                        entity.forEachAttacker(function(attacker) {
+                                            attacker.disengage();
+                                        });
+
+                                        if(self.player.target && self.player.target.id === entity.id) {
+                                            self.player.disengage();
+                                        }
+
+                                        // Upon death, this entity is removed from both grids, allowing the player
+                                        // to click very fast in order to loot the dropped item and not be blocked.
+                                        // The entity is completely removed only after the death animation has ended.
+                                        self.removeFromEntityGrid(entity, entity.gridX, entity.gridY);
+                                        self.removeFromPathingGrid(entity.gridX, entity.gridY);
+
+                                        if(self.camera.isVisible(entity)) {
+                                            self.audioManager.playSound("kill"+Math.floor(Math.random()*2+1));
+                                        }
+
+                                        self.updateCursor();
+                                    });
+
+                                    entity.onHasMoved(function(entity) {
+                                        self.assignBubbleTo(entity); // Make chat bubbles follow moving entities
+                                    });
+
+                                    if(entity instanceof Role.Mob) {
+                                        if(targetId) {
+                                            var player = self.getEntityById(targetId);
+                                            if(player) {
+                                                self.createAttackLink(entity, player);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch(e) {
+                            Main.debugView.log(e,"Error");
+                        }
+                    } else {
+                        Main.debugView.log("Character "+entity.id+" already exists. Don't respawn.");
+                    }
+                });
+
+                self.net.onDespawnEntity(function(entityId) {
+                    var entity = self.getEntityById(entityId);
+
+                    if(entity) {
+                        Main.debugView.log("Despawning " + Types.getKindAsString(entity.kind) + " (" + entity.id+ ")");
+
+                        if(entity.gridX === self.previousClickPosition.x
+                        && entity.gridY === self.previousClickPosition.y) {
+                            self.previousClickPosition = {};
+                        }
+
+                        if(entity instanceof Common.Item) {
+                            self.removeItem(entity);
+                        } else if(entity instanceof Common.Character) {
+                            entity.forEachAttacker(function(attacker) {
+                                if(attacker.canReachTarget()) {
+                                    attacker.hit();
+                                }
+                            });
+                            entity.die();
+                        } else if(entity instanceof Common.Chest) {
+                            entity.open();
+                        }
+
+                        entity.clean();
+                    }
+                });
+
+                self.net.onItemBlink(function(id) {
+                    var item = self.getEntityById(id);
+
+                    if(item) {
+                        item.blink(150);
+                    }
+                });
+
+                self.net.onMemberConnect(function(name) {
+					self.showNotification(name + " connected to your world.");//#updateguild
+				});
+				
+				self.net.onMemberDisconnect(function(name) {
+					self.showNotification(name + " lost connection with your world.");
+				});
+
+                self.net.onEntityMove(function(id, x, y) {
+                    var entity = null;
+
+                    if(id !== self.playerId) {
+                        entity = self.getEntityById(id);
+
+                        if(entity) {
+                            if(self.player.isAttackedBy(entity)) {
+                                //self.tryUnlockingAchievement("COWARD");
+                            }
+                            entity.disengage();
+                            entity.idle();
+                            self.makeCharacterGoTo(entity, x, y);
+                        }
+                    }
+                });
+
+                self.net.onEntityDestroy(function(id) {
+                    var entity = self.getEntityById(id);
+                    if(entity) {
+                        if(entity instanceof Common.Item) {
+                            self.removeItem(entity);
+                        } else {
+                            self.removeEntity(entity);
+                        }
+                        Main.debugView.log("Entity was destroyed: "+entity.id);
+                    }
+                });
+
+                self.net.onPlayerMoveToItem(function(playerId, itemId) {
+                    var player, item;
+
+                    if(playerId !== self.playerId) {
+                        player = self.getEntityById(playerId);
+                        item = self.getEntityById(itemId);
+
+                        if(player && item) {
+                            self.makeCharacterGoTo(player, item.gridX, item.gridY);
+                        }
+                    }
+                });
+
+                self.net.onEntityAttack(function(attackerId, targetId) {
+                    var attacker = self.getEntityById(attackerId),
+                        target = self.getEntityById(targetId);
+
+                    if(attacker && target && attacker.id !== self.playerId) {
+                        Main.debugView.log(attacker.id + " attacks " + target.id);
+
+                        if(attacker && target instanceof Player && target.id !== self.playerId && target.target && target.target.id === attacker.id && attacker.getDistanceToEntity(target) < 3) {
+                            setTimeout(function() {
+                                self.createAttackLink(attacker, target);
+                            }, 200); // delay to prevent other players attacking mobs from ending up on the same tile as they walk towards each other.
+                        } else {
+                            self.createAttackLink(attacker, target);
+                        }
+                    }
+                });
+
+                self.net.onPlayerDamageMob(function(mobId, points, healthPoints, maxHp) {
+                    var mob = self.getEntityById(mobId);
+                    if(mob && points) {
+                        self.infoManager.addDamageInfo(points, mob.x, mob.y - 15, "inflicted");
+                    }
+                    if(self.player.hasTarget()){
+                        self.updateTarget(mobId, points, healthPoints, maxHp);
+                    }
+                });
+
+                self.net.onPlayerKillMob(function(kind, level, exp) {
+                    var mobExp = Types.getMobExp(kind);
+                    self.player.level = level;
+                    self.player.experience = exp;
+                    self.updateExpBar();
+                    
+                    self.infoManager.addDamageInfo("+"+mobExp+" exp", self.player.Px, self.player.Py - 15, "exp", 3000);
+
+                    var expInThisLevel = self.player.experience - Types.expForLevel[self.player.level-1];
+                    var expForLevelUp = Types.expForLevel[self.player.level] - Types.expForLevel[self.player.level-1];
+                    var expPercentThisLevel = (100*expInThisLevel/expForLevelUp);
+
+                    self.showNotification( "Total xp: " + self.player.experience + ". " + expPercentThisLevel.toFixed(0) + "% of this level done." );
+
+                    var mobName = Types.getKindAsString(kind);
+
+                    if(mobName === 'skeleton2') {
+                        mobName = 'greater skeleton';
+                    }
+
+                    if(mobName === 'eye') {
+                        mobName = 'evil eye';
+                    }
+
+                    if(mobName === 'deathknight') {
+                        mobName = 'death knight';
+                    }
+
+                    if(mobName === 'boss') {
+                        self.showNotification("You killed the skeleton king");
+                    }
+                });
+
+                self.net.onPlayerChangeHealth(function(points, isRegen) {
+                    var player = self.player,
+                        diff,
+                        isHurt;
+
+                    if(player && !player.isDead && !player.invincible) {
+                        isHurt = points <= player.hitPoints;
+                        diff = points - player.hitPoints;
+                        player.hitPoints = points;
+
+                        if(player.hitPoints <= 0) {
+                            player.die();
+                        }
+                        if(isHurt) {
+                            player.hurt();
+                            self.infoManager.addDamageInfo(diff, player.Px, player.Py - 15, "received");
+                            self.audioManager.playSound("hurt");
+                            //self.storage.addDamage(-diff);
+                            //self.tryUnlockingAchievement("MEATSHIELD");
+                            if(self.playerhurt_callback) {
+                                self.playerhurt_callback();
+                            }
+                        } else if(!isRegen){
+                            self.infoManager.addDamageInfo("+"+diff, player.Px, player.Py - 15, "healed");
+                        }
+                        self.updateBars();
+                    }
+                });
+
+                self.net.onPlayerChangeMaxHitPoints(function(hp) {
+                    self.player.maxHitPoints = hp;
+                    self.player.hitPoints = hp;
+                    self.updateBars();
+                });
+
+
+                self.net.onPlayerEquipItem(function(playerId, itemKind) {
+                    var player = self.getEntityById(playerId),
+                        itemName = Types.getKindAsString(itemKind);
+
+                    if(player) {
+                        if(Types.isArmor(itemKind)) {
+                            player.setSprite(self.sprites[itemName]);
+                        } else if(Types.isWeapon(itemKind)) {
+                            player.setWeaponName(itemName);
+                        }
+                    }
+                });
+
+                self.net.onPlayerTeleport(function(id, x, y) {
+                    var entity = null,
+                        currentOrientation;
+
+                    if(id !== self.playerId) {
+                        entity = self.getEntityById(id);
+
+                        if(entity) {
+                            currentOrientation = entity.orientation;
+
+                            self.makeCharacterTeleportTo(entity, x, y);
+                            entity.setOrientation(currentOrientation);
+
+                            entity.forEachAttacker(function(attacker) {
+                                attacker.disengage();
+                                attacker.idle();
+                                attacker.stop();
+                            });
+                        }
+                    }
+                });
+
+                self.net.onDropItem(function(item, mobId) {
+                    var pos = self.getDeadMobPosition(mobId);
+
+                    if(pos) {
+                        self.addItem(item, pos.x, pos.y);
+                        self.updateCursor();
+                    }
+                });
+
+                self.net.onChatMessage(function(entityId, message) {
+                    var entity = self.getEntityById(entityId);
+                    self.createBubble(entityId, message);
+                    self.assignBubbleTo(entity);
+                    self.audioManager.playSound("chat");
+                });
+
+                self.net.onPopulationChange(function(worldPlayers, totalPlayers) {
+                    if(self.nbplayers_callback) {
+                        self.nbplayers_callback(worldPlayers, totalPlayers);
+                    }
+                });
+
+                self.net.onDisconnected(function(message) {
+                    if(self.player) {
+                        self.player.die();
+                    }
+                    if(self.disconnect_callback) {
+                        self.disconnect_callback(message);
+                    }
+                });
+
+                //self.gamestart_callback();
+                if(self.hasNeverStarted) {
+                    self.start();
+                    started_callback({success: true});
+                }
             });
         }
+        
         clearTarget;
         drawTarget;;
         connecting;
@@ -653,6 +1093,24 @@ module Content {
         playerId;
         playerdeath_callback;
         equipment_callback;
+        /**
+         * Links two entities in an attacker<-->target relationship.
+         * This is just a utility method to wrap a set of instructions.
+         *
+         * @param {Entity} attacker The attacker entity
+         * @param {Entity} target The target entity
+         */
+        createAttackLink(attacker, target) {
+            if(attacker.hasTarget()) {
+                attacker.removeTarget();
+            }
+            attacker.engage(target);
+
+            if(attacker.id !== this.playerId) {
+                target.addAttacker(attacker);
+            }
+        }
+
         /**
          * Loops through all the entities currently present in the game.
          * @param {Function} callback The function to call back (must accept one entity argument).
@@ -962,20 +1420,138 @@ module Content {
         removeFromPathingGrid(x, y) {
             this.pathingGrid[y][x] = 0;
         }
-        playerhp_callback;
-        updateBars() {
-            if(this.player && this.playerhp_callback) {
-                this.playerhp_callback(this.player.hitPoints, this.player.maxHitPoints);
+
+        isMobOnSameTile(mob, x?, y?) {
+            var X = x || mob.gridX,
+                Y = y || mob.gridY,
+                list = this.entityGrid[Y][X],
+                result = false;
+
+            _.each(list, function(entity) {
+                if(entity instanceof Role.Mob && entity.id !== mob.id) {
+                    result = true;
+                }
+            });
+            return result;
+        }
+
+        getFreeAdjacentNonDiagonalPosition(entity) {
+            var self = this,
+                result = null;
+
+            entity.forEachAdjacentNonDiagonalPosition(function(x, y, orientation) {
+                if(!result && !self.map.isColliding(x, y) && !self.isMobAt(x, y)) {
+                    result = {x: x, y: y, o: orientation};
+                }
+            });
+            return result;
+        }
+
+        tryMovingToADifferentTile(character) {
+            var attacker = character,
+                target = character.target;
+
+            if(attacker && target && target instanceof Player) {
+                if(!target.isMoving() && attacker.getDistanceToEntity(target) === 0) {
+                    var pos;
+
+                    switch(target.orientation) {
+                        case Types.Orientations.UP:
+                            pos = {x: target.gridX, y: target.gridY - 1, o: target.orientation}; break;
+                        case Types.Orientations.DOWN:
+                            pos = {x: target.gridX, y: target.gridY + 1, o: target.orientation}; break;
+                        case Types.Orientations.LEFT:
+                            pos = {x: target.gridX - 1, y: target.gridY, o: target.orientation}; break;
+                        case Types.Orientations.RIGHT:
+                            pos = {x: target.gridX + 1, y: target.gridY, o: target.orientation}; break;
+                    }
+
+                    if(pos) {
+                        attacker.previousTarget = target;
+                        attacker.disengage();
+                        attacker.idle();
+                        this.makeCharacterGoTo(attacker, pos.x, pos.y);
+                        target.adjacentTiles[pos.o] = true;
+
+                        return true;
+                    }
+                }
+
+                if(!target.isMoving() && attacker.isAdjacentNonDiagonal(target) && this.isMobOnSameTile(attacker)) {
+                    var pos = this.getFreeAdjacentNonDiagonalPosition(target);
+
+                    // avoid stacking mobs on the same tile next to a player
+                    // by making them go to adjacent tiles if they are available
+                    if(pos && !target.adjacentTiles[pos.o]) {
+                        if(this.player.target && attacker.id === this.player.target.id) {
+                            return false; // never unstack the player's target
+                        }
+
+                        attacker.previousTarget = target;
+                        attacker.disengage();
+                        attacker.idle();
+                        this.makeCharacterGoTo(attacker, pos.x, pos.y);
+                        target.adjacentTiles[pos.o] = true;
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+         /**
+         *
+         */
+        onCharacterUpdate(character) {
+            var time = this.currentTime,
+                self = this;
+            
+            // If mob has finished moving to a different tile in order to avoid stacking, attack again from the new position.
+            if(character.previousTarget && !character.isMoving() && character instanceof Role.Mob) {
+                var t = character.previousTarget;
+
+                if(this.getEntityById(t.id)) { // does it still exist?
+                    character.previousTarget = null;
+                    this.createAttackLink(character, t);
+                    return;
+                }
+            }
+
+            if(character.isAttacking() && (!character.previousTarget || character.id === this.playerId)) {
+                var isMoving = this.tryMovingToADifferentTile(character); // Don't let multiple mobs stack on the same tile when attacking a player.
+
+                if(character.canAttack(time)) {
+                    if(!isMoving) { // don't hit target if moving to a different tile.
+                        if(character.hasTarget() && character.getOrientationTo(character.target) !== character.orientation) {
+                            character.lookAtTarget();
+                        }
+
+                        character.hit();
+
+                        if(character.id === this.playerId) {
+                            this.net.sendHit(character.target);
+                        }
+
+                        if(character instanceof Player && this.camera.isVisible(character)) {
+                            this.audioManager.playSound("hit"+Math.floor(Math.random()*2+1));
+                        }
+
+                        if(character.hasTarget() && character.target.id === this.playerId && this.player && !this.player.invincible) {
+                            this.net.sendHurt(character);
+                        }
+                    }
+                } else {
+                    if(character.hasTarget()
+                    && character.isDiagonallyAdjacent(character.target)
+                    && character.target instanceof Player
+                    && !character.target.isMoving()) {
+                        character.follow(character.target);
+                    }
+                }
             }
         }
-        playerexp_callback;
-        updateExpBar(){
-            if(this.player && this.playerexp_callback){
-                var expInThisLevel = this.player.experience - Types.expForLevel[this.player.level-1];
-                var expForLevelUp = Types.expForLevel[this.player.level] - Types.expForLevel[this.player.level-1];
-                this.playerexp_callback(expInThisLevel, expForLevelUp);
-            }
-        }
+
          /**
          *
          */
@@ -1234,8 +1810,241 @@ module Content {
                 bubble.element.css('top', y + 'px');
             }
         }
+        username="";
+        respawn() {
+            Main.debugView.log("Beginning respawn");
 
-        
+            this.entities = {};
+            this.initEntityGrid();
+            this.initPathingGrid();
+            this.initRenderingGrid();
+
+            this.player = new Role.Warrior("player", this.username);
+            //this.player.pw = this.userpw;
+            //this.player.email = this.email;
+            this.initPlayer();
+            //this.app.initTargetHud();
+
+            this.started = true;
+            this.net.enable();
+            this.net.sendLogin();
+
+            if(Render.mobile || Render.tablet) {
+                this.renderer.clearScreen();
+            }
+
+            Main.debugView.log("Finished respawn");
+        }
+        gamestart_callback;
+         onGameStart(callback) {
+            this.gamestart_callback = callback;
+        };
+
+        disconnect_callback;
+        onDisconnect(callback) {
+            this.disconnect_callback = callback;
+        }
+
+        onPlayerDeath(callback) {
+            this.playerdeath_callback = callback;
+        }
+        updatetarget_callback;
+        onUpdateTarget(callback){
+          this.updatetarget_callback = callback;
+        }
+        onPlayerExpChange(callback){
+            this.playerexp_callback = callback;
+        }
+
+        onPlayerHealthChange(callback) {
+            this.playerhp_callback = callback;
+        }
+        playerhurt_callback;
+        onPlayerHurt(callback) {
+            this.playerhurt_callback = callback;
+        }
+
+        onPlayerEquipmentChange(callback) {
+            this.equipment_callback = callback;
+        }
+        nbplayers_callback;
+        onNbPlayersChange(callback) {
+            this.nbplayers_callback = callback;
+        }
+
+        onNotification(callback) {
+            this.notification_callback = callback;
+        }
+
+        invincible_callback;
+        onPlayerInvincible(callback) {
+            this.invincible_callback = callback
+        }
+
+        resize() {
+            var x = this.camera.x,
+                y = this.camera.y,
+                currentScale = this.renderer.scale,
+                newScale = this.renderer.getScaleFactor();
+
+                //this.renderer.rescale(newScale);
+                this.camera = this.renderer.camera;
+                this.camera.setPosition(x, y);
+
+                this.renderer.renderStaticCanvases();
+        }
+        playerhp_callback;
+        updateBars() {
+            if(this.player && this.playerhp_callback) {
+                this.playerhp_callback(this.player.hitPoints, this.player.maxHitPoints);
+            }
+        }
+        playerexp_callback;
+        updateExpBar(){
+            if(this.player && this.playerexp_callback){
+                var expInThisLevel = this.player.experience - Types.expForLevel[this.player.level-1];
+                var expForLevelUp = Types.expForLevel[this.player.level] - Types.expForLevel[this.player.level-1];
+                this.playerexp_callback(expInThisLevel, expForLevelUp);
+            }
+        }
+        updateTarget(targetId, points, healthPoints, maxHp){
+            if(this.player.hasTarget() && this.updatetarget_callback){
+                var target = this.getEntityById(targetId);
+                target.name = Types.getKindAsString(target.kind);
+                target.points = points;
+                target.healthPoints = healthPoints;
+                target.maxHp = maxHp;
+                this.updatetarget_callback(target);
+            }
+        }
+    
+        getDeadMobPosition(mobId) {
+            var position;
+
+            if(mobId in this.deathpositions) {
+                position = this.deathpositions[mobId];
+                delete this.deathpositions[mobId];
+            }
+
+            return position;
+        }
+
+         /**
+         * Moves a character to a given location on the world grid.
+         *
+         * @param {Number} x The x coordinate of the target location.
+         * @param {Number} y The y coordinate of the target location.
+         */
+        makeCharacterGoTo(character, x, y) {
+            if(!this.map.isOutOfBounds(x, y)) {
+                character.go(x, y);
+            }
+        }
+
+        /**
+         *
+         */
+        makeCharacterTeleportTo(character, x, y) {
+            if(!this.map.isOutOfBounds(x, y)) {
+                this.unregisterEntityPosition(character);
+
+                character.setGridPosition(x, y);
+
+                this.registerEntityPosition(character);
+                this.assignBubbleTo(character);
+            } else {
+                Main.debugView.log("Teleport out of bounds: "+x+", "+y);
+            }
+        }
+
+        /**
+         *
+         */
+        makePlayerAttackNext()
+        {
+
+            var pos = {
+                x: this.player.gridX,
+                y: this.player.gridY
+            };
+            switch(this.player.orientation)
+            {
+                case Types.Orientations.DOWN:
+                    pos.y += 1;
+                    this.makePlayerAttackTo(pos);
+                    break;
+                case Types.Orientations.UP:
+                    pos.y -= 1;
+                    this.makePlayerAttackTo(pos);
+                    break;
+                case Types.Orientations.LEFT:
+                    pos.x -= 1;
+                    this.makePlayerAttackTo(pos);
+                    break;
+                case Types.Orientations.RIGHT:
+                    pos.x += 1;
+                    this.makePlayerAttackTo(pos);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        /**
+         *
+         */
+        makePlayerAttackTo(pos)
+        {
+            var entity = this.getEntityAt(pos.x, pos.y);
+            if(entity instanceof Role.Mob) {
+                this.makePlayerAttack(entity);
+            }
+        }
+
+        /**
+         * Moves the current player to a given target location.
+         * @see makeCharacterGoTo
+         */
+        makePlayerGoTo(x, y) {
+            this.makeCharacterGoTo(this.player, x, y);
+        }
+
+        /**
+         * Moves the current player towards a specific item.
+         * @see makeCharacterGoTo
+         */
+        makePlayerGoToItem(item) {
+            if(item) {
+                this.player.isLootMoving = true;
+                this.makePlayerGoTo(item.gridX, item.gridY);
+                this.net.sendLootMove(item, item.gridX, item.gridY);
+            }
+        }
+
+        /**
+         *
+         */
+        makePlayerTalkTo(npc) {
+            if(npc) {
+                this.player.setTarget(npc);
+                this.player.follow(npc);
+            }
+        }
+
+        makePlayerOpenChest(chest) {
+            if(chest) {
+                this.player.setTarget(chest);
+                this.player.follow(chest);
+            }
+        }
+         /**
+         *
+         */
+        makePlayerAttack(mob) {
+            this.createAttackLink(this.player, mob);
+            this.net.sendAttack(mob);
+        }
         /**
          *
          */
@@ -1286,6 +2095,17 @@ module Content {
                 Main.debugView.log("Error while finding the path to "+x+", "+y+" for "+character.id,Core.CoreSrcName);
             }
             return path;
+        }
+
+        updateCursor() {
+            if(!this.cursorVisible)
+                var keepCursorHidden = true;
+
+            //this.movecursor();
+            //this.updateCursorLogic();
+
+            if(keepCursorHidden)
+                this.cursorVisible = false;
         }
     }
 }

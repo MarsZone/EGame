@@ -8,9 +8,10 @@ module NetWork{
         //webSocket:egret.WebSocket = new egret.WebSocket();
         //netPackageHandler:NetPackageHandler=new NetPackageHandler();
         public static NetSrcName: string = "Net";
-        
+        public entityFactory:Tools.EntityFactory;
         public constructor() {
             super();
+            this.entityFactory=new Tools.EntityFactory();
             this.commands = new NetWork.Commands();
         }
         connection;
@@ -66,8 +67,7 @@ module NetWork{
             var data, action;
             if(this.isListening) {
               data = JSON.parse(message);
-              Main.debugView.log("data: " + message,Net.NetSrcName);
-              
+
               if(data instanceof Array) {
                     if(data[0] instanceof Array) {
                         // Multiple actions received
@@ -77,6 +77,7 @@ module NetWork{
                         this.receiveAction(data);
                     }
                 }
+                Main.debugView.log("data: " + message,Net.NetSrcName);
             }
         }
         receiveAction(data) {
@@ -85,8 +86,9 @@ module NetWork{
             {
                 var fun = this.commands.CommandMap.get(action);
                 new fun(data,this);
+                //Main.debugView.log("Handle Action : " + action,Net.NetSrcName); 
             }else{
-                //Main.debugView.log("Unknown action : " + action,Net.NetSrcName); 
+                Main.debugView.log("Unknown action : " + action,Net.NetSrcName); 
             }
         }
 

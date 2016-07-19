@@ -3,7 +3,7 @@ module Common {
 		public constructor(id,kind) {
 			super(id,kind);
 			var self = this;
-			this.init();
+			this.setAttackRate(800);
 		}
 		// Position and orientation
 		nextGridX = -1;
@@ -37,10 +37,6 @@ module Common {
 		followingMode = false;
 
 		inspecting = null;
-
-		init(){
-			this.setAttackRate(800);
-		}
 		clean() {
             this.forEachAttacker(function(attacker) {
                 attacker.disengage();
@@ -94,6 +90,7 @@ module Common {
         }
 
         idle(orientation="") {
+            //Main.debugView.log("Character Idel");
             this.setOrientation(orientation);
             this.animate("idle", this.idleSpeed);
         }

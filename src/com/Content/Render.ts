@@ -25,7 +25,8 @@ module Content {
 		static upscaledRendering=false;
 		supportsSilhouettes;
 		init(): void {
-			
+
+			this.initFPS();
 			//add BG
 			this.backGound=new egret.Sprite();
 			this.foreground = new egret.Sprite();
@@ -41,6 +42,30 @@ module Content {
 			Render.upscaledRendering = false;
             this.supportsSilhouettes = Render.upscaledRendering;
 		}
+		FPS;
+		initFPS() {
+            this.FPS = 50;
+        }
+		getScaleFactor() {
+            var w = window.innerWidth,
+                h = window.innerHeight,
+                scale;
+
+            Render.mobile = false;
+
+            // if(w <= 1000) {
+            //     scale = 2;
+            //     Render.mobile= true;
+            // }
+            // // else if(w <= 1500 || h <= 870) {
+            // //     scale = 2;
+            // // }
+            // else {
+            //     scale = 3;
+            // }
+			scale=2;
+            return scale;
+        }
 		setCore(core:Core){
 			this.core = core;
 		}
@@ -201,9 +226,9 @@ module Content {
 		addRole():void{
 			//ForTest AddRole
 			this.chara = new Assets.ECharacter("leatherarmor", "character");
-			this.chara.x += 100;
-			this.chara.y += 100;
-			this.addChild(this.chara);
+			this.chara.Px += 100;
+			this.chara.Py += 100;
+			//this.addChild(this.chara);
 			var self = this;
 			//test key controler.
 			document.addEventListener("keydown",function(event:KeyboardEvent){

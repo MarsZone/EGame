@@ -65,7 +65,7 @@ module Assets {
             this.setCurAnimation("idle_down");
             //this.setTrunLeft(true);
             //add bitmap
-            this.addChild(this.display);
+            //this.addChild(this.display);
             
         }
         setCurAnimation(animation,flag=false):void{

@@ -10,7 +10,7 @@ module NetWork{
             super();
             this.CMDHashMap = new Tools.Map();
             this.CMDHashMap.put(Types.Messages.WELCOME,this.receiveWelcome);
-            // this.CMDHashMap.put(Types.Messages.MOVE, this.receiveMove);
+            //this.CMDHashMap.put(Types.Messages.MOVE, this.receiveMove);
             // this.CMDHashMap.put(Types.Messages.LOOTMOVE, this.receiveLootMove);
             // this.CMDHashMap.put(Types.Messages.ATTACK, this.receiveAttack);
             this.CMDHashMap.put(Types.Messages.SPAWN, this.receiveSpawn);
@@ -22,8 +22,8 @@ module NetWork{
             // this.CMDHashMap.put(Types.Messages.DROP, this.receiveDrop);
             // this.CMDHashMap.put(Types.Messages.TELEPORT, this.receiveTeleport);
             // this.CMDHashMap.put(Types.Messages.DAMAGE, this.receiveDamage);
-            // this.CMDHashMap.put(Types.Messages.POPULATION, this.receivePopulation);
-            // this.CMDHashMap.put(Types.Messages.LIST, this.receiveList);
+             this.CMDHashMap.put(Types.Messages.POPULATION, this.receivePopulation);
+             this.CMDHashMap.put(Types.Messages.LIST, this.receiveList);
             // this.CMDHashMap.put(Types.Messages.DESTROY, this.receiveDestroy);
             // this.CMDHashMap.put(Types.Messages.KILL, this.receiveKill);
             // this.CMDHashMap.put(Types.Messages.HP, this.receiveHitPoints);
@@ -53,6 +53,30 @@ module NetWork{
             }
             Main.debugView.log("Calling receiveWelcome");
         }
+        receiveMove(data,net:NetWork.Net) {
+            var id = data[1],
+                x = data[2],
+                y = data[3];
+            if(net.move_callback) {
+                net.move_callback(id, x, y);
+            }
+        }
+        receivePopulation(data,net:NetWork.Net) {
+            var worldPlayers = data[1],
+                totalPlayers = data[2];
+
+            if(net.population_callback) {
+                net.population_callback(worldPlayers, totalPlayers);
+            }
+        }
+
+        receiveList(data,net:NetWork.Net) {
+            data.shift();
+
+            if(net.list_callback) {
+                net.list_callback(data);
+            }
+        }
 
         receiveSpawn(data,net:NetWork.Net) {
             var id = data[1],
@@ -61,17 +85,17 @@ module NetWork{
                 y = data[4];
 
             if(Types.isItem(kind)) {
-                var item = Tools.EntityFactory.createEntity(kind, id);
+                var item = net.entityFactory.createEntity(kind, id);
 
                 if(net.spawn_item_callback) {
                     net.spawn_item_callback(item, x, y);
                 }
             } else if(Types.isChest(kind)) {
-                var item = Tools.EntityFactory.createEntity(kind, id);
-
-                if(net.spawn_chest_callback) {
-                    net.spawn_chest_callback(item, x, y);
-                }
+                // var item = this.entityFactory.createEntity(kind, id);
+                
+                // if(net.spawn_chest_callback) {
+                //     net.spawn_chest_callback(item, x, y);
+                // }
             } else {
                 var name, orientation, target, weapon, armor, level;
 
@@ -91,7 +115,7 @@ module NetWork{
                     }
                 }
 
-                var character = Tools.EntityFactory.createEntity(kind, id, name);
+                var character = net.entityFactory.createEntity(kind, id, name);
 
                 if(character instanceof Content.Player) {
                     character.weaponName = Types.getKindAsString(weapon);

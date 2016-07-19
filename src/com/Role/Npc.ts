@@ -171,7 +171,7 @@ module Role {
     };
 		public constructor(id, kind) {
 			super(id, kind);
-			this.itemKind = Types.getKindAsString(this.kind);
+			this.itemKind = Types.getKindAsString(kind);
             if(typeof this.NpcTalk[this.itemKind][0] === 'string'){
 				this.discourse = -1;
 				this.talkCount = this.NpcTalk[this.itemKind].length;

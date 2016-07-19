@@ -2,24 +2,9 @@ module Common {
     export /**
      * Entity
      */
-        class Entity extends egret.Sprite {
+        class Entity{
         constructor(id, kind) {
-            super();
-            this.init(id, kind);
-        }
-        id;
-        kind;
-        sprite;normalSprite;hurtSprite;
-        flipSpriteX;flipSpriteY;
-        animations;
-        currentAnimation;
-        shadowOffsetY;
-        isLoaded;
-        isHighlighted;
-        isFading;
-        ready_func;
-        fadingAlpha;
-        init(id, kind): void {
+            //super();
             this.id = id;
             this.kind = kind;
 
@@ -37,19 +22,39 @@ module Common {
             // Modes
             this.isLoaded = false;
             this.isHighlighted = false;
-            this.visible = true;
+            //this.visible = true;
             this.isFading = false;
 
             this.setDirty();
         }
+        id;
+        kind;
+        Ename;
+        sprite;
+        normalSprite;
+        hurtSprite;
+        flipSpriteX;flipSpriteY;
+        animations;
+        currentAnimation;
+        shadowOffsetY;
+        isLoaded;
+        isHighlighted;
+        isFading;
+        ready_func;
+        fadingAlpha;
 
-        setName(name) {
-            this.name = name;
+        init(id, kind): void {
+            
         }
 
+        setName(name) {
+            this.Ename = name;
+        }
+        Px;
+        Py;
         setPosition(x, y) {
-            this.x = x;
-            this.y = y;
+            this.Px = x;
+            this.Py = y;
         }
         gridX=0;
         gridY=0;
@@ -73,7 +78,7 @@ module Common {
             this.normalSprite = this.sprite;
 
             if(Types.isMob(this.kind) || Types.isPlayer(this.kind)) {
-                this.hurtSprite = sprite.getHurtSprite();
+                //this.hurtSprite = sprite.getHurtSprite();
             }
 
             this.animations = sprite.createAnimations();
@@ -89,6 +94,7 @@ module Common {
         }
 
         getSpriteName() {
+            //Main.debugView.log("Kind:"+this.kind+"Result:"+Types.getKindAsString(this.kind),"Entity");
             return Types.getKindAsString(this.kind);
         }
 
@@ -131,6 +137,7 @@ module Common {
             }
         }
         idel(){
+            //Main.debugView.log("Entity Idel");
         }
 
         hasShadow() {
@@ -165,19 +172,19 @@ module Common {
         }
 
         setVisible(value) {
-            this.visible = value;
+            //this.visible = value;
         }
 
         isVisible() {
-            return this.visible;
+            //return this.visible;
         }
 
         toggleVisibility() {
-            if(this.visible) {
-                this.setVisible(false);
-            } else {
-                this.setVisible(true);
-            }
+            // if(this.visible) {
+            //     this.setVisible(false);
+            // } else {
+            //     this.setVisible(true);
+            // }
         }
         		/**
          *

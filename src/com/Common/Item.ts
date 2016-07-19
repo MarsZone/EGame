@@ -24,6 +24,7 @@ module Common {
         }
 
         getSpriteName() {
+            //Main.debugView.log("item-"+ this.itemKind,"Item");
             return "item-"+ this.itemKind;
         }
 

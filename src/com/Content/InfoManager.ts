@@ -9,7 +9,7 @@ module Content {
 		game;
 		infos;
 		destroyQueue;
-		addDamageInfo(value, x, y, type, duration){
+		addDamageInfo(value, x, y, type, duration?){
 			var time = this.game.currentTime,
                 id = time+""+(isNaN(value*1)?value:value*1)+""+x+""+y,
                 self = this,
