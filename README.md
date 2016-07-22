@@ -9,8 +9,8 @@ Before Finished Net Work(只是通信初始部分.多数命令还没实现)...An
 Next Should be the map and player.
 
 -More
-随机地图.
+随机地图 Random Map.
 建筑.
-资源.
+资源 Assets.
 AI.
 玩家属性.

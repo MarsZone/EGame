@@ -363,7 +363,7 @@ module Content {
 
                 if(entity.isVisible()) {
 					//Main.debugView.log("updateX:"+entity.Px * s+"|updateY:"+entity.Py * s+"|WDS:"+w * ds+"|HDS:"+h*ds,"Render");
-                    entity.updateBitmap(entity.Px * s,entity.Py * s,w * ds,h * ds);
+                    entity.updateBitmap(entity.Px * s,entity.Py * s,w * ds,h * ds,s);
 					//this.context.drawImage(sprite.image, x, y, w, h, ox, oy, dw, dh);
 
                     if(entity instanceof Common.Item && entity.kind !== Types.Entities.CAKE) {
@@ -379,7 +379,7 @@ module Content {
 
                 if(entity instanceof Common.Character && !entity.isDead && entity.hasWeapon()) {
                     var weapon = this.core.sprites[entity.getWeaponName()];
-
+					
                     if(weapon) {
                         var weaponAnimData = weapon.animationData[anim.name],
                             index = frame.index < weaponAnimData.length ? frame.index : frame.index % weaponAnimData.length,
@@ -387,16 +387,23 @@ module Content {
                             wy = weapon.height * anim.row * os,
                             ww = weapon.width * os,
                             wh = weapon.height * os;
+						var animations = weapon.createAnimations();
+						var animate =animations[anim.name];
+						var textrue = animate.textureArr[index];
+						entity.updateWeaponBitmap(entity.Px * s +weapon.offsetX * ds,
+													entity.Py * s + weapon.offsetY * ds,
+													ww * ds,
+													wh * ds,textrue,s);
                     }
                 }				
             }
         }
-		addEntityToLayer(entity):void{
-			this.context.addChild(entity.displayBitmap);
+		addEntityToLayer(entity,bitmap):void{
+			this.context.addChild(bitmap);
 		}
 
-		removeEntityFromLayer(entity):void{
-			this.context.removeChild(entity.displayBitmap);
+		removeEntityFromLayer(entity,bitmap):void{
+			this.context.removeChild(bitmap);
 		}
 
 		drawEntityName(entity) {

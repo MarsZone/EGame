@@ -15,13 +15,9 @@ module Common {
             this.animations = null;
             this.currentAnimation = null;
             this.shadowOffsetY = 0;
-            // var img:egret.Texture = RES.getRes("beachnpc_png");
-            // var sps = new egret.SpriteSheet(img);
-            // sps.createTexture("a",0,0,64,64);
-            // sps.createTexture("b",20,20,64,64);
+            
             this.displayBitmap = new egret.Bitmap();
-            // this.displayBitmap.texture=sps.getTexture("a");
-            // this.displayBitmap.texture=sps.getTexture("b");
+            this.weaponBitmap = new egret.Bitmap();
             // Position
             this.setGridPosition(0, 0);
 
@@ -51,6 +47,7 @@ module Common {
         ready_func;
         fadingAlpha;
         displayBitmap:egret.Bitmap;
+        weaponBitmap:egret.Bitmap;
         init(id, kind): void {
             
         }
@@ -119,13 +116,38 @@ module Common {
             return animation;
         }
         updateBitmap(x,y,height,width){
+            this.displayBitmap.scaleX=1;
+            this.displayBitmap.scaleY=1;
             this.displayBitmap.texture = this.currentAnimation.texture;
             this.displayBitmap.width = height;
             this.displayBitmap.height = width;
             this.displayBitmap.x = x;
             this.displayBitmap.y = y;
+            if(this.flipSpriteX) {
+                this.displayBitmap.scaleX=-1;
+                this.displayBitmap.x = this.displayBitmap.x + this.displayBitmap.width ;
+            }else if(this.flipSpriteY) {
+                this.displayBitmap.scaleY=-1; 
+                this.displayBitmap.y = this.displayBitmap.y+this.displayBitmap.height ;
+            }
+            
             //Main.debugView.log("Current Entity:"+this.kind+"|Current Animation:"+this.currentAnimation.name,"Update");
             //Main.debugView.log("updateBitmap:"+this.displayBitmap.x+"|"+this.displayBitmap.y,"Entity");
+        }
+        updateWeaponBitmap(x,y,height,width,texture){
+            this.weaponBitmap.texture =texture;
+            this.weaponBitmap.width = height;
+            this.weaponBitmap.height = width;
+            this.weaponBitmap.x = x;
+            this.weaponBitmap.y = y;
+
+            if(this.flipSpriteX) {
+                this.weaponBitmap.scaleX=-1;
+                this.weaponBitmap.x = this.weaponBitmap.x + this.weaponBitmap.width ;
+            }else if(this.flipSpriteY) {
+                this.weaponBitmap.scaleY=-1; 
+                this.weaponBitmap.y = this.weaponBitmap.y+this.weaponBitmap.height ;
+            }
         }
 
         setAnimation(name, speed, count, onEndCount) {

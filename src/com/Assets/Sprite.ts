@@ -22,6 +22,7 @@ module Assets {
 		sps:egret.SpriteSheet;
 		width;
 		height;
+		animations;
 		loadJSON(name)
 		{
 			var imgPath = name+"_png";

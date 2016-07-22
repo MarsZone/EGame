@@ -1338,7 +1338,8 @@ module Content {
                         }
                     });
                 }
-                self.renderer.addEntityToLayer(entity);                
+                self.renderer.addEntityToLayer(entity,entity.displayBitmap);
+                self.renderer.addEntityToLayer(entity,entity.weaponBitmap);
             }
             else {
                 Main.debugView.log("This entity already exists : " + entity.id + " ("+entity.kind+")",Core.CoreSrcName);
@@ -1348,7 +1349,8 @@ module Content {
 
         removeEntity(entity) {
             if(entity.id in this.entities) {
-                this.renderer.removeEntityFromLayer(entity);
+                this.renderer.removeEntityFromLayer(entity,entity.displayBitmap);
+                this.renderer.removeEntityFromLayer(entity,entity.weaponBitmap);
                 this.unregisterEntityPosition(entity);
                 delete this.entities[entity.id];
             }
