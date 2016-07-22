@@ -2,22 +2,7 @@ module Content {
 	export class Player extends Common.Character{
 		public constructor(id,kind) {
 			super(id,kind);
-			this.init();
-		}
-		MAX_LEVEL=10;
-		nameOffsetY;
-		spriteName;
-		armorName;
-		weaponName;
-		isLootMoving;
-		isSwitchingWeapon;
-		pvpFlag;
-        experience;
-        level;
-        isOnPlateau;
-        lastCheckpoint;
-		init(){
-			 // Renderer
+			// Renderer
             this.nameOffsetY = -10;
 
             // sprites
@@ -32,6 +17,18 @@ module Content {
             // PVP Flag
             this.pvpFlag = true;
 		}
+		MAX_LEVEL=10;
+		nameOffsetY;
+		spriteName;
+		armorName;
+		weaponName;
+		isLootMoving;
+		isSwitchingWeapon;
+		pvpFlag;
+        experience;
+        level;
+        isOnPlateau;
+        lastCheckpoint;
 		currentArmorSprite;
 		invincible;
 		loot(item) {
@@ -62,7 +59,7 @@ module Content {
                     }
                 }
 
-                Main.debugView.log('Player '+this.id+' has looted '+item.id);
+                Main.debugView.log('Player '+this.id+' has looted '+item.id,Core.CoreSrcName);
                 if(Types.isArmor(item.kind) && this.invincible) {
                     this.stopInvincibility();
                 }

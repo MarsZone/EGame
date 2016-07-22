@@ -3,7 +3,7 @@ module Common {
 		public constructor(id,kind) {
 			super(id,kind);
 			var self = this;
-			this.init;
+			this.setAttackRate(800);
 		}
 		// Position and orientation
 		nextGridX = -1;
@@ -15,6 +15,7 @@ module Common {
 		moveSpeed = 120;
 		walkSpeed = 100;
 		idleSpeed = 450;
+        atkRate=0;
 		// Pathing
 		movement = new Transition();
 		path = null;
@@ -36,10 +37,6 @@ module Common {
 		followingMode = false;
 
 		inspecting = null;
-
-		init(){
-			this.setAttackRate(800);
-		}
 		clean() {
             this.forEachAttacker(function(attacker) {
                 attacker.disengage();
@@ -64,7 +61,7 @@ module Common {
             return true;
         }
 
-		animate(animation, speed=0, count=0, onEndCount=0) {
+		animate(animation, speed=0, count=0, onEndCount?) {
             var oriented = ['atk', 'walk', 'idle'],
                 o = this.orientation;
 
@@ -93,6 +90,7 @@ module Common {
         }
 
         idle(orientation="") {
+            //Main.debugView.log("Character Idel");
             this.setOrientation(orientation);
             this.animate("idle", this.idleSpeed);
         }
@@ -125,7 +123,7 @@ module Common {
             if(this.request_path_callback) {
                 return this.request_path_callback(x, y);
             } else {
-                Main.debugView.log(this.id + " couldn't request pathfinding to "+x+", "+y);
+                Main.debugView.log(this.id + " couldn't request pathfinding to "+x+", "+y,"Character");
                 return [];
             }
         }
@@ -410,7 +408,7 @@ module Common {
             if(!this.isAttackedBy(character)) {
                 this.attackers[character.id] = character;
             } else {
-                Main.debugView.log(this.id + " is already attacked by " + character.id);
+                Main.debugView.log(this.id + " is already attacked by " + character.id,"Character");
             }
         }
 
@@ -422,7 +420,7 @@ module Common {
             if(this.isAttackedBy(character)) {
                 delete this.attackers[character.id];
             } else {
-                Main.debugView.log(this.id + " is not attacked by " + character.id);
+                Main.debugView.log(this.id + " is not attacked by " + character.id,"Character");
             }
         }
 
@@ -454,7 +452,7 @@ module Common {
                 }
 
             } else {
-                Main.debugView.log(character.id + " is already the target of " + this.id);
+                Main.debugView.log(character.id + " is already the target of " + this.id,"Character");
             }
         }
 		settarget_callback;
@@ -572,7 +570,7 @@ module Common {
         }
 		attackCooldown;
         setAttackRate(rate) {
-            this.attackCooldown = new Common.ETimer(rate);
+            this.attackCooldown = new Tools.ETimer(rate);
         }
 	}
 }

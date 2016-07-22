@@ -41,7 +41,7 @@ module Assets {
 
             for(var name in this.animationData) {
                 var a = this.animationData[name];
-                animations[name] = new Animation(name, a.length, a.row, this.width, this.height);
+                //animations[name] = new Animation(name, a.length, a.row, this.width, this.height);
             }
 
             return animations;

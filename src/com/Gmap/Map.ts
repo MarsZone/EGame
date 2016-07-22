@@ -44,9 +44,10 @@ module Gmap {
             this.high = map.high;
             this.animated = map.animated;
 
-            //this.doors = this._getDoors(map);
-            //this.checkpoints = this._getCheckpoints(map);
+            this.doors = this._getDoors(map);
+            this.checkpoints = this._getCheckpoints(map);
 		}
+		doors;
 		mapTexture:egret.Texture;
 		SpritesSheet:egret.SpriteSheet;
 		tileSetWidth:number;
@@ -142,19 +143,57 @@ module Gmap {
         }
 		checkpoints= [];
 		 _getCheckpoints(map) {
-			 this.checkpoints=[];
+             var self = this;
+			 self.checkpoints=new Array();
             _.each(map.checkpoints, function(cp:any) {
                 var area = new Gmap.Area(cp.id,cp.x, cp.y, cp.w, cp.h);
                 //area.id = cp.id;
-                this.checkpoints.push(area);
+                self.checkpoints.push(area);
             });
-            return this.checkpoints;
+            return self.checkpoints;
         }
 
         getCurrentCheckpoint(entity) {
             return _.detect(this.checkpoints, function(checkpoint) {
                 return checkpoint.contains(entity);
             });
+        }
+		isDoor(x, y) {
+            return this.doors[this.GridPositionToTileIndex(x, y)] !== undefined;
+        }
+		_getDoors(map) {
+            var doors = {},
+                self = this;
+
+            _.each(map.doors, function(door:any) {
+                var o;
+
+                switch(door.to) {
+                    case 'u': o = Types.Orientations.UP;
+                        break;
+                    case 'd': o = Types.Orientations.DOWN;
+                        break;
+                    case 'l': o = Types.Orientations.LEFT;
+                        break;
+                    case 'r': o = Types.Orientations.RIGHT;
+                        break;
+                    default : o = Types.Orientations.DOWN;
+                }
+
+                doors[self.GridPositionToTileIndex(door.x, door.y)] = {
+                    x: door.tx,
+                    y: door.ty,
+                    orientation: o,
+                    cameraX: door.tcx,
+                    cameraY: door.tcy,
+                    portal: door.p === 1
+                };
+            });
+
+            return doors;
+        }
+		getDoorDestination(x, y) {
+            return this.doors[this.GridPositionToTileIndex(x, y)];
         }
 	}
 }

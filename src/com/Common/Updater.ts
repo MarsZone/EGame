@@ -1,21 +1,21 @@
 module Common {
 	export class Updater {
-		public constructor(game) {
+		public constructor(game:Content.Core) {
 			this.game = game;
-            this.playerAggroTimer = new ETimer(1000);
+            this.playerAggroTimer = new Tools.ETimer(1000);
 		}
-		game;
+		game:Content.Core;
         playerAggroTimer;
 		update() {
             this.updateZoning();
-            // this.updateCharacters();
-            // this.updatePlayerAggro();
-            // this.updateTransitions();
-            // this.updateAnimations();
-            // this.updateAnimatedTiles();
-            // this.updateChatBubbles();
-            // this.updateInfos();
-            // this.updateKeyboardMovement();
+            this.updateCharacters();
+            this.updatePlayerAggro();
+            this.updateTransitions();
+            this.updateAnimations();
+            this.updateAnimatedTiles();
+            this.updateChatBubbles();
+            this.updateInfos();
+            this.updateKeyboardMovement();
         }
         endValue;
         offset;
@@ -212,22 +212,22 @@ module Common {
             if(player.moveUp)
             {
                 pos.y -= 1;
-                game.keys(pos, Types.Orientations.UP);
+                //game.keys(pos, Types.Orientations.UP);
             }
             else if(player.moveDown)
             {
                 pos.y += 1;
-                game.keys(pos, Types.Orientations.DOWN);
+                //game.keys(pos, Types.Orientations.DOWN);
             }
             else if(player.moveRight)
             {
                 pos.x += 1;
-                game.keys(pos, Types.Orientations.RIGHT);
+                //game.keys(pos, Types.Orientations.RIGHT);
             }
             else if(player.moveLeft)
             {
                 pos.x -= 1;
-                game.keys(pos, Types.Orientations.LEFT);
+                //game.keys(pos, Types.Orientations.LEFT);
             }
         }
 
@@ -264,7 +264,7 @@ module Common {
                     tile.isDirty = true;
                     tile.dirtyRect = self.game.renderer.getTileBoundingRect(tile);
 
-                    if(self.game.renderer.mobile || self.game.renderer.tablet) {
+                    if(Content.Render.mobile || Content.Render.tablet) {
                         self.game.checkOtherDirtyRects(tile.dirtyRect, tile, tile.x, tile.y);
                     }
                 }

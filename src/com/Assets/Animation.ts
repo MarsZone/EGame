@@ -1,15 +1,19 @@
 module Assets {
 	export class Animation {
-		public constructor(name, length, row, width, height) {
+		public constructor(name, length, row, width, height,textureArr) {
 			this.name = name;
             this.length = length;
             this.row = row;
             this.width = width;
             this.height = height;
+            this.textureArr = textureArr;
+            this.texture = this.textureArr[0];
 			this.reset();
 		}
 		name;
 		length;
+        textureArr:Array<egret.Texture>;
+        texture:egret.Texture;
 		row;
 		width;
 		height;
@@ -18,6 +22,7 @@ module Assets {
 		speed;
 		lastTime;
 		endcount_callback;
+        curDisTexture:egret.Texture;
 		tick() {
             var i = this.currentFrame.index;
 
@@ -34,9 +39,11 @@ module Assets {
                 }
             }
 
-            this.currentFrame.x = this.width * i;
-            this.currentFrame.y = this.height * this.row;
+            //this.currentFrame.x = this.width * i;
+            //this.currentFrame.y = this.height * this.row;
             this.currentFrame.index = i;
+            //Main.debugView.log("Animation:"+this.currentFrame.index,"Animation");
+            this.texture = this.textureArr[this.currentFrame.index];
         }
 		
 		setSpeed(speed) {

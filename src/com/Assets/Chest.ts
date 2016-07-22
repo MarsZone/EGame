@@ -1,6 +1,6 @@
-module Common {
-	export class Chest extends Entity{
-		public constructor(id, kind?) {
+module Assets {
+	export class Chest extends Common.Entity{
+		public constructor(id, kind) {
 			super(id, Types.Entities.CHEST);
 		}
 
@@ -17,7 +17,6 @@ module Common {
                 this.open_callback();
             }
         }
-
         onOpen(callback) {
             this.open_callback = callback;
         }

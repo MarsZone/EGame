@@ -24,7 +24,7 @@ module Common {
 			this.arrow.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onArrowTouch,this);
 		}
 		onArrowTouch(e:egret.TouchEvent):void{
-			Main.debugView.log("OnTouch");
+			Main.debugView.log("OnTouch","UI");
 			EGEvent.UIEventHandler.instance.dispatchEvent(new EGEvent.GameEvent(EGEvent.GameEvent.CHANGE));
 		}
 	}

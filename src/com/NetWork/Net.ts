@@ -8,9 +8,10 @@ module NetWork{
         //webSocket:egret.WebSocket = new egret.WebSocket();
         //netPackageHandler:NetPackageHandler=new NetPackageHandler();
         public static NetSrcName: string = "Net";
-        
+        public entityFactory:Tools.EntityFactory;
         public constructor() {
             super();
+            this.entityFactory=new Tools.EntityFactory();
             this.commands = new NetWork.Commands();
         }
         connection;
@@ -66,8 +67,7 @@ module NetWork{
             var data, action;
             if(this.isListening) {
               data = JSON.parse(message);
-              Main.debugView.log("data: " + message,Net.NetSrcName);
-              
+
               if(data instanceof Array) {
                     if(data[0] instanceof Array) {
                         // Multiple actions received
@@ -77,6 +77,7 @@ module NetWork{
                         this.receiveAction(data);
                     }
                 }
+                Main.debugView.log("data: " + message,Net.NetSrcName);
             }
         }
         receiveAction(data) {
@@ -85,8 +86,9 @@ module NetWork{
             {
                 var fun = this.commands.CommandMap.get(action);
                 new fun(data,this);
+                //Main.debugView.log("Handle Action : " + action,Net.NetSrcName); 
             }else{
-                //Main.debugView.log("Unknown action : " + action,Net.NetSrcName); 
+                Main.debugView.log("Unknown action : " + action,Net.NetSrcName); 
             }
         }
 
@@ -97,6 +99,126 @@ module NetWork{
                 self.receiveAction(action);
             }
         }
+        dispatched_callback;
+        onDispatched(callback) {
+            this.dispatched_callback = callback;
+        }
+
+        spawn_character_callback;
+        onSpawnCharacter(callback) {
+            this.spawn_character_callback = callback;
+        }
+
+        spawn_item_callback;
+        onSpawnItem(callback) {
+            this.spawn_item_callback = callback;
+        }
+
+        spawn_chest_callback;
+        onSpawnChest(callback) {
+            this.spawn_chest_callback = callback;
+        }
+
+        despawn_callback;
+        onDespawnEntity(callback) {
+            this.despawn_callback = callback;
+        }
+
+        move_callback;
+        onEntityMove(callback) {
+            this.move_callback = callback;
+        }
+
+        attack_callback;
+        onEntityAttack(callback) {
+            this.attack_callback = callback;
+        }
+
+        health_callback;
+        onPlayerChangeHealth(callback) {
+            this.health_callback = callback;
+        }
+
+        equip_callback;
+        onPlayerEquipItem(callback) {
+            this.equip_callback = callback;
+        }
+
+        lootmove_callback;
+        onPlayerMoveToItem(callback) {
+            this.lootmove_callback = callback;
+        }
+
+        teleport_callback;
+        onPlayerTeleport(callback) {
+            this.teleport_callback = callback;
+        }
+
+        chat_callback;
+        onChatMessage(callback) {
+            this.chat_callback = callback;
+        }
+
+        drop_callback;
+        onDropItem(callback) {
+            this.drop_callback = callback;
+        }
+
+        dmg_callback;
+        onPlayerDamageMob(callback) {
+            this.dmg_callback = callback;
+        }
+
+        kill_callback;
+        onPlayerKillMob(callback) {
+            this.kill_callback = callback;
+        }
+
+        population_callback;
+        onPopulationChange(callback) {
+            this.population_callback = callback;
+        }
+
+        destroy_callback;
+        onEntityDestroy(callback) {
+            this.destroy_callback = callback;
+        }
+
+        hp_callback;
+        onPlayerChangeMaxHitPoints(callback) {
+            this.hp_callback = callback;
+        }
+
+        blink_callback;
+        onItemBlink(callback) {
+            this.blink_callback = callback;
+        }
+
+        pvp_callback;
+        onPVPChange(callback){
+            this.pvp_callback = callback;
+        }
+        
+        guildmemberconnect_callback;
+		onMemberConnect(callback) {
+			this.guildmemberconnect_callback = callback;
+		}
+		
+        guildmemberdisconnect_callback;
+		onMemberDisconnect(callback) {
+			this.guildmemberdisconnect_callback = callback;
+		}
+		
+        guildonlinemembers_callback;
+		onReceiveGuildMembers(callback) {
+			this.guildonlinemembers_callback = callback;
+		}
+		
+        guildpopulation_callback;
+		onGuildPopulation(callback) {
+			this.guildpopulation_callback = callback;
+		}
+
         sendMessage(json) {
             var data;
             if(this.connection.connected === true) {
@@ -107,7 +229,7 @@ module NetWork{
 
         sendLogin() {
             var user=new Model.User();
-            user.setData("Demo","123456");
+            user.setData("mars","123456");
             Model.ModelBase.instance.user = user;
             this.sendMessage([Types.Messages.LOGIN,user.name,user.pw]);
         }
@@ -195,6 +317,7 @@ module NetWork{
             ids.unshift(Types.Messages.WHO);
             this.sendMessage(ids);
         }
+        
     }
 }
     

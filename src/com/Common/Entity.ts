@@ -2,24 +2,9 @@ module Common {
     export /**
      * Entity
      */
-        class Entity extends egret.Sprite {
+        class Entity{
         constructor(id, kind) {
-            super();
-            this.init(id, kind);
-        }
-        id;
-        kind;
-        sprite;normalSprite;hurtSprite;
-        flipSpriteX;flipSpriteY;
-        animations;
-        currentAnimation;
-        shadowOffsetY;
-        isLoaded;
-        isHighlighted;
-        isFading;
-        ready_func;
-        fadingAlpha;
-        init(id, kind): void {
+            //super();
             this.id = id;
             this.kind = kind;
 
@@ -30,7 +15,13 @@ module Common {
             this.animations = null;
             this.currentAnimation = null;
             this.shadowOffsetY = 0;
-
+            // var img:egret.Texture = RES.getRes("beachnpc_png");
+            // var sps = new egret.SpriteSheet(img);
+            // sps.createTexture("a",0,0,64,64);
+            // sps.createTexture("b",20,20,64,64);
+            this.displayBitmap = new egret.Bitmap();
+            // this.displayBitmap.texture=sps.getTexture("a");
+            // this.displayBitmap.texture=sps.getTexture("b");
             // Position
             this.setGridPosition(0, 0);
 
@@ -39,27 +30,49 @@ module Common {
             this.isHighlighted = false;
             this.visible = true;
             this.isFading = false;
-
+            
             this.setDirty();
         }
 
-        setName(name) {
-            this.name = name;
+        id;
+        kind;
+        Ename;
+        sprite;
+        visible;
+        normalSprite;
+        hurtSprite;
+        flipSpriteX;flipSpriteY;
+        animations;
+        currentAnimation:Assets.Animation;
+        shadowOffsetY;
+        isLoaded;
+        isHighlighted;
+        isFading;
+        ready_func;
+        fadingAlpha;
+        displayBitmap:egret.Bitmap;
+        init(id, kind): void {
+            
         }
 
+        setName(name) {
+            this.Ename = name;
+        }
+        Px;
+        Py;
         setPosition(x, y) {
-            this.x = x;
-            this.y = y;
+            this.Px = x;
+            this.Py = y;
+            //Main.debugView.log("SetPos:"+this.Px+"|"+this.Py);
         }
         gridX=0;
         gridY=0;
         setGridPosition(x, y) {
             this.gridX = x;
             this.gridY = y;
-
             this.setPosition(x * 16, y * 16);
         }
-        setSprite(sprite) {
+        setSprite(sprite:Assets.Sprite) {
             if(!sprite) {
                 Main.debugView.log(this.id + " : sprite is null","Entity");
                 throw "Sprite error";
@@ -73,10 +86,11 @@ module Common {
             this.normalSprite = this.sprite;
 
             if(Types.isMob(this.kind) || Types.isPlayer(this.kind)) {
-                this.hurtSprite = sprite.getHurtSprite();
+                //this.hurtSprite = sprite.getHurtSprite();
             }
 
             this.animations = sprite.createAnimations();
+
 
             this.isLoaded = true;
             if(this.ready_func) {
@@ -89,6 +103,7 @@ module Common {
         }
 
         getSpriteName() {
+            //Main.debugView.log("Kind:"+this.kind+"Result:"+Types.getKindAsString(this.kind),"Entity");
             return Types.getKindAsString(this.kind);
         }
 
@@ -99,9 +114,18 @@ module Common {
                 animation = this.animations[name];
             }
             else {
-                Main.debugView.log("No animation called "+ name);
+                Main.debugView.log("No animation called "+ name,"Entity");
             }
             return animation;
+        }
+        updateBitmap(x,y,height,width){
+            this.displayBitmap.texture = this.currentAnimation.texture;
+            this.displayBitmap.width = height;
+            this.displayBitmap.height = width;
+            this.displayBitmap.x = x;
+            this.displayBitmap.y = y;
+            //Main.debugView.log("Current Entity:"+this.kind+"|Current Animation:"+this.currentAnimation.name,"Update");
+            //Main.debugView.log("updateBitmap:"+this.displayBitmap.x+"|"+this.displayBitmap.y,"Entity");
         }
 
         setAnimation(name, speed, count, onEndCount) {
@@ -127,10 +151,11 @@ module Common {
                 }
             }
             else {
-                Main.debugView.log("Not ready for animation");
+                Main.debugView.log("Not ready for animation","Entity");
             }
         }
         idel(){
+            //Main.debugView.log("Entity Idel");
         }
 
         hasShadow() {
@@ -146,11 +171,11 @@ module Common {
         }
 
         log_info(message) {
-            Main.debugView.log("["+this.id+"] " + message);
+            Main.debugView.log("["+this.id+"] " + message,"Entity");
         }
 
         log_error(message) {
-            Main.debugView.log("["+this.id+"] " + message);
+            Main.debugView.log("["+this.id+"] " + message,"Entity");
         }
 
         setHighlight(value) {
@@ -173,11 +198,11 @@ module Common {
         }
 
         toggleVisibility() {
-            if(this.visible) {
-                this.setVisible(false);
-            } else {
-                this.setVisible(true);
-            }
+            // if(this.visible) {
+            //     this.setVisible(false);
+            // } else {
+            //     this.setVisible(true);
+            // }
         }
         		/**
          *
