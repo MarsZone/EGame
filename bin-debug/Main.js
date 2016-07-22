@@ -109,7 +109,7 @@ var Main = (function (_super) {
         //调试面板先实例化
         Main.debugView = new Tools.DebugView();
         Main.debugView.init(Main.StageWidth, Main.StageHeight);
-        Main.debugView.log("Start: StageWidth:" + Main.StageWidth + "_ StageHeight:" + Main.StageHeight);
+        Main.debugView.log("Start: StageWidth:" + Main.StageWidth + "_ StageHeight:" + Main.StageHeight, "Main");
         //网络初始化
         this.net = new NetWork.Net();
         //this.net.Init();

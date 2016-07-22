@@ -29,7 +29,7 @@ module Common {
             if(this.inProgress) {
                 if(this.count > 0) {
                     this.count -= 1;
-                    Main.debugView.log(currentTime + ": jumped frame");
+                    Main.debugView.log(currentTime + ": jumped frame","Transition");
                 }
                 else {
                     var elapsed = currentTime - this.startTime;

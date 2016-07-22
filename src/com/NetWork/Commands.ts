@@ -51,7 +51,7 @@ module NetWork{
             {
                 net.welcome_callback(id, name, x, y, hp, armor, weapon, avatar, weaponAvatar, experience);
             }
-            Main.debugView.log("Calling receiveWelcome");
+            Main.debugView.log("Calling receiveWelcome","Commands");
         }
         receiveMove(data,net:NetWork.Net) {
             var id = data[1],

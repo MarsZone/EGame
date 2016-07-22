@@ -138,7 +138,6 @@ module Types{
     }
 var kinds = {
     warrior: [Types.Entities.WARRIOR, "player"],
-
     rat: [Types.Entities.RAT, "mob", 5, 2],
     skeleton: [Types.Entities.SKELETON , "mob", 15, 8],
     goblin: [Types.Entities.GOBLIN, "mob", 8, 5],

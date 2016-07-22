@@ -1,7 +1,7 @@
 module Role {
 	export class Warrior extends Content.Player{
-		public constructor(id,name) {
-			super(id,name);
+		public constructor(id,kind) {
+			super(id,Types.Entities.WARRIOR);
 		}
 		moveUp;
 		moveDown;

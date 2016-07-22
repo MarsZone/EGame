@@ -123,7 +123,7 @@ module Common {
             if(this.request_path_callback) {
                 return this.request_path_callback(x, y);
             } else {
-                Main.debugView.log(this.id + " couldn't request pathfinding to "+x+", "+y);
+                Main.debugView.log(this.id + " couldn't request pathfinding to "+x+", "+y,"Character");
                 return [];
             }
         }
@@ -408,7 +408,7 @@ module Common {
             if(!this.isAttackedBy(character)) {
                 this.attackers[character.id] = character;
             } else {
-                Main.debugView.log(this.id + " is already attacked by " + character.id);
+                Main.debugView.log(this.id + " is already attacked by " + character.id,"Character");
             }
         }
 
@@ -420,7 +420,7 @@ module Common {
             if(this.isAttackedBy(character)) {
                 delete this.attackers[character.id];
             } else {
-                Main.debugView.log(this.id + " is not attacked by " + character.id);
+                Main.debugView.log(this.id + " is not attacked by " + character.id,"Character");
             }
         }
 
@@ -452,7 +452,7 @@ module Common {
                 }
 
             } else {
-                Main.debugView.log(character.id + " is already the target of " + this.id);
+                Main.debugView.log(character.id + " is already the target of " + this.id,"Character");
             }
         }
 		settarget_callback;

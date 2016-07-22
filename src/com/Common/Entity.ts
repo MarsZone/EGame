@@ -15,34 +15,42 @@ module Common {
             this.animations = null;
             this.currentAnimation = null;
             this.shadowOffsetY = 0;
-
+            // var img:egret.Texture = RES.getRes("beachnpc_png");
+            // var sps = new egret.SpriteSheet(img);
+            // sps.createTexture("a",0,0,64,64);
+            // sps.createTexture("b",20,20,64,64);
+            this.displayBitmap = new egret.Bitmap();
+            // this.displayBitmap.texture=sps.getTexture("a");
+            // this.displayBitmap.texture=sps.getTexture("b");
             // Position
             this.setGridPosition(0, 0);
 
             // Modes
             this.isLoaded = false;
             this.isHighlighted = false;
-            //this.visible = true;
+            this.visible = true;
             this.isFading = false;
-
+            
             this.setDirty();
         }
+
         id;
         kind;
         Ename;
         sprite;
+        visible;
         normalSprite;
         hurtSprite;
         flipSpriteX;flipSpriteY;
         animations;
-        currentAnimation;
+        currentAnimation:Assets.Animation;
         shadowOffsetY;
         isLoaded;
         isHighlighted;
         isFading;
         ready_func;
         fadingAlpha;
-
+        displayBitmap:egret.Bitmap;
         init(id, kind): void {
             
         }
@@ -55,16 +63,16 @@ module Common {
         setPosition(x, y) {
             this.Px = x;
             this.Py = y;
+            //Main.debugView.log("SetPos:"+this.Px+"|"+this.Py);
         }
         gridX=0;
         gridY=0;
         setGridPosition(x, y) {
             this.gridX = x;
             this.gridY = y;
-
             this.setPosition(x * 16, y * 16);
         }
-        setSprite(sprite) {
+        setSprite(sprite:Assets.Sprite) {
             if(!sprite) {
                 Main.debugView.log(this.id + " : sprite is null","Entity");
                 throw "Sprite error";
@@ -82,6 +90,7 @@ module Common {
             }
 
             this.animations = sprite.createAnimations();
+
 
             this.isLoaded = true;
             if(this.ready_func) {
@@ -105,9 +114,18 @@ module Common {
                 animation = this.animations[name];
             }
             else {
-                Main.debugView.log("No animation called "+ name);
+                Main.debugView.log("No animation called "+ name,"Entity");
             }
             return animation;
+        }
+        updateBitmap(x,y,height,width){
+            this.displayBitmap.texture = this.currentAnimation.texture;
+            this.displayBitmap.width = height;
+            this.displayBitmap.height = width;
+            this.displayBitmap.x = x;
+            this.displayBitmap.y = y;
+            //Main.debugView.log("Current Entity:"+this.kind+"|Current Animation:"+this.currentAnimation.name,"Update");
+            //Main.debugView.log("updateBitmap:"+this.displayBitmap.x+"|"+this.displayBitmap.y,"Entity");
         }
 
         setAnimation(name, speed, count, onEndCount) {
@@ -133,7 +151,7 @@ module Common {
                 }
             }
             else {
-                Main.debugView.log("Not ready for animation");
+                Main.debugView.log("Not ready for animation","Entity");
             }
         }
         idel(){
@@ -153,11 +171,11 @@ module Common {
         }
 
         log_info(message) {
-            Main.debugView.log("["+this.id+"] " + message);
+            Main.debugView.log("["+this.id+"] " + message,"Entity");
         }
 
         log_error(message) {
-            Main.debugView.log("["+this.id+"] " + message);
+            Main.debugView.log("["+this.id+"] " + message,"Entity");
         }
 
         setHighlight(value) {
@@ -172,11 +190,11 @@ module Common {
         }
 
         setVisible(value) {
-            //this.visible = value;
+            this.visible = value;
         }
 
         isVisible() {
-            //return this.visible;
+            return this.visible;
         }
 
         toggleVisibility() {

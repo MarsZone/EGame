@@ -18,9 +18,9 @@ module Content {
             this.gridW = 15 * factor;
             this.gridH = 7 * factor;
 
-            Main.debugView.log("---------");
-            Main.debugView.log("Factor:"+factor);
-            Main.debugView.log("W:"+this.gridW + " H:" + this.gridH);
+            Main.debugView.log("---------","Camera");
+            Main.debugView.log("Factor:"+factor,"Camera");
+            Main.debugView.log("W:"+this.gridW + " H:" + this.gridH,"Camera");
         }
 		public setPosition(x,y){
 			this.x = x;

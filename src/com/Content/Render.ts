@@ -12,7 +12,7 @@ module Content {
 		}
 		core:Core;
 		chara: Assets.ECharacter;
-		context:egret.Sprite;
+		context:egret.Sprite; //entities
         backGound:egret.Sprite;
 		foreground:egret.Sprite;
 		map:Gmap.Map;
@@ -29,14 +29,13 @@ module Content {
 			this.initFPS();
 			//add BG
 			this.backGound=new egret.Sprite();
-			this.foreground = new egret.Sprite();
 			this.context = new egret.Sprite();
+			this.foreground = new egret.Sprite();
 			this.addSP(this.backGound,Main.StageWidth,Main.StageHeight);
-			this.addSP(this.foreground,Main.StageWidth,Main.StageHeight);
-			this.addSP(this.context,Main.StageWidth,Main.StageHeight)
-			this.addRole();
+			this.addSP(this.context,Main.StageWidth,Main.StageHeight);
+			//this.addSP(this.foreground,Main.StageWidth,Main.StageHeight);
+			//this.addRole();
 			//this.renderStaticCanvases();
-			
 			this.camera =new Content.Camera(this);
 			//this.upscaledRendering = this.context.mozImageSmoothingEnabled !== undefined;
 			Render.upscaledRendering = false;
@@ -80,13 +79,13 @@ module Content {
 
 		}
 		drawCellRect(x, y, color,alpha=1) {
-			Main.debugView.log("drawCellRect");
+			Main.debugView.log("drawCellRect","Render");
 			this.context.graphics.lineStyle(2,color,alpha);
 			this.context.graphics.drawRect(x,y,this.tilesize-4,this.tilesize-4);
             //this.context.strokeRect(0, 0, (this.tilesize * this.scale) - 4, (this.tilesize * this.scale) - 4);
 		}
 		drawRectStroke(x, y, width, height, color,alpha=1) {
-			Main.debugView.log("drawRectStroke");
+			Main.debugView.log("drawRectStroke","Render");
 			this.context.graphics.beginFill(color,alpha);
 			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
 			this.context.graphics.endFill();
@@ -95,7 +94,7 @@ module Content {
 			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
 		}
 		drawRect(x, y, width, height, color,alpha=1) {
-			Main.debugView.log("drawRect");
+			Main.debugView.log("drawRect","Render");
 			this.context.graphics.beginFill(color,alpha);
 			this.context.graphics.lineStyle(5);
 			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
@@ -109,11 +108,11 @@ module Content {
             this.drawCellRect(tx, ty, color,alpha);
         }
 		drawTargetCell(){
-			Main.debugView.log("drawTargetCell");
+			Main.debugView.log("drawTargetCell","Render");
 			
 		}
 		drawAttackTargetCell(){
-			Main.debugView.log("drawAttackTargetCell");
+			Main.debugView.log("drawAttackTargetCell","Render");
 		}
 		drawOccupiedCells(){
 
@@ -125,6 +124,7 @@ module Content {
 
 		}
 		clearScaledRect(){
+			Main.debugView.log("ClearScaleRect","Render");
 			this.context.graphics.clear();
 		}
 		drawCursor(){
@@ -165,7 +165,7 @@ module Content {
 			var tilesetwidth:number = this.map.tileSetWidth / this.map.tilesize;
 			var horizontal_tiles = Main.StageWidth / tilesetwidth;
 			var vertical_tiles = Math.floor(Main.StageHeight / tilesetwidth);
-			Main.debugView.log("H:"+horizontal_tiles+"|V:"+vertical_tiles);
+			Main.debugView.log("H:"+horizontal_tiles+"|V:"+vertical_tiles,"Render");
 			var s = Render.upscaledRendering ? 1 : this.scale;
 
 			this.GridS = new Array();
@@ -202,7 +202,7 @@ module Content {
 				}else{
 					self.GridS[index].addChild(bitmap);
 				}
-				//Main.debugView.log("x:"+GridBits.x+"|y:"+GridBits.y+"|id:"+id+"|tilesetwidth:"+tilesetwidth);
+				//Main.debugView.log("x:"+GridBits.x+"|y:"+GridBits.y+"|id:"+id+"|tilesetwidth:"+tilesetwidth,"Render");
             }, 1);
 			
 			
@@ -255,7 +255,8 @@ module Content {
 		onChange(e:EGEvent.GameEvent):void{
 			this.chara.setCurAnimation("walk_right");
 		}
-		clearScreen() {
+		clearContextScreen() {
+			Main.debugView.log("ClearScreen:","Render");
             this.context.graphics.clear();
         }
 
@@ -300,17 +301,116 @@ module Content {
         }
 
         renderFrameDesktop() {
-            this.clearScreen();
+            //this.clearContextScreen();
 			this.setCameraView(this.context);
 			//this.drawTerrain();
 
 			//this.drawOccupiedCells();
 			this.drawPathingCells();
-			//this.drawEntities();
+			this.drawEntities();
 			//this.drawCombatInfo();
 
         }
 		renderFrameMobile(){};
+
+
+		drawEntities(dirtyOnly?) {
+            var self = this;
+
+            this.core.forEachVisibleEntityByDepth(function(entity) {
+                if(entity.isLoaded) {
+                    if(dirtyOnly) {
+                        if(entity.isDirty) {
+                            self.drawEntity(entity);
+
+                            entity.isDirty = false;
+                            entity.oldDirtyRect = entity.dirtyRect;
+                            entity.dirtyRect = null;
+                        }
+                    } else {
+                        self.drawEntity(entity);
+                    }
+                }
+            });
+        }
+
+        drawDirtyEntities() {
+            this.drawEntities(true);
+        }
+
+		drawEntity(entity) {
+            var sprite = entity.sprite,
+                shadow = this.core.shadows["small"],
+                anim = entity.currentAnimation,
+                os = Render.upscaledRendering ? 1 : this.scale,
+                ds = Render.upscaledRendering ? this.scale : 1;
+
+            if(anim && sprite) {
+                var frame = anim.currentFrame,
+                    s = this.scale,
+                    x = frame.x * os,
+                    y = frame.y * os,
+                    w = sprite.width * os,
+                    h = sprite.height * os,
+                    ox = sprite.offsetX * s,
+                    oy = sprite.offsetY * s,
+                    dx = entity.Px * s,
+                    dy = entity.Py * s,
+                    dw = w * ds,
+                    dh = h * ds;
+
+                this.drawEntityName(entity);
+
+                if(entity.isVisible()) {
+					//Main.debugView.log("updateX:"+entity.Px * s+"|updateY:"+entity.Py * s+"|WDS:"+w * ds+"|HDS:"+h*ds,"Render");
+                    entity.updateBitmap(entity.Px * s,entity.Py * s,w * ds,h * ds);
+					//this.context.drawImage(sprite.image, x, y, w, h, ox, oy, dw, dh);
+
+                    if(entity instanceof Common.Item && entity.kind !== Types.Entities.CAKE) {
+                        // var sparks = this.core.sprites["sparks"],
+                        //     anim = this.core.sparksAnimation,
+                        //     frame = anim.currentFrame,
+                        //     sx = sparks.width * frame.index * os,
+                        //     sy = sparks.height * anim.row * os,
+                        //     sw = sparks.width * os,
+                        //     sh = sparks.width * os;
+                    }
+                }
+
+                if(entity instanceof Common.Character && !entity.isDead && entity.hasWeapon()) {
+                    var weapon = this.core.sprites[entity.getWeaponName()];
+
+                    if(weapon) {
+                        var weaponAnimData = weapon.animationData[anim.name],
+                            index = frame.index < weaponAnimData.length ? frame.index : frame.index % weaponAnimData.length,
+                            wx = weapon.width * index * os,
+                            wy = weapon.height * anim.row * os,
+                            ww = weapon.width * os,
+                            wh = weapon.height * os;
+                    }
+                }				
+            }
+        }
+		addEntityToLayer(entity):void{
+			this.context.addChild(entity.displayBitmap);
+		}
+
+		removeEntityFromLayer(entity):void{
+			this.context.removeChild(entity.displayBitmap);
+		}
+
+		drawEntityName(entity) {
+            //this.context.save();
+            if(entity.name && entity instanceof Player) {
+                var color = (entity.id === this.core.playerId) ? "#fcda5c" : "white";
+                var name = (entity.level) ? "lv." + entity.level + " " + entity.name : entity.name;
+                // this.drawText(entity.name,
+                //               (entity.x + 8) * this.scale,
+                //               (entity.y + entity.nameOffsetY) * this.scale,
+                //               true,
+                //               color);
+            }
+        }
 
 		isIntersecting(rect1, rect2) {
             return !((rect2.left > rect1.right) ||

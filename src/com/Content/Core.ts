@@ -92,7 +92,7 @@ module Content {
                                     "sword2", "redsword", "bluesword", "goldensword", "item-sword2", "item-axe", "item-redsword", "item-bluesword", "item-goldensword", "item-leatherarmor", "item-mailarmor",
                                     "item-platearmor", "item-redarmor", "item-goldenarmor", "item-flask", "item-cake", "item-burger", "morningstar", "item-morningstar", "item-firepotion"];
          
-        public static CoreSrcName: string = "Net";
+        public static CoreSrcName: string = "Core";
 
         started_callback(result){
                 if(result.success === true) {
@@ -174,7 +174,7 @@ module Content {
 
                         self.setPathfinder(new Tools.Pathfinder(self.map.width, self.map.height));
 
-                        self.initPlayer();
+                        //self.initPlayer();
                         //self.setCursor("hand");
 
                         self.connect(action, started_callback);
@@ -196,17 +196,17 @@ module Content {
                     this.removeFromRenderingGrid(item, item.gridX, item.gridY);
                     delete this.entities[item.id];
                 } else {
-                    Main.debugView.log("Cannot remove item. Unknown ID : " + item.id);
+                    Main.debugView.log("Cannot remove item. Unknown ID : " + item.id,Core.CoreSrcName);
                 }
             }
             targetAnimation;
             sparksAnimation;
             initAnimations() {
-                this.targetAnimation = new Assets.Animation("idle_down", 4, 0, 16, 16);
-                this.targetAnimation.setSpeed(50);
+                //this.targetAnimation = new Assets.Animation("idle_down", 4, 0, 16, 16);
+                //this.targetAnimation.setSpeed(50);
 
-                this.sparksAnimation = new Assets.Animation("idle_down", 6, 0, 16, 16);
-                this.sparksAnimation.setSpeed(120);
+                //this.sparksAnimation = new Assets.Animation("idle_down", 6, 0, 16, 16);
+                //this.sparksAnimation.setSpeed(120);
             }
             initEntityGrid() {
                 this.entityGrid = [];
@@ -254,8 +254,8 @@ module Content {
                 this.shadows["small"] = this.sprites["shadow16"];
             }
             initPlayer(){
-                //this.player.setSprite(this.sprites[this.player.getSpriteName()]);
-                //this.player.idle();
+                this.player.setSprite(this.sprites[this.player.getSpriteName()]);
+                this.player.idle();
             }
             initAnimatedTiles() {
                 var self = this,
@@ -354,12 +354,12 @@ module Content {
         start() {
             egret.startTick(this.tick,this);
             this.hasNeverStarted = false;
-            Main.debugView.log("Game loop started.");
+            Main.debugView.log("Game loop started.",Core.CoreSrcName);
         }
 
         stop() {
             egret.stopTick(this.tick,this);
-            Main.debugView.log("Game stopped.");
+            Main.debugView.log("Game stopped.",Core.CoreSrcName);
             this.isStopped = true;
         }
 
@@ -372,7 +372,7 @@ module Content {
                 return this.entities[id];
             }
             else {
-                Main.debugView.log("Unknown entity id : " + id);
+                Main.debugView.log("Unknown entity id : " + id,Core.CoreSrcName);
             }
         }
 
@@ -489,7 +489,7 @@ module Content {
                 self.player.onBeforeStep(function() {
                     var blockingEntity = self.getEntityAt(self.player.nextGridX, self.player.nextGridY);
                     if(blockingEntity && blockingEntity.id !== self.playerId) {
-                        Main.debugView.log("Blocked by " + blockingEntity.id);
+                        Main.debugView.log("Blocked by " + blockingEntity.id,Core.CoreSrcName);
                     }
                     self.unregisterEntityPosition(self.player);
                 });
@@ -559,7 +559,7 @@ module Content {
 
                         if(Render.mobile || Render.tablet) {
                             // When rendering with dirty rects, clear the whole screen when entering a door.
-                            self.renderer.clearScreen();
+                            self.renderer.clearContextScreen();
                         }
 
                         if(dest.portal) {
@@ -657,7 +657,7 @@ module Content {
                 });
 
                 self.net.onSpawnItem(function(item, x, y) {
-                    Main.debugView.log("Spawned " + Types.getKindAsString(item.kind) + " (" + item.id + ") at "+x+", "+y);
+                    Main.debugView.log("Spawned " + Types.getKindAsString(item.kind) + " (" + item.id + ") at "+x+", "+y,Core.CoreSrcName);
                     self.addItem(item, x, y);
                 });
 
@@ -691,7 +691,7 @@ module Content {
 
                                 self.addEntity(entity);
 
-                                Main.debugView.log("Spawned " + Types.getKindAsString(entity.kind) + " (" + entity.id + ") at "+entity.gridX+", "+entity.gridY);
+                                Main.debugView.log("Spawned " + Types.getKindAsString(entity.kind) + " (" + entity.id + ") at "+entity.gridX+", "+entity.gridY,Core.CoreSrcName);
 
                                 if(entity instanceof Common.Character) {
                                     entity.onBeforeStep(function() {
@@ -767,7 +767,7 @@ module Content {
                                     });
 
                                     entity.onDeath(function() {
-                                        Main.debugView.log(entity.id + " is dead");
+                                        Main.debugView.log(entity.id + " is dead",Core.CoreSrcName);
 
                                         if(entity instanceof Role.Mob) {
                                             // Keep track of where mobs die in order to spawn their dropped items
@@ -778,7 +778,7 @@ module Content {
                                         entity.isDying = true;
                                         entity.setSprite(self.sprites[entity instanceof Mobs.Rat ? "rat" : "death"]);
                                         entity.animate("death", 120, 1, function() {
-                                            Main.debugView.log(entity.id + " was removed");
+                                            Main.debugView.log(entity.id + " was removed",Core.CoreSrcName);
 
                                             self.removeEntity(entity);
                                             self.removeFromRenderingGrid(entity, entity.gridX, entity.gridY);
@@ -824,7 +824,7 @@ module Content {
                             Main.debugView.log(e,"Error");
                         }
                     } else {
-                        Main.debugView.log("Character "+entity.id+" already exists. Don't respawn.");
+                        Main.debugView.log("Character "+entity.id+" already exists. Don't respawn.",Core.CoreSrcName);
                     }
                 });
 
@@ -832,7 +832,7 @@ module Content {
                     var entity = self.getEntityById(entityId);
 
                     if(entity) {
-                        Main.debugView.log("Despawning " + Types.getKindAsString(entity.kind) + " (" + entity.id+ ")");
+                        Main.debugView.log("Despawning " + Types.getKindAsString(entity.kind) + " (" + entity.id+ ")",Core.CoreSrcName);
 
                         if(entity.gridX === self.previousClickPosition.x
                         && entity.gridY === self.previousClickPosition.y) {
@@ -897,7 +897,7 @@ module Content {
                         } else {
                             self.removeEntity(entity);
                         }
-                        Main.debugView.log("Entity was destroyed: "+entity.id);
+                        Main.debugView.log("Entity was destroyed: "+entity.id,Core.CoreSrcName);
                     }
                 });
 
@@ -919,7 +919,7 @@ module Content {
                         target = self.getEntityById(targetId);
 
                     if(attacker && target && attacker.id !== self.playerId) {
-                        Main.debugView.log(attacker.id + " attacks " + target.id);
+                        Main.debugView.log(attacker.id + " attacks " + target.id,Core.CoreSrcName);
 
                         if(attacker && target instanceof Player && target.id !== self.playerId && target.target && target.target.id === attacker.id && attacker.getDistanceToEntity(target) < 3) {
                             setTimeout(function() {
@@ -1338,6 +1338,7 @@ module Content {
                         }
                     });
                 }
+                self.renderer.addEntityToLayer(entity);                
             }
             else {
                 Main.debugView.log("This entity already exists : " + entity.id + " ("+entity.kind+")",Core.CoreSrcName);
@@ -1347,6 +1348,7 @@ module Content {
 
         removeEntity(entity) {
             if(entity.id in this.entities) {
+                this.renderer.removeEntityFromLayer(entity);
                 this.unregisterEntityPosition(entity);
                 delete this.entities[entity.id];
             }
@@ -1611,8 +1613,7 @@ module Content {
                     y = (z === Types.Orientations.UP) ? c.y - yoffset : c.y + yoffset;
                 }
                 c.setPosition(x, y);
-
-                this.renderer.clearScreen();
+                this.renderer.clearContextScreen();
                 this.endZoning();
 
                 // Force immediate drawing of all visible entities in the new zone
@@ -1812,7 +1813,7 @@ module Content {
         }
         username="";
         respawn() {
-            Main.debugView.log("Beginning respawn");
+            Main.debugView.log("Beginning respawn",Core.CoreSrcName);
 
             this.entities = {};
             this.initEntityGrid();
@@ -1830,10 +1831,10 @@ module Content {
             this.net.sendLogin();
 
             if(Render.mobile || Render.tablet) {
-                this.renderer.clearScreen();
+                this.renderer.clearContextScreen();
             }
 
-            Main.debugView.log("Finished respawn");
+            Main.debugView.log("Finished respawn",Core.CoreSrcName);
         }
         gamestart_callback;
          onGameStart(callback) {
@@ -1953,7 +1954,7 @@ module Content {
                 this.registerEntityPosition(character);
                 this.assignBubbleTo(character);
             } else {
-                Main.debugView.log("Teleport out of bounds: "+x+", "+y);
+                Main.debugView.log("Teleport out of bounds: "+x+", "+y,Core.CoreSrcName);
             }
         }
 

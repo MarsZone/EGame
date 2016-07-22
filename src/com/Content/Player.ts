@@ -59,7 +59,7 @@ module Content {
                     }
                 }
 
-                Main.debugView.log('Player '+this.id+' has looted '+item.id);
+                Main.debugView.log('Player '+this.id+' has looted '+item.id,Core.CoreSrcName);
                 if(Types.isArmor(item.kind) && this.invincible) {
                     this.stopInvincibility();
                 }

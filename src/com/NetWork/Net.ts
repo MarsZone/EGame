@@ -229,7 +229,7 @@ module NetWork{
 
         sendLogin() {
             var user=new Model.User();
-            user.setData("Demo","123456");
+            user.setData("mars","123456");
             Model.ModelBase.instance.user = user;
             this.sendMessage([Types.Messages.LOGIN,user.name,user.pw]);
         }

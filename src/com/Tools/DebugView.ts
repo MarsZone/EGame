@@ -86,7 +86,7 @@ module Tools {
         onTouchEndTF(event:egret.TouchEvent):void{
             
         }
-        log(word:string,src:string="Src",onDisplay:boolean=false):void{
+        log(word:string,src:string ,onDisplay:boolean=false):void{
             //var dateTime: string = (new Date()).toDateString()+(new Date()).toTimeString();
             var dateTime: string = ""+(new Date()).getHours()+":"+(new Date()).getMinutes()+":"+(new Date()).getSeconds();
             console.log("["+src+"]: "+"["+dateTime+"]"+" "+word);
