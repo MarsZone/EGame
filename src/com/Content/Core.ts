@@ -947,7 +947,7 @@ module Content {
                     self.player.experience = exp;
                     self.updateExpBar();
                     
-                    self.infoManager.addDamageInfo("+"+mobExp+" exp", self.player.Px, self.player.Py - 15, "exp", 3000);
+                    self.infoManager.addDamageInfo("+"+mobExp+" exp", self.player.x, self.player.y - 15, "exp", 3000);
 
                     var expInThisLevel = self.player.experience - Types.expForLevel[self.player.level-1];
                     var expForLevelUp = Types.expForLevel[self.player.level] - Types.expForLevel[self.player.level-1];
@@ -989,7 +989,7 @@ module Content {
                         }
                         if(isHurt) {
                             player.hurt();
-                            self.infoManager.addDamageInfo(diff, player.Px, player.Py - 15, "received");
+                            self.infoManager.addDamageInfo(diff, player.x, player.y - 15, "received");
                             self.audioManager.playSound("hurt");
                             //self.storage.addDamage(-diff);
                             //self.tryUnlockingAchievement("MEATSHIELD");
@@ -997,7 +997,7 @@ module Content {
                                 self.playerhurt_callback();
                             }
                         } else if(!isRegen){
-                            self.infoManager.addDamageInfo("+"+diff, player.Px, player.Py - 15, "healed");
+                            self.infoManager.addDamageInfo("+"+diff, player.x, player.y - 15, "healed");
                         }
                         self.updateBars();
                     }
@@ -1626,7 +1626,7 @@ module Content {
             else {
                 this.currentZoning = new Common.Transition();
             }
-            //this.bubbleManager.clean();
+            this.bubbleManager.clean();
             this.net.sendZone();
         }
 
@@ -1654,7 +1654,7 @@ module Content {
         }
 
         resetZone() {
-            //this.bubbleManager.clean();
+            this.bubbleManager.clean();
             this.initAnimatedTiles();
             this.renderer.renderStaticCanvases();
         }

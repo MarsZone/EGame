@@ -55,12 +55,12 @@ module Common {
         setName(name) {
             this.Ename = name;
         }
-        Px;
-        Py;
+        x;
+        y;
         setPosition(x, y) {
-            this.Px = x;
-            this.Py = y;
-            //Main.debugView.log("SetPos:"+this.Px+"|"+this.Py);
+            this.x = x;
+            this.y = y;
+            //Main.debugView.log("SetPos:"+this.x+"|"+this.y);
         }
         gridX=0;
         gridY=0;

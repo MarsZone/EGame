@@ -36,10 +36,6 @@
 		{
 			"name": "underscore",
 			"path": "../libsrc/underscore"
-		},
-		{
-			"name": "AStar",
-			"path": "../libsrc/AStar"
 		}
 	]
 }

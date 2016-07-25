@@ -43,7 +43,7 @@ module Tools {
             }
             else {
                 //var el = $("<div id=\""+id+"\" class=\"bubble\"><p>"+message+"</p><div class=\"thingy\"></div></div>"); //.attr('id', id);
-				var el = "id:"+id + message//$("<div id=\""+id+"\" class=\"bubble\"><p>"+message+"</p><div class=\"thingy\"></div></div>");
+				var el = "id:"+id + message;//$("<div id=\""+id+"\" class=\"bubble\"><p>"+message+"</p><div class=\"thingy\"></div></div>");
                 //$(el).appendTo(this.container);
 
                 this.bubbles[id] = new Bubble(id, el, time);

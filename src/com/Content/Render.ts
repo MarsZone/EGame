@@ -226,8 +226,8 @@ module Content {
 		addRole():void{
 			//ForTest AddRole
 			this.chara = new Assets.ECharacter("leatherarmor", "character");
-			this.chara.Px += 100;
-			this.chara.Py += 100;
+			this.chara.x += 100;
+			this.chara.y += 100;
 			//this.addChild(this.chara);
 			var self = this;
 			//test key controler.
@@ -354,16 +354,16 @@ module Content {
                     h = sprite.height * os,
                     ox = sprite.offsetX * s,
                     oy = sprite.offsetY * s,
-                    dx = entity.Px * s,
-                    dy = entity.Py * s,
+                    dx = entity.x * s,
+                    dy = entity.y * s,
                     dw = w * ds,
                     dh = h * ds;
 
                 this.drawEntityName(entity);
 
                 if(entity.isVisible()) {
-					//Main.debugView.log("updateX:"+entity.Px * s+"|updateY:"+entity.Py * s+"|WDS:"+w * ds+"|HDS:"+h*ds,"Render");
-                    entity.updateBitmap(entity.Px * s,entity.Py * s,w * ds,h * ds,s);
+					//Main.debugView.log("updateX:"+entity.x * s+"|updateY:"+entity.y * s+"|WDS:"+w * ds+"|HDS:"+h*ds,"Render");
+                    entity.updateBitmap(entity.x * s,entity.y * s,w * ds,h * ds,s);
 					//this.context.drawImage(sprite.image, x, y, w, h, ox, oy, dw, dh);
 
                     if(entity instanceof Common.Item && entity.kind !== Types.Entities.CAKE) {
@@ -390,8 +390,8 @@ module Content {
 						var animations = weapon.createAnimations();
 						var animate =animations[anim.name];
 						var textrue = animate.textureArr[index];
-						entity.updateWeaponBitmap(entity.Px * s +weapon.offsetX * ds,
-													entity.Py * s + weapon.offsetY * ds,
+						entity.updateWeaponBitmap(entity.x * s +weapon.offsetX * ds,
+													entity.y * s + weapon.offsetY * ds,
 													ww * ds,
 													wh * ds,textrue,s);
                     }

@@ -10,7 +10,7 @@ module NetWork{
             super();
             this.CMDHashMap = new Tools.Map();
             this.CMDHashMap.put(Types.Messages.WELCOME,this.receiveWelcome);
-            //this.CMDHashMap.put(Types.Messages.MOVE, this.receiveMove);
+            this.CMDHashMap.put(Types.Messages.MOVE, this.receiveMove);
             // this.CMDHashMap.put(Types.Messages.LOOTMOVE, this.receiveLootMove);
             // this.CMDHashMap.put(Types.Messages.ATTACK, this.receiveAttack);
             this.CMDHashMap.put(Types.Messages.SPAWN, this.receiveSpawn);

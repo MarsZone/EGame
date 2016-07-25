@@ -1,16 +1,6 @@
-
-define(function() {
-
-    var AStar = (function () {
-
-        /**
-         * A* (A-Star) algorithm for a path finder
-         * @author  Andrea Giammarchi
-         * @license Mit Style License
-         */
-
-        function diagonalSuccessors($N, $S, $E, $W, N, S, E, W, grid, rows, cols, result, i) {
-            if($N) {
+module Tools {
+	export function diagonalSuccessors($N, $S, $E, $W, N, S, E, W, grid, rows, cols, result, i){
+		if($N) {
                 $E && !grid[N][E] && (result[i++] = {x:E, y:N});
                 $W && !grid[N][W] && (result[i++] = {x:W, y:N});
             }
@@ -19,10 +9,9 @@ define(function() {
                 $W && !grid[S][W] && (result[i++] = {x:W, y:S});
             }
             return result;
-        }
-
-        function diagonalSuccessorsFree($N, $S, $E, $W, N, S, E, W, grid, rows, cols, result, i) {
-            $N = N > -1;
+	};
+	export function diagonalSuccessorsFree($N, $S, $E, $W, N, S, E, W, grid, rows, cols, result, i){
+		$N = N > -1;
             $S = S < rows;
             $E = E < cols;
             $W = W > -1;
@@ -35,14 +24,12 @@ define(function() {
                 $S && !grid[S][W] && (result[i++] = {x:W, y:S});
             }
             return result;
-        }
-
-        function nothingToDo($N, $S, $E, $W, N, S, E, W, grid, rows, cols, result, i) {
-            return result;
-        }
-
-        function successors(find, x, y, grid, rows, cols){
-            var
+	};
+	export function nothingToDo($N, $S, $E, $W, N, S, E, W, grid, rows, cols, result, i){
+		return result;
+	};
+	export function successors(find, x, y, grid, rows, cols){
+		var
                 N = y - 1,
                 S = y + 1,
                 E = x + 1,
@@ -59,26 +46,22 @@ define(function() {
             $S && (result[i++] = {x:x, y:S});
             $W && (result[i++] = {x:W, y:y});
             return find($N, $S, $E, $W, N, S, E, W, grid, rows, cols, result, i);
-        }
-
-        function diagonal(start, end, f1, f2) {
-            return f2(f1(start.x - end.x), f1(start.y - end.y));
-        }
-
-        function euclidean(start, end, f1, f2) {
-            var
+	};
+	export function diagonal(start, end, f1, f2){
+		 return f2(f1(start.x - end.x), f1(start.y - end.y));
+	};
+	export function euclidean(start, end, f1, f2){
+		var
                 x = start.x - end.x,
                 y = start.y - end.y
             ;
             return f2(x * x + y * y);
-        }
-
-        function manhattan(start, end, f1, f2) {
-            return f1(start.x - end.x) + f1(start.y - end.y);
-        }
-
-        function AStar(grid, start, end, f) {
-            var
+	};
+	export function manhattan(start, end, f1, f2){
+		return f1(start.x - end.x) + f1(start.y - end.y);
+	};
+	export function AStar(grid, start, end, f){
+		var
                 cols = grid[0].length,
                 rows = grid.length,
                 limit = cols * rows,
@@ -141,11 +124,5 @@ define(function() {
                 }
             } while (length);
             return result;
-        }
-
-        return AStar;
-
-    }());
-    
-    return AStar;
-});
+	}
+}

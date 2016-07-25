@@ -133,6 +133,7 @@ module Common {
             var tick = Math.round(16 / Math.round((c.moveSpeed / (1000 / this.game.renderer.FPS))));
 
             if(c.isMoving() && c.movement.inProgress === false) {
+                c.orientation;
                 if(c.orientation === Types.Orientations.LEFT) {
                     c.movement.start(this.game.currentTime,
                                      function(x) {

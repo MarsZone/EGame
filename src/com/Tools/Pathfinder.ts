@@ -30,7 +30,7 @@ module Tools {
 
             this.grid = grid;
             this.applyIgnoreList_(true);
-            path = Tools.AStar(this.grid, start, end,"");
+            path =AStar(this.grid, start, end,"");
 
             if(path.length === 0 && findIncomplete === true) {
                 // If no path was found, try and find an incomplete one
@@ -54,16 +54,16 @@ module Tools {
          */
         findIncompletePath_(start, end) {
             var perfect, x, y,
-                incomplete = [];
+                incomplete;
 
-            perfect = AStar(this.blankGrid, start, end,"");
+            perfect =AStar(this.blankGrid, start, end,"");
 
             for(var i=perfect.length-1; i > 0; i -= 1) {
                 x = perfect[i][0];
                 y = perfect[i][1];
 
                 if(this.grid[y][x] === 0) {
-                    incomplete = AStar(this.grid, start, [x, y],"");
+                    incomplete =AStar(this.grid, start, [x, y],"");
                     break;
                 }
             }
