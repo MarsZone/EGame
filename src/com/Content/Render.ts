@@ -24,6 +24,7 @@ module Content {
 		highTileCount=0;
 		static upscaledRendering=false;
 		supportsSilhouettes;
+		targetBitmap:egret.Bitmap;
 		init(): void {
 
 			this.initFPS();
@@ -33,18 +34,53 @@ module Content {
 			this.foreground = new egret.Sprite();
 			this.addSP(this.backGound,Main.StageWidth,Main.StageHeight);
 			this.addSP(this.context,Main.StageWidth,Main.StageHeight);
-			//this.addSP(this.foreground,Main.StageWidth,Main.StageHeight);
+			this.addSP(this.foreground,Main.StageWidth,Main.StageHeight);
 			//this.addRole();
 			//this.renderStaticCanvases();
 			this.camera =new Content.Camera(this);
 			//this.upscaledRendering = this.context.mozImageSmoothingEnabled !== undefined;
 			Render.upscaledRendering = false;
             this.supportsSilhouettes = Render.upscaledRendering;
+
+			this.targetBitmap = new egret.Bitmap();
+			this.context.addChild(this.targetBitmap);
+
+			this.foreground.graphics.beginFill(0x000000,0.1);
+			this.foreground.graphics.drawRect(0,0,Main.StageWidth,Main.StageHeight);
+			this.foreground.graphics.endFill();
+			this.foreground.touchEnabled=true;
+			this.foreground.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onTouch,this);
 		}
 		FPS;
 		initFPS() {
             this.FPS = 50;
         }
+		onTouch(e:egret.TouchEvent):void{
+			//Main.debugView.log("TouchX:"+e.$stageX+"|TouchY:"+e.$stageY,"Render");
+			var offset=0;
+			var gamePos = 0,
+                scale = this.core.renderer.getScaleFactor(),
+                width = Main.StageWidth,
+                height = Main.StageHeight,
+                mouse = this.core.mouse;
+
+            mouse.x = e.$stageX - gamePos - (Render.mobile ? 0 : 5 * scale);
+            mouse.y = e.$stageY - gamePos - (Render.mobile ? 0 : 14 * scale);
+            //console.log("MouseX:"+mouse.x+"|MouseY:"+mouse.y);
+            if(mouse.x <= 0) {
+                mouse.x = 0;
+            } else if(mouse.x >= width) {
+                mouse.x = width - 1;
+            }
+
+            if(mouse.y <= 0) {
+                mouse.y = 0;
+            } else if(mouse.y >= height) {
+                mouse.y = height - 1;
+            }
+			Main.debugView.log("MouseX:"+mouse.x+"|MouseY:"+mouse.y,"Render");
+			this.core.click();
+		}
 		getScaleFactor() {
             var w = window.innerWidth,
                 h = window.innerHeight,
@@ -108,11 +144,20 @@ module Content {
             this.drawCellRect(tx, ty, color,alpha);
         }
 		drawTargetCell(){
-			Main.debugView.log("drawTargetCell","Render");
-			
+			var mouse = this.core.getMouseGridPosition();
+
+            if(this.core.targetCellVisible && !(mouse.x === this.core.selectedX && mouse.y === this.core.selectedY)) {
+                this.drawCellHighlight(mouse.x, mouse.y, this.core.targetColor,this.core.targetAlpha);
+            }
 		}
 		drawAttackTargetCell(){
-			Main.debugView.log("drawAttackTargetCell","Render");
+			var mouse = this.core.getMouseGridPosition(),
+                entity = this.core.getEntityAt(mouse.x, mouse.y),
+                s = this.scale;
+
+            if(entity) {
+                this.drawCellRect(entity.x * s, entity.y * s, 0xFF0000,0.5);
+            }
 		}
 		drawOccupiedCells(){
 
@@ -120,8 +165,47 @@ module Content {
 		drawPathingCells(){
 
 		}
+		lastTargetPos;
 		drawSelectedCell(){
+			var sprite = this.core.cursors["target"],
+			anim = this.core.targetAnimation,
+			os = Render.upscaledRendering ? 1 : this.scale,
+			ds = Render.upscaledRendering ? this.scale : 1;
 
+			if(this.core.selectedCellVisible) {
+				if(Render.mobile || Render.tablet) {
+					if(this.core.drawTarget) {
+						var x = this.core.selectedX,
+							y = this.core.selectedY;
+
+						this.drawCellHighlight(this.core.selectedX, this.core.selectedY, 0x33FF00);
+						this.lastTargetPos = { x: x,
+												y: y };
+						this.core.drawTarget = false;
+					}
+				} else {
+					if(sprite && anim) {
+						var    frame = anim.currentFrame,
+							s = this.scale,
+							x = frame.x * os,
+							y = frame.y * os,
+							w = sprite.width * os,
+							h = sprite.height * os,
+							ts = 16,
+							dx = this.core.selectedX * ts * s,
+							dy = this.core.selectedY * ts * s,
+							dw = w * ds,
+							dh = h * ds;
+						//this.context.translate(dx, dy);
+						//this.context.drawImage(sprite.image, x, y, w, h, 0, 0, dw, dh);
+						//var tx:egret.Texture = 
+
+						this.targetBitmap.texture;
+					}
+				}
+			}else{
+				
+			}
 		}
 		clearScaledRect(){
 			Main.debugView.log("ClearScaleRect","Render");
@@ -256,7 +340,7 @@ module Content {
 			this.chara.setCurAnimation("walk_right");
 		}
 		clearContextScreen() {
-			Main.debugView.log("ClearScreen:","Render");
+			//Main.debugView.log("ClearScreen:","Render");
             this.context.graphics.clear();
         }
 
@@ -301,7 +385,7 @@ module Content {
         }
 
         renderFrameDesktop() {
-            //this.clearContextScreen();
+            this.clearContextScreen();
 			this.setCameraView(this.context);
 			//this.drawTerrain();
 

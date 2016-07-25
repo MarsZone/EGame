@@ -57,12 +57,15 @@ module Content {
             selectedX = 0;
             selectedY = 0;
             selectedCellVisible = false;
-            targetColor = "rgba(255, 255, 255, 0.5)";
+            targetColor = 0xFFFFFF;
+            targetAlpha = 0.5;
             targetCellVisible = true;
             hoveringTarget = false;
             hoveringPlayer = false;
             hoveringMob = false;
             hoveringItem = false;
+            hoveringNpc = false;
+            hoveringChest = false;
             hoveringCollidingTile = false;e
 
         // combat
@@ -137,7 +140,7 @@ module Content {
                     });
                     //this.initHurtSprites(); -*-
                     this.initShadows();
-                    //this.initCursors();
+                    this.initCursors();
                 }
             }
             setUpdater(updater:Common.Updater) {
@@ -164,6 +167,7 @@ module Content {
                         self.ready = true;
                         Main.debugView.log('All sprites loaded.',Core.CoreSrcName);
                         
+                        self.initCursors();
                         self.initAnimations();
                         self.initShadows();
 
@@ -175,7 +179,7 @@ module Content {
                         self.setPathfinder(new Tools.Pathfinder(self.map.width, self.map.height));
 
                         //self.initPlayer();
-                        //self.setCursor("hand");
+                        self.setCursor("hand");
 
                         self.connect(action, started_callback);
 
@@ -253,6 +257,16 @@ module Content {
                 this.shadows = {};
                 this.shadows["small"] = this.sprites["shadow16"];
             }
+            initCursors() {
+                this.cursors["hand"] = this.sprites["hand"];
+                this.cursors["sword"] = this.sprites["sword"];
+                this.cursors["loot"] = this.sprites["loot"];
+                this.cursors["target"] = this.sprites["target"];
+                this.cursors["arrow"] = this.sprites["arrow"];
+                this.cursors["talk"] = this.sprites["talk"];
+                this.cursors["join"] = this.sprites["talk"];
+            }
+
             initPlayer(){
                 this.player.setSprite(this.sprites[this.player.getSpriteName()]);
                 this.player.idle();
@@ -300,6 +314,58 @@ module Content {
                     }
                 }
             }
+            currentCursorOrientation;
+            setCursor(name, orientation?) {
+                if(name in this.cursors) {
+                    this.currentCursor = this.cursors[name];
+                    this.currentCursorOrientation = orientation;
+                } else {
+                    Main.debugView.log("Unknown cursor name :"+name,Core.CoreSrcName);
+                }
+            }
+
+            updateCursorLogic() {
+                if(this.hoveringCollidingTile && this.started) {
+                    this.targetColor = 0xFF3232;
+                }
+                else {
+                    this.targetColor = 0xFFFFFF;
+                }
+                
+                if(this.hoveringPlayer && this.started) {
+                    if(this.pvpFlag)
+                        this.setCursor("sword");
+                    else
+                        this.setCursor("hand");
+                    this.hoveringTarget = false;
+                    this.hoveringMob = false;
+                    this.targetCellVisible = false;
+                } else if(this.hoveringMob && this.started) {
+                    this.setCursor("sword");
+                    this.hoveringTarget = false;
+                    this.hoveringPlayer = false;
+                    this.targetCellVisible = false;
+    
+                }
+                else if(this.hoveringNpc && this.started) {
+                    this.setCursor("talk");
+                    this.hoveringTarget = false;
+                    this.targetCellVisible = false;
+                }
+                else if((this.hoveringItem || this.hoveringChest) && this.started) {
+                    this.setCursor("loot");
+                    this.hoveringTarget = false;
+                    this.targetCellVisible = true;
+                }
+                else {
+                    this.setCursor("hand");
+                    this.hoveringTarget = false;
+                    this.hoveringPlayer = false;
+                    this.targetCellVisible = true;
+                }
+            }
+
+
             /**
              * Registers the entity at two adjacent positions on the grid at the same time.
              * This situation is temporary and should only occur when the entity is moving.
@@ -341,7 +407,7 @@ module Content {
             this.currentTime = new Date().getTime();
             //egret.startTick(this.update,this);
             if(this.started) {
-                //this.updateCursorLogic();
+                this.updateCursorLogic();
                 this.updater.update();
                 this.renderer.renderFrame();
             }
@@ -513,7 +579,7 @@ module Content {
                     self.updatePlayerCheckpoint();
 
                     if(!self.player.isDead) {
-                        self.audioManager.updateMusic();
+                        //self.audioManager.updateMusic();
                     }
                 });
 
@@ -1538,7 +1604,7 @@ module Content {
                         }
 
                         if(character instanceof Player && this.camera.isVisible(character)) {
-                            this.audioManager.playSound("hit"+Math.floor(Math.random()*2+1));
+                            //this.audioManager.playSound("hit"+Math.floor(Math.random()*2+1));
                         }
 
                         if(character.hasTarget() && character.target.id === this.playerId && this.player && !this.player.invincible) {
@@ -1760,7 +1826,7 @@ module Content {
             } catch(e) {
                 if(e instanceof Exceptions.LootException) {
                     this.showNotification(e.message);
-                    this.audioManager.playSound("noloot");
+                    //this.audioManager.playSound("noloot");
                 } else {
                     throw e;
                 }
@@ -1930,6 +1996,24 @@ module Content {
             }
 
             return position;
+        }
+
+        /**
+         * Converts the current mouse position on the screen to world grid coordinates.
+         * @returns {Object} An object containing x and y properties.
+         */
+        getMouseGridPosition() {
+            var mx = this.mouse.x,
+                my = this.mouse.y,
+                c = this.renderer.camera,
+                s = this.renderer.scale,
+                ts = this.renderer.tilesize,
+                offsetX = mx % (ts * s),
+                offsetY = my % (ts * s),
+                x = ((mx - offsetX) / (ts * s)) + c.gridX,
+                y = ((my - offsetY) / (ts * s)) + c.gridY;
+
+                return { x: x, y: y };
         }
 
          /**
@@ -2104,11 +2188,140 @@ module Content {
             if(!this.cursorVisible)
                 var keepCursorHidden = true;
 
-            //this.movecursor();
-            //this.updateCursorLogic();
+            this.movecursor();
+            this.updateCursorLogic();
 
             if(keepCursorHidden)
                 this.cursorVisible = false;
+        }
+
+        /**
+         *
+         */
+        hoveringPlateauTile = false;
+        hoveringOtherPlayer = false;
+        lastHovered;
+        timeout;
+        movecursor() {
+            var mouse = this.getMouseGridPosition(),
+                x = mouse.x,
+                y = mouse.y;
+
+            this.cursorVisible = true;
+
+            if(this.player && !Render.mobile && !Render.tablet) {
+                this.hoveringCollidingTile = this.map.isColliding(x, y);
+                this.hoveringPlateauTile = this.player.isOnPlateau ? !this.map.isPlateau(x, y) : this.map.isPlateau(x, y);
+                this.hoveringMob = this.isMobAt(x, y);
+                this.hoveringPlayer = this.isPlayerAt(x, y);
+                this.hoveringItem = this.isItemAt(x, y);
+                this.hoveringNpc = this.isNpcAt(x, y);
+                this.hoveringOtherPlayer = this.isPlayerAt(x, y);
+                this.hoveringChest = this.isChestAt(x, y);
+
+                if(this.hoveringMob || this.hoveringPlayer || this.hoveringNpc || this.hoveringChest || this.hoveringOtherPlayer) {
+                    var entity = this.getEntityAt(x, y);
+
+                    this.player.showTarget(entity);
+                    if(!entity.isHighlighted && this.renderer.supportsSilhouettes) {
+                        if(this.lastHovered) {
+                            this.lastHovered.setHighlight(false);
+                        }
+                        entity.setHighlight(true);
+                    }
+                    this.lastHovered = entity;
+                }
+                else if(this.lastHovered) {
+                    this.lastHovered.setHighlight(null);
+                    if(this.timeout === undefined && !this.player.hasTarget()) {
+                        var self = this;
+                        this.timeout = setTimeout(function(){
+                            //$('#inspector').fadeOut('fast');
+                            //$('#inspector .health').text('');
+                            self.player.inspecting = null;
+                        }, 2000);
+                        this.timeout = undefined;
+                    }
+                    this.lastHovered = null;
+                }
+            }
+        }
+
+         /**
+         * Moves the player one space, if possible
+         */
+        // keys(pos, orientation) {
+        //     this.hoveringCollidingTile = false;
+        //     this.hoveringPlateauTile = false;
+
+        //     if((pos.x === this.previousClickPosition.x
+        //     && pos.y === this.previousClickPosition.y) || this.isZoning()) {
+        //         return;
+        //     } else {
+        //         if(!this.player.disableKeyboardNpcTalk)
+        //             this.previousClickPosition = pos;
+        //     }
+
+        //     if(!this.player.isMoving()) {
+        //         this.cursorVisible = false;
+        //         this.processInput(pos);
+        //     }
+        // }
+
+        click()
+        {
+            var pos = this.getMouseGridPosition();
+
+            if(pos.x === this.previousClickPosition.x
+            && pos.y === this.previousClickPosition.y) {
+                return;
+            } else {
+                this.previousClickPosition = pos;
+            }
+
+            this.processInput(pos);
+        }
+
+        /**
+         * Processes game logic when the user triggers a click/touch event during the game.
+         */
+        processInput(pos) {
+            var entity;
+
+            if(this.started
+            && this.player
+            && !this.isZoning()
+            && !this.isZoningTile(this.player.nextGridX, this.player.nextGridY)
+            && !this.player.isDead
+            && !this.hoveringCollidingTile
+            && !this.hoveringPlateauTile) {
+                entity = this.getEntityAt(pos.x, pos.y);
+
+        	    if(entity instanceof Role.Mob || (entity instanceof Player && entity !== this.player && this.player.pvpFlag && this.pvpFlag)) {
+                    this.makePlayerAttack(entity);
+                }
+                else if(entity instanceof Common.Item) {
+                    this.makePlayerGoToItem(entity);
+                }
+                else if(entity instanceof Role.Npc) {
+                    if(this.player.isAdjacentNonDiagonal(entity) === false) {
+                        this.makePlayerTalkTo(entity);
+                    } else {
+                        if(!this.player.disableKeyboardNpcTalk) {
+                            this.makeNpcTalk(entity);
+
+                            if(this.player.moveUp || this.player.moveDown || this.player.moveLeft || this.player.moveRight)
+                                this.player.disableKeyboardNpcTalk = true;
+                        }
+                    }
+                }
+                else if(entity instanceof Common.Chest) {
+                    this.makePlayerOpenChest(entity);
+                }
+                else {
+                    this.makePlayerGoTo(pos.x, pos.y);
+                }
+            }
         }
     }
 }

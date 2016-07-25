@@ -15,13 +15,13 @@ module Common {
 		arrow:egret.Sprite;
 		init():void{
 			//for test
-			this.arrow=new egret.Sprite();
-			this.arrow.addChild(Main.createBitmapByName("ic_keyboard_arrow_right_48px_png"));
-			this.arrow.x=0;
-			this.arrow.y = this.height-this.arrow.height;
-			this.addChild(this.arrow);
-			this.arrow.touchEnabled=true;
-			this.arrow.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onArrowTouch,this);
+			// this.arrow=new egret.Sprite();
+			// this.arrow.addChild(Main.createBitmapByName("ic_keyboard_arrow_right_48px_png"));
+			// this.arrow.x=0;
+			// this.arrow.y = this.height-this.arrow.height;
+			// this.addChild(this.arrow);
+			// this.arrow.touchEnabled=true;
+			// this.arrow.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onArrowTouch,this);
 		}
 		onArrowTouch(e:egret.TouchEvent):void{
 			Main.debugView.log("OnTouch","UI");
