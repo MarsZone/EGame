@@ -223,6 +223,7 @@ module NetWork{
             var data;
             if(this.connection.connected === true) {
                data = JSON.stringify(json);
+               Main.debugView.log("Send Message:"+data,"Net");
                this.connection.send(data);
             }
         }

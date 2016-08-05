@@ -50,12 +50,24 @@ module Content {
 			this.foreground.graphics.endFill();
 			this.foreground.touchEnabled=true;
 			this.foreground.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onTouch,this);
+			this.foreground.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.onTouchMove,this)
 		}
 		FPS;
 		initFPS() {
             this.FPS = 50;
         }
 		onTouch(e:egret.TouchEvent):void{
+			this.setMouseCoordinates(e);
+			this.core.click();
+		}
+		onTouchMove(e:egret.TouchEvent):void{
+			this.setMouseCoordinates(e);
+			if(this.core.started) {
+				//this.core.pvpFlag = event.shiftKey;
+				this.core.movecursor();
+			}
+		}
+		setMouseCoordinates(e:egret.TouchEvent):void{
 			//Main.debugView.log("TouchX:"+e.$stageX+"|TouchY:"+e.$stageY,"Render");
 			var offset=0;
 			var gamePos = 0,
@@ -64,8 +76,8 @@ module Content {
                 height = Main.StageHeight,
                 mouse = this.core.mouse;
 
-            mouse.x = e.$stageX - gamePos - (Render.mobile ? 0 : 5 * scale);
-            mouse.y = e.$stageY - gamePos - (Render.mobile ? 0 : 14 * scale);
+            mouse.x = e.$stageX - gamePos ;
+            mouse.y = e.$stageY - gamePos ;
             //console.log("MouseX:"+mouse.x+"|MouseY:"+mouse.y);
             if(mouse.x <= 0) {
                 mouse.x = 0;
@@ -79,7 +91,6 @@ module Content {
                 mouse.y = height - 1;
             }
 			Main.debugView.log("MouseX:"+mouse.x+"|MouseY:"+mouse.y,"Render");
-			this.core.click();
 		}
 		getScaleFactor() {
             var w = window.innerWidth,
@@ -115,19 +126,19 @@ module Content {
 
 		}
 		drawCellRect(x, y, color,alpha=1) {
-			Main.debugView.log("drawCellRect","Render");
+			//Main.debugView.log("drawCellRect:"+"x:"+x+"|y:"+y,"Render");
 			this.context.graphics.lineStyle(2,color,alpha);
-			this.context.graphics.drawRect(x,y,this.tilesize-4,this.tilesize-4);
+			this.context.graphics.drawRect(x+2,y+2,(this.tilesize * this.scale-4),(this.tilesize * this.scale-4));
             //this.context.strokeRect(0, 0, (this.tilesize * this.scale) - 4, (this.tilesize * this.scale) - 4);
 		}
 		drawRectStroke(x, y, width, height, color,alpha=1) {
 			Main.debugView.log("drawRectStroke","Render");
 			this.context.graphics.beginFill(color,alpha);
-			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
+			this.context.graphics.drawRect(x,y,this.tilesize * this.scale*width,this.tilesize* this.scale *height);
 			this.context.graphics.endFill();
 			
 			this.context.graphics.lineStyle(5,0x000000);
-			this.context.graphics.drawRect(x,y,this.tilesize *width,this.tilesize *height);
+			this.context.graphics.drawRect(x,y,this.tilesize* this.scale *width,this.tilesize* this.scale *height);
 		}
 		drawRect(x, y, width, height, color,alpha=1) {
 			Main.debugView.log("drawRect","Render");
@@ -139,8 +150,9 @@ module Content {
 
 		drawCellHighlight(x, y, color ,alpha=1) {
 			var ts = this.tilesize;
-			var tx = x * ts;
-			var ty = y * ts;
+			var s = this.scale;
+			var tx = x * ts * s;
+			var ty = y * ts * s;
             this.drawCellRect(tx, ty, color,alpha);
         }
 		drawTargetCell(){
@@ -173,36 +185,45 @@ module Content {
 			ds = Render.upscaledRendering ? this.scale : 1;
 
 			if(this.core.selectedCellVisible) {
-				if(Render.mobile || Render.tablet) {
-					if(this.core.drawTarget) {
+				if(this.core.drawTarget) {
 						var x = this.core.selectedX,
 							y = this.core.selectedY;
 
 						this.drawCellHighlight(this.core.selectedX, this.core.selectedY, 0x33FF00);
 						this.lastTargetPos = { x: x,
 												y: y };
-						this.core.drawTarget = false;
-					}
-				} else {
-					if(sprite && anim) {
-						var    frame = anim.currentFrame,
-							s = this.scale,
-							x = frame.x * os,
-							y = frame.y * os,
-							w = sprite.width * os,
-							h = sprite.height * os,
-							ts = 16,
-							dx = this.core.selectedX * ts * s,
-							dy = this.core.selectedY * ts * s,
-							dw = w * ds,
-							dh = h * ds;
-						//this.context.translate(dx, dy);
-						//this.context.drawImage(sprite.image, x, y, w, h, 0, 0, dw, dh);
-						//var tx:egret.Texture = 
-
-						this.targetBitmap.texture;
-					}
+						//this.core.drawTarget = false;
 				}
+				// if(Render.mobile || Render.tablet) {
+				// 	if(this.core.drawTarget) {
+				// 		var x = this.core.selectedX,
+				// 			y = this.core.selectedY;
+
+				// 		this.drawCellHighlight(this.core.selectedX, this.core.selectedY, 0x33FF00);
+				// 		this.lastTargetPos = { x: x,
+				// 								y: y };
+				// 		this.core.drawTarget = false;
+				// 	}
+				// } else {
+				// 	if(sprite && anim) {
+				// 		var    frame = anim.currentFrame,
+				// 			s = this.scale,
+				// 			x = frame.x * os,
+				// 			y = frame.y * os,
+				// 			w = sprite.width * os,
+				// 			h = sprite.height * os,
+				// 			ts = 16,
+				// 			dx = this.core.selectedX * ts * s,
+				// 			dy = this.core.selectedY * ts * s,
+				// 			dw = w * ds,
+				// 			dh = h * ds;
+				// 		//this.context.translate(dx, dy);
+				// 		//this.context.drawImage(sprite.image, x, y, w, h, 0, 0, dw, dh);
+				// 		//var tx:egret.Texture = 
+
+				// 		this.targetBitmap.texture;
+				// 	}
+				// }
 			}else{
 				
 			}
@@ -278,8 +299,8 @@ module Content {
 				if(!self.GridS[index])
 				{
 					var GridBits:egret.Sprite = new egret.Sprite();
-					GridBits.x = self.EgetX(index + 1, self.map.width) * (self.map.tilesize*self.scale);
-					GridBits.y = Math.floor(index / self.map.width) * (self.map.tilesize*self.scale);
+					GridBits.x = self.EgetX(index + 1, self.map.width) * (self.map.tilesize * self.scale);
+					GridBits.y = Math.floor(index / self.map.width) * (self.map.tilesize * self.scale);
 					GridBits.addChild(bitmap);
 					self.GridS.push(GridBits);
 					self.backGound.addChild(GridBits);
@@ -389,6 +410,9 @@ module Content {
 			this.setCameraView(this.context);
 			//this.drawTerrain();
 
+			this.drawSelectedCell();
+			//this.drawTargetCell();
+
 			//this.drawOccupiedCells();
 			this.drawPathingCells();
 			this.drawEntities();
@@ -447,7 +471,7 @@ module Content {
 
                 if(entity.isVisible()) {
 					//Main.debugView.log("updateX:"+entity.x * s+"|updateY:"+entity.y * s+"|WDS:"+w * ds+"|HDS:"+h*ds,"Render");
-                    entity.updateBitmap(entity.x * s,entity.y * s,w * ds,h * ds,s);
+                    entity.updateBitmap(entity.x * s + ox,entity.y * s + oy,w * ds,h * ds,s);
 					//this.context.drawImage(sprite.image, x, y, w, h, ox, oy, dw, dh);
 
                     if(entity instanceof Common.Item && entity.kind !== Types.Entities.CAKE) {
@@ -474,8 +498,8 @@ module Content {
 						var animations = weapon.createAnimations();
 						var animate =animations[anim.name];
 						var textrue = animate.textureArr[index];
-						entity.updateWeaponBitmap(entity.x * s +weapon.offsetX * ds,
-													entity.y * s + weapon.offsetY * ds,
+						entity.updateWeaponBitmap(entity.x * s +weapon.offsetX * ds + ox,
+													entity.y * s + weapon.offsetY * ds + oy,
 													ww * ds,
 													wh * ds,textrue,s);
                     }

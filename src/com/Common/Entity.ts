@@ -144,9 +144,9 @@ module Common {
 
             if(this.flipSpriteX) {
                 this.weaponBitmap.scaleX=-1;
-                Main.debugView.log("weaponx:"+this.weaponBitmap.x+"|weaponWdith:"+this.weaponBitmap.width,"Entity");
+                //Main.debugView.log("weaponx:"+this.weaponBitmap.x+"|weaponWdith:"+this.weaponBitmap.width,"Entity");
                 this.weaponBitmap.x = this.weaponBitmap.x + this.weaponBitmap.width;
-                Main.debugView.log("weaponx:"+this.weaponBitmap.x+"|weaponWdith:"+this.weaponBitmap.width,"Entity");
+                //Main.debugView.log("weaponx:"+this.weaponBitmap.x+"|weaponWdith:"+this.weaponBitmap.width,"Entity");
             }else if(this.flipSpriteY) {
                 // this.weaponBitmap.scaleY=-1; 
                 // this.weaponBitmap.y = this.weaponBitmap.y+this.weaponBitmap.height ;

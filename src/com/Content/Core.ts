@@ -138,7 +138,7 @@ module Content {
                         entity.sprite = null;
                         entity.setSprite(self.sprites[entity.getSpriteName()]);
                     });
-                    //this.initHurtSprites(); -*-
+                    this.initHurtSprites();
                     this.initShadows();
                     this.initCursors();
                 }
@@ -170,6 +170,7 @@ module Content {
                         self.initCursors();
                         self.initAnimations();
                         self.initShadows();
+                        self.initHurtSprites();
 
                         self.initEntityGrid();
                         self.initItemGrid();
@@ -212,6 +213,14 @@ module Content {
                 //this.sparksAnimation = new Assets.Animation("idle_down", 6, 0, 16, 16);
                 //this.sparksAnimation.setSpeed(120);
             }
+            initHurtSprites() {
+                // var self = this;
+
+                // Types.forEachArmorKind(function(kind, kindName) {
+                //     self.sprites[kindName].createHurtSprite();
+                // });
+            }
+
             initEntityGrid() {
                 this.entityGrid = [];
                 for(var i=0; i < this.map.height; i += 1) {
@@ -528,12 +537,12 @@ module Content {
 
                     self.selectedCellVisible = true;
 
-                    if(Render.mobile || Render.tablet) {
+                    //if(Render.mobile || Render.tablet) {
                         self.drawTarget = true;
                         self.clearTarget = true;
                         self.renderer.targetRect = self.renderer.getTargetBoundingRect();
                         self.checkOtherDirtyRects(self.renderer.targetRect, null, self.selectedX, self.selectedY);
-                    }
+                    //}
                 });
 
                 self.player.onCheckAggro(function() {
@@ -865,7 +874,7 @@ module Content {
                                         self.removeFromPathingGrid(entity.gridX, entity.gridY);
 
                                         if(self.camera.isVisible(entity)) {
-                                            self.audioManager.playSound("kill"+Math.floor(Math.random()*2+1));
+                                            //self.audioManager.playSound("kill"+Math.floor(Math.random()*2+1));
                                         }
 
                                         self.updateCursor();
@@ -1056,7 +1065,7 @@ module Content {
                         if(isHurt) {
                             player.hurt();
                             self.infoManager.addDamageInfo(diff, player.x, player.y - 15, "received");
-                            self.audioManager.playSound("hurt");
+                            //self.audioManager.playSound("hurt");
                             //self.storage.addDamage(-diff);
                             //self.tryUnlockingAchievement("MEATSHIELD");
                             if(self.playerhurt_callback) {
@@ -1819,9 +1828,9 @@ module Content {
                 this.removeItem(item);
                 this.showNotification(item.getLootMessage());
                 if(Types.isHealingItem(item.kind)) {
-                    this.audioManager.playSound("heal");
+                    //this.audioManager.playSound("heal");
                 } else {
-                    this.audioManager.playSound("loot");
+                    //this.audioManager.playSound("loot");
                 }
             } catch(e) {
                 if(e instanceof Exceptions.LootException) {
@@ -2013,6 +2022,7 @@ module Content {
                 x = ((mx - offsetX) / (ts * s)) + c.gridX,
                 y = ((my - offsetY) / (ts * s)) + c.gridY;
 
+                Main.debugView.log("GetMouseGridPosition:"+x+"|y:"+y,"Core");
                 return { x: x, y: y };
         }
 
