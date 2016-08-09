@@ -59,13 +59,6 @@ module Assets {
             return animations;
         }
 		
-		createHurtSprite() {
-            
-        }
-		whiteSprite;
-        getHurtSprite() {
-            return this.whiteSprite;
-        }
 		createSilhouette(){
 			
 		}

@@ -138,7 +138,6 @@ module Content {
                         entity.sprite = null;
                         entity.setSprite(self.sprites[entity.getSpriteName()]);
                     });
-                    this.initHurtSprites();
                     this.initShadows();
                     this.initCursors();
                 }
@@ -170,7 +169,6 @@ module Content {
                         self.initCursors();
                         self.initAnimations();
                         self.initShadows();
-                        self.initHurtSprites();
 
                         self.initEntityGrid();
                         self.initItemGrid();
@@ -212,13 +210,6 @@ module Content {
 
                 //this.sparksAnimation = new Assets.Animation("idle_down", 6, 0, 16, 16);
                 //this.sparksAnimation.setSpeed(120);
-            }
-            initHurtSprites() {
-                // var self = this;
-
-                // Types.forEachArmorKind(function(kind, kindName) {
-                //     self.sprites[kindName].createHurtSprite();
-                // });
             }
 
             initEntityGrid() {
@@ -1583,8 +1574,8 @@ module Content {
          *
          */
         onCharacterUpdate(character) {
-            var time = this.currentTime,
-                self = this;
+            var time = this.currentTime;
+            var self = this;
             
             // If mob has finished moving to a different tile in order to avoid stacking, attack again from the new position.
             if(character.previousTarget && !character.isMoving() && character instanceof Role.Mob) {
@@ -1605,7 +1596,7 @@ module Content {
                         if(character.hasTarget() && character.getOrientationTo(character.target) !== character.orientation) {
                             character.lookAtTarget();
                         }
-
+                        Main.debugView.log("Character Hit","Core");
                         character.hit();
 
                         if(character.id === this.playerId) {
@@ -2022,7 +2013,7 @@ module Content {
                 x = ((mx - offsetX) / (ts * s)) + c.gridX,
                 y = ((my - offsetY) / (ts * s)) + c.gridY;
 
-                Main.debugView.log("GetMouseGridPosition:"+x+"|y:"+y,"Core");
+                //Main.debugView.log("GetMouseGridPosition:"+x+"|y:"+y,"Core");
                 return { x: x, y: y };
         }
 

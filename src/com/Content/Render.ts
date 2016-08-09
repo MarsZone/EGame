@@ -90,7 +90,7 @@ module Content {
             } else if(mouse.y >= height) {
                 mouse.y = height - 1;
             }
-			Main.debugView.log("MouseX:"+mouse.x+"|MouseY:"+mouse.y,"Render");
+			//Main.debugView.log("MouseX:"+mouse.x+"|MouseY:"+mouse.y,"Render");
 		}
 		getScaleFactor() {
             var w = window.innerWidth,

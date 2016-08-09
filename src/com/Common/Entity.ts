@@ -153,8 +153,8 @@ module Common {
             }
         }
 
-        setAnimation(name, speed, count, onEndCount) {
-            var self = this;
+        setAnimation(name, speed, count, onEndCount,character) {
+            var self = character;
 
             if(this.isLoaded) {
                 if(this.currentAnimation && this.currentAnimation.name === name) {
@@ -171,7 +171,7 @@ module Common {
                     }
                     this.currentAnimation.setSpeed(speed);
                     this.currentAnimation.setCount(count ? count : 0, onEndCount || function() {
-                        self.idel();
+                        self.idle();
                     });
                 }
             }

@@ -74,7 +74,7 @@ module Common {
                     this.flipSpriteX = (this.orientation === Types.Orientations.LEFT) ? true : false;
                 }
 
-                this.setAnimation(animation, speed, count, onEndCount);
+                this.setAnimation(animation, speed, count, onEndCount,this);
             }
         }
 
@@ -558,14 +558,13 @@ module Common {
 		hurting;
         hurt() {
             var self = this;
-
             this.stopHurting();
-            this.sprite = this.hurtSprite;
+            this.displayBitmap.alpha = 0.2;
             this.hurting = setTimeout(this.stopHurting.bind(this), 75);
         }
 
         stopHurting() {
-            this.sprite = this.normalSprite;
+            this.displayBitmap.alpha = 1;
             clearTimeout(this.hurting);
         }
 		attackCooldown;
