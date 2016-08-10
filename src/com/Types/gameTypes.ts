@@ -131,8 +131,8 @@ module Types{
     }
 
     export enum Orientations{
-        UP= 1,
-        DOWN= 2,
+        UP = 1,
+        DOWN = 2,
         LEFT= 3,
         RIGHT= 4
     }

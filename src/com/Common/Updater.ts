@@ -32,7 +32,7 @@ module Common {
                     startValue = this.endValue = this.offset = 0,
                     updateFunc = null,
                     endFunc = null;
-
+                orientation = parseInt(orientation);
                 if(orientation === Types.Orientations.LEFT || orientation === Types.Orientations.RIGHT) {
                     this.offset = (c.gridW - 2) * ts;
                     startValue = (orientation === Types.Orientations.LEFT) ? c.x - ts : c.x + ts;

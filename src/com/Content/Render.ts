@@ -241,6 +241,7 @@ module Content {
 
 		renderStaticCanvases():void{
 			this.setCameraView(this.backGound);
+			this.cleanTerrain();
 			this.drawTerrain();
 			//this.drawHighTiles(this.foreground);
 		}
@@ -265,6 +266,19 @@ module Content {
 			}
 			return (id % w == 0) ? w - 1 : (id % w) - 1;
    		}
+		cleanTerrain():void{
+			if(this.GridS)
+			{
+				for(var GridBits of this.GridS)
+				{
+					GridBits.removeChildren();
+					this.backGound.removeChild(GridBits);
+					GridBits=null;
+				}
+				this.GridS.splice(0,this.GridS.length);
+			}
+			
+		}
 		drawTerrain():void{
 			var self = this;
 			var tilesetwidth:number = this.map.tileSetWidth / this.map.tilesize;
@@ -309,8 +323,6 @@ module Content {
 				}
 				//Main.debugView.log("x:"+GridBits.x+"|y:"+GridBits.y+"|id:"+id+"|tilesetwidth:"+tilesetwidth,"Render");
             }, 1);
-			
-			
 		}
 		forEachVisibleTile():void{
 			if(this.map.mapLoaded)
