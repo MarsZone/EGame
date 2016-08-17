@@ -40,12 +40,13 @@ module Content {
                 y = Math.round( entity.y - (Math.floor(this.gridH / 2) * r.tilesize) );
             this.setPosition(x, y);
         }
-		public forEachVisiblePosition(callback, extra) {
+		public forEachVisiblePosition(callback, extra?) {
             var extra = extra || 0;
+            extra=0;
 			for(var y=this.gridY-extra, maxY=this.gridY+this.gridH+(extra*2); y < maxY; y += 1) {
                 for(var x=this.gridX-extra, maxX=this.gridX+this.gridW+(extra*2); x < maxX; x += 1) {
                     callback(x, y);
-                    //Main.debugView.log("CameraX:"+x+"|CameraY"+y);
+                    //Main.debugView.log("CameraX:"+x+"|CameraY"+y,"Cammera");
                 }
             }
         }

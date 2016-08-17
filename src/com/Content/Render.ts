@@ -70,14 +70,14 @@ module Content {
 		setMouseCoordinates(e:egret.TouchEvent):void{
 			//Main.debugView.log("TouchX:"+e.$stageX+"|TouchY:"+e.$stageY,"Render");
 			var offset=0;
-			var gamePos = 0,
-                scale = this.core.renderer.getScaleFactor(),
+			var scale = this.core.renderer.getScaleFactor(),
                 width = Main.StageWidth,
                 height = Main.StageHeight,
                 mouse = this.core.mouse;
-
-            mouse.x = e.$stageX - gamePos ;
-            mouse.y = e.$stageY - gamePos ;
+			var gamePosLeft = (Main.StageWidth - this.camera.gridW *32)/2;
+			var gamePosTop = (Main.StageHeight - this.camera.gridH *32)/2;
+            mouse.x = e.$stageX - gamePosLeft ;
+            mouse.y = e.$stageY - gamePosTop ;
             //console.log("MouseX:"+mouse.x+"|MouseY:"+mouse.y);
             if(mouse.x <= 0) {
                 mouse.x = 0;
@@ -121,10 +121,14 @@ module Content {
 			this.addChild(sp);
 		}
 
-		drawText(text, x, y, centered, color, strokeColor){
-			//Main.debugView.log("drawText");
+		drawText(entity,text, x, y, centered, color, strokeColor?) {
+            
+            if(text && x && y) {
+				//entity.updateNameTextField(text,x,y,color,strokeColor)
+				entity.updateNameTextField(text,x,y,0xFFFFFF,0x373737);
+            }
+        }
 
-		}
 		drawCellRect(x, y, color,alpha=1) {
 			//Main.debugView.log("drawCellRect:"+"x:"+x+"|y:"+y,"Render");
 			this.context.graphics.lineStyle(2,color,alpha);
@@ -284,7 +288,7 @@ module Content {
 			var tilesetwidth:number = this.map.tileSetWidth / this.map.tilesize;
 			var horizontal_tiles = Main.StageWidth / tilesetwidth;
 			var vertical_tiles = Math.floor(Main.StageHeight / tilesetwidth);
-			Main.debugView.log("H:"+horizontal_tiles+"|V:"+vertical_tiles,"Render");
+			Main.debugView.log("DrawTerrain: H_tiles:"+horizontal_tiles+"|V_tiles:"+vertical_tiles,"Render");
 			var s = Render.upscaledRendering ? 1 : this.scale;
 
 			this.GridS = new Array();
@@ -531,11 +535,12 @@ module Content {
             if(entity.name && entity instanceof Player) {
                 var color = (entity.id === this.core.playerId) ? "#fcda5c" : "white";
                 var name = (entity.level) ? "lv." + entity.level + " " + entity.name : entity.name;
-                // this.drawText(entity.name,
-                //               (entity.x + 8) * this.scale,
-                //               (entity.y + entity.nameOffsetY) * this.scale,
-                //               true,
-                //               color);
+                this.drawText(entity,
+							  entity.name,
+                              (entity.x + 8) * this.scale,
+                              (entity.y + entity.nameOffsetY) * this.scale,
+                              true,
+                              color);
             }
         }
 

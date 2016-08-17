@@ -66,7 +66,7 @@ module Content {
             hoveringItem = false;
             hoveringNpc = false;
             hoveringChest = false;
-            hoveringCollidingTile = false;e
+            hoveringCollidingTile = false;
 
         // combat
             infoManager = new Content.InfoManager(this);
@@ -491,7 +491,7 @@ module Content {
                 self.playerId = id;
                 // Always accept name received from the server which will
                 // sanitize and shorten names exceeding the allowed length.
-                self.player.Ename = name;
+                self.player.name = name;
                 self.player.setGridPosition(x, y);
                 self.player.setMaxHitPoints(hp);
                 self.player.setArmorName(armor);
@@ -1406,6 +1406,7 @@ module Content {
                 }
                 self.renderer.addEntityToLayer(entity,entity.displayBitmap);
                 self.renderer.addEntityToLayer(entity,entity.weaponBitmap);
+                self.renderer.addEntityToLayer(entity,entity.nameTextField);
             }
             else {
                 Main.debugView.log("This entity already exists : " + entity.id + " ("+entity.kind+")",Core.CoreSrcName);
@@ -1417,6 +1418,7 @@ module Content {
             if(entity.id in this.entities) {
                 this.renderer.removeEntityFromLayer(entity,entity.displayBitmap);
                 this.renderer.removeEntityFromLayer(entity,entity.weaponBitmap);
+                this.renderer.removeEntityFromLayer(entity,entity.nameTextField);
                 this.unregisterEntityPosition(entity);
                 delete this.entities[entity.id];
             }
@@ -1666,7 +1668,7 @@ module Content {
         startZoningFrom(x:number, y:number) {
             this.zoningOrientation = this.getZoningOrientation(x, y);
 
-            if(Render.mobile || Render.tablet) {
+            //if(Render.mobile || Render.tablet) {
                 var z = this.zoningOrientation,
                     c = this.camera,
                     ts = this.renderer.tilesize,
@@ -1674,7 +1676,7 @@ module Content {
                     y = c.y,
                     xoffset = (c.gridW - 2) * ts,
                     yoffset = (c.gridH - 2) * ts;
-
+                z = parseInt(z);
                 if(z === Types.Orientations.LEFT || z === Types.Orientations.RIGHT) {
                     x = (z === Types.Orientations.LEFT) ? c.x - xoffset : c.x + xoffset;
                 } else if(z === Types.Orientations.UP || z === Types.Orientations.DOWN) {
@@ -1683,15 +1685,16 @@ module Content {
                 c.setPosition(x, y);
                 this.renderer.clearContextScreen();
                 this.endZoning();
+                this.renderer.renderStaticCanvases();
 
                 // Force immediate drawing of all visible entities in the new zone
                 this.forEachVisibleEntityByDepth(function(entity) {
                     entity.setDirty();
                 });
-            }
-            else {
-                this.currentZoning = new Common.Transition();
-            }
+            //}
+            // else {
+            //     this.currentZoning = new Common.Transition();
+            // }
             this.bubbleManager.clean();
             this.net.sendZone();
         }
@@ -2288,7 +2291,9 @@ module Content {
          */
         processInput(pos) {
             var entity;
-
+            Main.debugView.log("1:"+this.started+"|2:"+this.player+"|3:"+!this.isZoning()
+            +"|4:"+!this.isZoningTile(this.player.nextGridX, this.player.nextGridY)+
+            "|5:"+!this.player.isDead+"|6:"+!this.hoveringCollidingTile+"|7:"+!this.hoveringPlateauTile,"ProcessInput");
             if(this.started
             && this.player
             && !this.isZoning()

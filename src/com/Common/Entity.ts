@@ -18,6 +18,7 @@ module Common {
             
             this.displayBitmap = new egret.Bitmap();
             this.weaponBitmap = new egret.Bitmap();
+            this.nameTextField = new egret.TextField();
             // Position
             this.setGridPosition(0, 0);
 
@@ -32,7 +33,7 @@ module Common {
 
         id;
         kind;
-        Ename;
+        name;
         sprite;
         visible;
         normalSprite;
@@ -48,12 +49,13 @@ module Common {
         fadingAlpha;
         displayBitmap:egret.Bitmap;
         weaponBitmap:egret.Bitmap;
+        nameTextField:egret.TextField;
         init(id, kind): void {
             
         }
 
         setName(name) {
-            this.Ename = name;
+            this.name = name;
         }
         x;
         y;
@@ -114,6 +116,15 @@ module Common {
                 Main.debugView.log("No animation called "+ name,"Entity");
             }
             return animation;
+        }
+        updateNameTextField(text, x, y, color, strokeColor):void{
+            this.nameTextField.text=text;
+            //this.nameTextField.textAlign = egret.HorizontalAlign.CENTER;
+            this.nameTextField.textColor = color;
+            this.nameTextField.strokeColor = strokeColor;
+            this.nameTextField.x = x - this.nameTextField.textWidth /2-1;
+            this.nameTextField.y = y-8;
+            this.nameTextField.size=15;
         }
         updateBitmap(x,y,height,width){
             this.displayBitmap.scaleX=1;

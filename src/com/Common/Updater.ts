@@ -38,11 +38,13 @@ module Common {
                     startValue = (orientation === Types.Orientations.LEFT) ? c.x - ts : c.x + ts;
                     this.endValue = (orientation === Types.Orientations.LEFT) ? c.x - this.offset : c.x + this.offset;
                     updateFunc = function(x) {
+                        Main.debugView.log("update Zoning:","Updater");
                         c.setPosition(x, c.y);
                         g.initAnimatedTiles();
                         g.renderer.renderStaticCanvases();
                     }
                     endFunc = function() {
+                        Main.debugView.log("End Zoning:","Updater");
                         c.setPosition(z.endValue, c.y);
                         g.endZoning();
                     }
@@ -51,11 +53,13 @@ module Common {
                     startValue = (orientation === Types.Orientations.UP) ? c.y - ts : c.y + ts;
                     this.endValue = (orientation === Types.Orientations.UP) ? c.y - this.offset : c.y + this.offset;
                     updateFunc = function(y) {
+                        Main.debugView.log("update Zoning:","Updater");
                         c.setPosition(c.x, y);
                         g.initAnimatedTiles();
                         g.renderer.renderStaticCanvases();
                     }
                     endFunc = function() {
+                        Main.debugView.log("End Zoning:","Updater");
                         c.setPosition(c.x, z.endValue);
                         g.endZoning();
                     }
