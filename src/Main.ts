@@ -155,10 +155,6 @@ class Main extends egret.DisplayObjectContainer {
         this.gameLayer.addChild(this.game);
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));
         
-        //UI层
-        var ui:Common.UI = new Common.UI();
-        this.addChild(ui);
-        
         //开始结束菜单
         
         //调试面板放在顶层

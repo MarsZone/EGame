@@ -45,7 +45,7 @@ module Content {
 			this.targetBitmap = new egret.Bitmap();
 			this.context.addChild(this.targetBitmap);
 
-			this.foreground.graphics.beginFill(0x000000,0.1);
+			this.foreground.graphics.beginFill(0x000000,0);
 			this.foreground.graphics.drawRect(0,0,Main.StageWidth,Main.StageHeight);
 			this.foreground.graphics.endFill();
 			this.foreground.touchEnabled=true;

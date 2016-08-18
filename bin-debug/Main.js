@@ -129,9 +129,6 @@ var Main = (function (_super) {
         //游戏内容
         this.gameLayer.addChild(this.game);
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));
-        //UI层
-        var ui = new Common.UI();
-        this.addChild(ui);
         //开始结束菜单
         //调试面板放在顶层
         //this.addChild(Main.debugView);
