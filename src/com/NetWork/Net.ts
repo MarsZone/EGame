@@ -3,6 +3,7 @@
  * @author 
  *
  */
+
 module NetWork{
     export class Net extends egret.EventDispatcher{
         //webSocket:egret.WebSocket = new egret.WebSocket();
@@ -21,15 +22,22 @@ module NetWork{
         movement_callback = null;
         connect(host,port): void {
             var self = this;
-            this.connection = io('http://127.0.0.1:8000/');
+            Main.debugView.log("Connect:"+Main.host,"Net",true);
+            try {
+                this.connection =  io(Main.host,{forceNew: true, reconnection: false});
+            } catch (error) {
+                Main.debugView.log("Connect Error:"+error,"Net",true);
+            }
+            //self.connection =  io.connect(Main.host);
+            
             this.connection.on('news', function (data) {
                 Main.debugView.log("receive message: " + data,Net.NetSrcName);
             });
-            this.connection.on('connection', function() {
+            self.connection.on('connection', function() {
                 Main.debugView.log("Connected to server",Net.NetSrcName);
             });
 
-            this.connection.on('message', function(e) {
+            self.connection.on('message', function(e) {
                 if(e === 'go') {
                     //Starting client/server handshake
                     if(self.connected_callback) {
@@ -46,14 +54,14 @@ module NetWork{
 
                 self.receiveMessage(e);
             });
-            this.connection.on('error', function(e) {
-                Main.debugView.log(""+e,Net.NetSrcName);
+            self.connection.on('error', function(e) {
+                Main.debugView.log(""+e,Net.NetSrcName,true);
             });
 
-            this.connection.on('disconnect', function() {
-                Main.debugView.log("Connection closed",Net.NetSrcName);
+            self.connection.on('disconnect', function() {
+                Main.debugView.log("Connection closed",Net.NetSrcName,true);
             });
-            this.enable();
+            self.enable();
         }
         isListening:boolean=true;
         enable():void {

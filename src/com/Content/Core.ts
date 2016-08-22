@@ -184,7 +184,9 @@ module Content {
 
                         clearInterval(wait);
                     }
-                }, 100);
+                }, 100);    
+                   
+
             }
             addItem(item, x, y) {
                 item.setSprite(this.sprites[item.getSpriteName()]);

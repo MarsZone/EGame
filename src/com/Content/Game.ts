@@ -26,6 +26,7 @@ module Content {
             this.addChild(this.render);
             Game.GameLayerOffsetX = (Main.StageWidth - this.render.camera.gridW *32)/2;
             Game.GameLayerOffsetY = (Main.StageHeight - this.render.camera.gridH *32)/2;
+            //Game.GameLayerOffsetY=0;
             this.render.x += Game.GameLayerOffsetX;
             this.render.y += Game.GameLayerOffsetY;
             //UI层

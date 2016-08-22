@@ -1,14 +1,10 @@
 {
-	"native": {
-		"path_ignore": [],
-		"android_path": "../../adt/app_ta"
-	},
 	"publish": {
 		"web": 0,
 		"native": 1,
 		"path": "bin-release"
 	},
-	"egret_version": "3.1.3",
+	"egret_version": "3.1.6",
 	"modules": [
 		{
 			"name": "egret"
@@ -37,5 +33,8 @@
 			"name": "underscore",
 			"path": "../libsrc/underscore"
 		}
-	]
+	],
+	"native": {
+		"android_as_path": "../../../adt/Ezland"
+	}
 }

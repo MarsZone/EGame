@@ -37,6 +37,8 @@ class Main extends egret.DisplayObjectContainer {
     public static StageWidth: number;
     public static StageHeight: number;
     public static debugView: Tools.DebugView;
+    //public static host:string="http://192.168.18.152:8000/";
+    public static host:string="192.168.18.152:8000";
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
@@ -130,7 +132,7 @@ class Main extends egret.DisplayObjectContainer {
         //调试面板先实例化
         Main.debugView = new Tools.DebugView();
         Main.debugView.init(Main.StageWidth,Main.StageHeight);
-        Main.debugView.log("Start: StageWidth:"+Main.StageWidth+"_ StageHeight:"+Main.StageHeight,"Main");
+        Main.debugView.log("Start: StageWidth:"+Main.StageWidth+"_ StageHeight:"+Main.StageHeight,"Main",true);
         
         //网络初始化
         this.net = new NetWork.Net();
@@ -148,18 +150,21 @@ class Main extends egret.DisplayObjectContainer {
         this.gameLayer.graphics.beginFill(0xFFFFFF,1);
         this.gameLayer.graphics.drawRect(0,0,Main.StageWidth,Main.StageHeight);
         this.gameLayer.graphics.endFill();
-        
         this.addChild(this.gameLayer);
+
+        //调试面板放在顶层
+        Main.debugView.visible=false;
+        this.addChild(Main.debugView);
+        
+        //启动游戏
         this.game = new Content.Game(this.map,this.net);
+        
         //游戏内容
         this.gameLayer.addChild(this.game);
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));
         
         //开始结束菜单
         
-        //调试面板放在顶层
-        //this.addChild(Main.debugView);
-        //Main.debugView.visible=false;
     }
 
     /**

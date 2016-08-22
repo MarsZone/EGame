@@ -109,7 +109,7 @@ var Main = (function (_super) {
         //调试面板先实例化
         Main.debugView = new Tools.DebugView();
         Main.debugView.init(Main.StageWidth, Main.StageHeight);
-        Main.debugView.log("Start: StageWidth:" + Main.StageWidth + "_ StageHeight:" + Main.StageHeight, "Main");
+        Main.debugView.log("Start: StageWidth:" + Main.StageWidth + "_ StageHeight:" + Main.StageHeight, "Main", true);
         //网络初始化
         this.net = new NetWork.Net();
         //this.net.Init();
@@ -125,14 +125,15 @@ var Main = (function (_super) {
         this.gameLayer.graphics.drawRect(0, 0, Main.StageWidth, Main.StageHeight);
         this.gameLayer.graphics.endFill();
         this.addChild(this.gameLayer);
+        //调试面板放在顶层
+        Main.debugView.visible = false;
+        this.addChild(Main.debugView);
+        //启动游戏
         this.game = new Content.Game(this.map, this.net);
         //游戏内容
         this.gameLayer.addChild(this.game);
         //this.addChild(Main.createBitmapByName("leatherarmor_png"));
         //开始结束菜单
-        //调试面板放在顶层
-        //this.addChild(Main.debugView);
-        //Main.debugView.visible=false;
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -151,6 +152,8 @@ var Main = (function (_super) {
     p.changeDescription = function (textfield, textFlow) {
         textfield.textFlow = textFlow;
     };
+    //public static host:string="http://192.168.18.152:8000/";
+    Main.host = "192.168.18.152:8000";
     return Main;
 }(egret.DisplayObjectContainer));
 egret.registerClass(Main,'Main');

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -100,7 +100,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -205,7 +205,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -307,7 +307,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -598,7 +598,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -1275,7 +1275,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -1544,18 +1544,19 @@ var egret;
          */
         p.invalidateMatrix = function () {
             this.$setFlags(8 /* InvalidMatrix */);
-            this.invalidatePosition();
+            this.$invalidatePosition();
         };
         /**
          * @private
          * 标记这个显示对象在父级容器的位置发生了改变。
          */
-        p.invalidatePosition = function () {
-            this.$invalidateTransform();
-            this.$propagateFlagsDown(16 /* InvalidConcatenatedMatrix */ |
+        p.$invalidatePosition = function () {
+            var self = this;
+            self.$invalidateTransform();
+            self.$propagateFlagsDown(16 /* InvalidConcatenatedMatrix */ |
                 32 /* InvalidInvertedConcatenatedMatrix */);
-            if (this.$parent) {
-                this.$parent.$propagateFlagsUp(4 /* InvalidBounds */);
+            if (self.$parent) {
+                self.$parent.$propagateFlagsUp(4 /* InvalidBounds */);
             }
         };
         d(p, "name"
@@ -1700,15 +1701,16 @@ var egret;
          * @private
          * 设置矩阵
          */
-        p.$setMatrix = function (matrix, useProperties) {
-            if (useProperties === void 0) { useProperties = true; }
-            var values = this.$DisplayObject;
+        p.$setMatrix = function (matrix, needUpdateProperties) {
+            if (needUpdateProperties === void 0) { needUpdateProperties = true; }
+            var self = this;
+            var values = self.$DisplayObject;
             var m = values[6 /* matrix */];
             if (m.equals(matrix)) {
                 return false;
             }
             m.copyFrom(matrix);
-            if (useProperties) {
+            if (needUpdateProperties) {
                 values[0 /* scaleX */] = m.$getScaleX();
                 values[1 /* scaleY */] = m.$getScaleY();
                 values[2 /* skewX */] = matrix.$getSkewX();
@@ -1717,8 +1719,8 @@ var egret;
                 values[17 /* skewYdeg */] = clampRotation(values[3 /* skewY */] * 180 / Math.PI);
                 values[4 /* rotation */] = clampRotation(values[3 /* skewY */] * 180 / Math.PI);
             }
-            this.$removeFlags(8 /* InvalidMatrix */);
-            this.invalidatePosition();
+            self.$removeFlags(8 /* InvalidMatrix */);
+            self.$invalidatePosition();
             return true;
         };
         /**
@@ -1813,7 +1815,7 @@ var egret;
                 return false;
             }
             m.tx = value;
-            this.invalidatePosition();
+            this.$invalidatePosition();
             return true;
         };
         d(p, "y"
@@ -1863,7 +1865,7 @@ var egret;
                 return false;
             }
             m.ty = value;
-            this.invalidatePosition();
+            this.$invalidatePosition();
             return true;
         };
         d(p, "scaleX"
@@ -2262,7 +2264,7 @@ var egret;
                 return false;
             }
             this.$DisplayObject[12 /* anchorOffsetX */] = value;
-            this.invalidatePosition();
+            this.$invalidatePosition();
             return true;
         };
         d(p, "anchorOffsetY"
@@ -2305,7 +2307,7 @@ var egret;
                 return false;
             }
             this.$DisplayObject[13 /* anchorOffsetY */] = value;
-            this.invalidatePosition();
+            this.$invalidatePosition();
             return true;
         };
         d(p, "visible"
@@ -2417,7 +2419,7 @@ var egret;
          */
         p.$cacheAsBitmapChanged = function () {
             var parentCache = this.$displayList || this.$parentDisplayList;
-            if (this.$renderNode) {
+            if (this.$renderNode && parentCache) {
                 parentCache.markDirty(this);
             }
             this.$propagateFlagsDown(16 /* InvalidConcatenatedMatrix */ |
@@ -2590,7 +2592,7 @@ var egret;
             else {
                 this.$scrollRect = null;
             }
-            this.invalidatePosition();
+            this.$invalidatePosition();
             return true;
         };
         d(p, "blendMode"
@@ -2708,7 +2710,7 @@ var egret;
             else {
                 this.$maskRect = null;
             }
-            this.invalidatePosition();
+            this.$invalidatePosition();
             return true;
         };
         d(p, "filters"
@@ -2730,10 +2732,14 @@ var egret;
                 return this.$DisplayObject[20 /* filters */];
             }
             ,function (value) {
+                var filters = this.$DisplayObject[20 /* filters */];
+                if (!filters && !value) {
+                    this.$DisplayObject[20 /* filters */] = value;
+                    return;
+                }
                 this.$invalidateContentBounds();
                 //需要通知子项
                 this.$invalidate(true);
-                var filters = this.$DisplayObject[20 /* filters */];
                 if (filters && filters.length) {
                     var length = filters.length;
                     for (var i = 0; i < length; i++) {
@@ -2963,13 +2969,14 @@ var egret;
          * 通常用于矩阵改变或从显示列表添加和移除时。若自身的显示内容已经改变需要重绘，应该调用$invalidate()。
          */
         p.$invalidateTransform = function () {
-            if (this.$hasFlags(512 /* DirtyChildren */)) {
+            var self = this;
+            if (self.$hasFlags(512 /* DirtyChildren */)) {
                 return;
             }
-            this.$setFlags(512 /* DirtyChildren */);
-            var displayList = this.$displayList;
-            if ((displayList || this.$renderNode) && this.$parentDisplayList) {
-                this.$parentDisplayList.markDirty(displayList || this);
+            self.$setFlags(512 /* DirtyChildren */);
+            var displayList = self.$displayList;
+            if ((displayList || self.$renderNode) && self.$parentDisplayList) {
+                self.$parentDisplayList.markDirty(displayList || self);
             }
         };
         /**
@@ -2993,34 +3000,48 @@ var egret;
          * @private
          * 更新对象在舞台上的显示区域,返回显示区域是否发生改变。
          */
-        p.$update = function (bounds) {
-            //todo 计算滤镜占用区域
-            this.$removeFlagsUp(768 /* Dirty */);
-            var node = this.$renderNode;
+        p.$update = function (dirtyRegionPolicy, bounds) {
+            var self = this;
+            self.$removeFlagsUp(768 /* Dirty */);
+            var node = self.$renderNode;
+            node.renderAlpha = self.$getConcatenatedAlpha();
             //必须在访问moved属性前调用以下两个方法，因为moved属性在以下两个方法内重置。
-            var concatenatedMatrix = this.$getConcatenatedMatrix();
-            var renderBounds = bounds || this.$getContentBounds();
-            node.renderAlpha = this.$getConcatenatedAlpha();
-            node.renderVisible = this.$getConcatenatedVisible();
-            var displayList = this.$displayList || this.$parentDisplayList;
-            var region = node.renderRegion;
-            if (!displayList) {
-                region.setTo(0, 0, 0, 0);
+            var concatenatedMatrix = self.$getConcatenatedMatrix();
+            if (dirtyRegionPolicy == egret.DirtyRegionPolicy.OFF) {
+                var displayList = self.$displayList || self.$parentDisplayList;
+                if (!displayList) {
+                    return false;
+                }
+                var matrix = node.renderMatrix;
+                matrix.copyFrom(concatenatedMatrix);
+                var root = displayList.root;
+                if (root !== self.$stage) {
+                    self.$getConcatenatedMatrixAt(root, matrix);
+                }
+            }
+            else {
+                var renderBounds = bounds || self.$getContentBounds();
+                node.renderVisible = self.$getConcatenatedVisible();
+                var displayList = self.$displayList || self.$parentDisplayList;
+                var region = node.renderRegion;
+                if (!displayList) {
+                    region.setTo(0, 0, 0, 0);
+                    node.moved = false;
+                    return false;
+                }
+                if (!node.moved) {
+                    return false;
+                }
                 node.moved = false;
-                return false;
+                var matrix = node.renderMatrix;
+                matrix.copyFrom(concatenatedMatrix);
+                var root = displayList.root;
+                if (root !== self.$stage) {
+                    self.$getConcatenatedMatrixAt(root, matrix);
+                }
+                renderBounds = self.$measureFiltersBounds(renderBounds);
+                region.updateRegion(renderBounds, matrix);
             }
-            if (!node.moved) {
-                return false;
-            }
-            node.moved = false;
-            var matrix = node.renderMatrix;
-            matrix.copyFrom(concatenatedMatrix);
-            var root = displayList.root;
-            if (root !== this.$stage) {
-                this.$getConcatenatedMatrixAt(root, matrix);
-            }
-            renderBounds = this.$measureFiltersBounds(renderBounds);
-            region.updateRegion(renderBounds, matrix);
             return true;
         };
         /**
@@ -3057,24 +3078,24 @@ var egret;
                         var angle = filter.angle || 0;
                         var distanceX = 0;
                         var distanceY = 0;
-                        if (distance != 0 && angle != 0) {
+                        if (distance != 0) {
                             //todo 缓存这个数据
                             distanceX = Math.ceil(distance * egret.NumberUtils.cos(angle));
                             distanceY = Math.ceil(distance * egret.NumberUtils.sin(angle));
                             if (distanceX > 0) {
-                                x += distanceX;
+                                // x += distanceX;
                                 w += distanceX;
                             }
                             else if (distanceX < 0) {
-                                x -= distanceX;
+                                x += distanceX;
                                 w -= distanceX;
                             }
                             if (distanceY > 0) {
-                                y += distanceY;
+                                // y += distanceY;
                                 h += distanceY;
                             }
                             else if (distanceY < 0) {
-                                y -= distanceY;
+                                y += distanceY;
                                 h -= distanceY;
                             }
                         }
@@ -3226,7 +3247,7 @@ var egret;
                     var matrix = egret.Matrix.create();
                     matrix.identity();
                     matrix.translate(1 - localX, 1 - localY);
-                    egret.sys.systemRenderer.render(this, buffer, matrix, null, true);
+                    egret.sys.canvasRenderer.render(this, buffer, matrix, null, true);
                     egret.Matrix.release(matrix);
                     try {
                         data = buffer.getPixel(1, 1);
@@ -3382,7 +3403,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -3577,6 +3598,9 @@ var egret;
                 this.$refreshImageData();
             }
             else {
+                if (oldBitmapData) {
+                    egret.Texture.$removeDisplayObject(this, oldBitmapData);
+                }
                 this.setImageData(null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
                 this.$invalidateContentBounds();
                 return true;
@@ -3808,7 +3832,7 @@ var egret;
             if (values[1 /* image */]) {
                 var destW = !isNaN(values[11 /* explicitBitmapWidth */]) ? values[11 /* explicitBitmapWidth */] : values[8 /* textureWidth */];
                 var destH = !isNaN(values[12 /* explicitBitmapHeight */]) ? values[12 /* explicitBitmapHeight */] : values[9 /* textureHeight */];
-                Bitmap.$drawImage(this.$renderNode, values[1 /* image */], values[2 /* bitmapX */], values[3 /* bitmapY */], values[4 /* bitmapWidth */], values[5 /* bitmapHeight */], values[6 /* offsetX */], values[7 /* offsetY */], values[8 /* textureWidth */], values[9 /* textureHeight */], destW, destH, values[13 /* sourceWidth */], values[14 /* sourceHeight */], this.scale9Grid || values[0 /* bitmapData */]["scale9Grid"], this.fillMode, values[10 /* smoothing */]);
+                egret.sys.BitmapNode.$updateTextureData(this.$renderNode, values[1 /* image */], values[2 /* bitmapX */], values[3 /* bitmapY */], values[4 /* bitmapWidth */], values[5 /* bitmapHeight */], values[6 /* offsetX */], values[7 /* offsetY */], values[8 /* textureWidth */], values[9 /* textureHeight */], destW, destH, values[13 /* sourceWidth */], values[14 /* sourceHeight */], this.scale9Grid || values[0 /* bitmapData */]["scale9Grid"], this.fillMode, values[10 /* smoothing */]);
             }
         };
         d(p, "pixelHitTest"
@@ -3870,7 +3894,7 @@ var egret;
                 var matrix = egret.Matrix.create();
                 matrix.identity();
                 matrix.translate(1 - localX, 1 - localY);
-                egret.sys.systemRenderer.drawNodeToBuffer(node, buffer, matrix, true);
+                egret.sys.canvasRenderer.drawNodeToBuffer(node, buffer, matrix, true);
                 egret.Matrix.release(matrix);
                 try {
                     data = buffer.getPixel(1, 1);
@@ -3885,133 +3909,9 @@ var egret;
             }
             return this;
         };
-        /**
-         * @private
-         */
         Bitmap.$drawImage = function (node, image, bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH, sourceWidth, sourceHeight, scale9Grid, fillMode, smoothing) {
-            if (!image) {
-                return;
-            }
-            var scale = egret.$TextureScaleFactor;
-            node.smoothing = smoothing;
-            node.image = image;
-            node.imageWidth = sourceWidth;
-            node.imageHeight = sourceHeight;
-            if (scale9Grid) {
-                Bitmap.drawScale9GridImage(node, scale9Grid, bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH);
-            }
-            else if (fillMode == egret.BitmapFillMode.SCALE) {
-                var tsX = destW / textureWidth;
-                var tsY = destH / textureHeight;
-                node.drawImage(bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX * tsX, offsetY * tsY, tsX * bitmapWidth, tsY * bitmapHeight);
-            }
-            else if (fillMode == egret.BitmapFillMode.CLIP) {
-                var displayW = Math.min(textureWidth, destW);
-                var displayH = Math.min(textureHeight, destH);
-                var scaledBitmapW = bitmapWidth * scale;
-                var scaledBitmapH = bitmapHeight * scale;
-                drawClipImage(node, scale, bitmapX, bitmapY, scaledBitmapW, scaledBitmapH, offsetX, offsetY, displayW, displayH);
-            }
-            else {
-                var scaledBitmapW = bitmapWidth * scale;
-                var scaledBitmapH = bitmapHeight * scale;
-                for (var startX = 0; startX < destW; startX += textureWidth) {
-                    for (var startY = 0; startY < destH; startY += textureHeight) {
-                        var displayW = Math.min(destW - startX, textureWidth);
-                        var displayH = Math.min(destH - startY, textureHeight);
-                        drawClipImage(node, scale, bitmapX, bitmapY, scaledBitmapW, scaledBitmapH, offsetX, offsetY, displayW, displayH, startX, startY);
-                    }
-                }
-            }
-        };
-        /**
-         * @private
-         * 绘制九宫格位图
-         */
-        Bitmap.drawScale9GridImage = function (node, scale9Grid, bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH) {
-            var imageWidth = bitmapWidth;
-            var imageHeight = bitmapHeight;
-            destW = destW - (textureWidth - bitmapWidth * egret.$TextureScaleFactor);
-            destH = destH - (textureHeight - bitmapHeight * egret.$TextureScaleFactor);
-            var targetW0 = scale9Grid.x - offsetX;
-            var targetH0 = scale9Grid.y - offsetY;
-            var sourceW0 = targetW0 / egret.$TextureScaleFactor;
-            var sourceH0 = targetH0 / egret.$TextureScaleFactor;
-            var sourceW1 = scale9Grid.width / egret.$TextureScaleFactor;
-            var sourceH1 = scale9Grid.height / egret.$TextureScaleFactor;
-            //防止空心的情况出现。
-            if (sourceH1 == 0) {
-                sourceH1 = 1;
-                if (sourceH0 >= imageHeight) {
-                    sourceH0--;
-                }
-            }
-            if (sourceW1 == 0) {
-                sourceW1 = 1;
-                if (sourceW0 >= imageWidth) {
-                    sourceW0--;
-                }
-            }
-            var sourceX0 = bitmapX;
-            var sourceX1 = sourceX0 + sourceW0;
-            var sourceX2 = sourceX1 + sourceW1;
-            var sourceW2 = imageWidth - sourceW0 - sourceW1;
-            var sourceY0 = bitmapY;
-            var sourceY1 = sourceY0 + sourceH0;
-            var sourceY2 = sourceY1 + sourceH1;
-            var sourceH2 = imageHeight - sourceH0 - sourceH1;
-            var targetW2 = sourceW2 * egret.$TextureScaleFactor;
-            var targetH2 = sourceH2 * egret.$TextureScaleFactor;
-            if ((sourceW0 + sourceW2) * egret.$TextureScaleFactor > destW || (sourceH0 + sourceH2) * egret.$TextureScaleFactor > destH) {
-                node.drawImage(bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, destW, destH);
-                return;
-            }
-            var targetX0 = offsetX;
-            var targetX1 = targetX0 + targetW0;
-            var targetX2 = targetX0 + (destW - targetW2);
-            var targetW1 = destW - targetW0 - targetW2;
-            var targetY0 = offsetY;
-            var targetY1 = targetY0 + targetH0;
-            var targetY2 = targetY0 + destH - targetH2;
-            var targetH1 = destH - targetH0 - targetH2;
-            //
-            //             x0     x1     x2
-            //          y0 +------+------+------+
-            //             |      |      |      | h0
-            //             |      |      |      |
-            //          y1 +------+------+------+
-            //             |      |      |      | h1
-            //             |      |      |      |
-            //          y2 +------+------+------+
-            //             |      |      |      | h2
-            //             |      |      |      |
-            //             +------+------+------+
-            //                w0     w1     w2
-            //
-            if (sourceH0 > 0) {
-                if (sourceW0 > 0)
-                    node.drawImage(sourceX0, sourceY0, sourceW0, sourceH0, targetX0, targetY0, targetW0, targetH0);
-                if (sourceW1 > 0)
-                    node.drawImage(sourceX1, sourceY0, sourceW1, sourceH0, targetX1, targetY0, targetW1, targetH0);
-                if (sourceW2 > 0)
-                    node.drawImage(sourceX2, sourceY0, sourceW2, sourceH0, targetX2, targetY0, targetW2, targetH0);
-            }
-            if (sourceH1 > 0) {
-                if (sourceW0 > 0)
-                    node.drawImage(sourceX0, sourceY1, sourceW0, sourceH1, targetX0, targetY1, targetW0, targetH1);
-                if (sourceW1 > 0)
-                    node.drawImage(sourceX1, sourceY1, sourceW1, sourceH1, targetX1, targetY1, targetW1, targetH1);
-                if (sourceW2 > 0)
-                    node.drawImage(sourceX2, sourceY1, sourceW2, sourceH1, targetX2, targetY1, targetW2, targetH1);
-            }
-            if (sourceH2 > 0) {
-                if (sourceW0 > 0)
-                    node.drawImage(sourceX0, sourceY2, sourceW0, sourceH2, targetX0, targetY2, targetW0, targetH2);
-                if (sourceW1 > 0)
-                    node.drawImage(sourceX1, sourceY2, sourceW1, sourceH2, targetX1, targetY2, targetW1, targetH2);
-                if (sourceW2 > 0)
-                    node.drawImage(sourceX2, sourceY2, sourceW2, sourceH2, targetX2, targetY2, targetW2, targetH2);
-            }
+            console.warn('deprecated method : Bitmap.$drawImage,use egret.sys.BitmapNode.$drawImage instead of it');
+            egret.sys.BitmapNode.$updateTextureData.call(this, arguments);
         };
         /**
          * @language en_US
@@ -4034,26 +3934,10 @@ var egret;
     }(egret.DisplayObject));
     egret.Bitmap = Bitmap;
     egret.registerClass(Bitmap,'egret.Bitmap');
-    /**
-     * @private
-     */
-    function drawClipImage(node, scale, bitmapX, bitmapY, scaledBitmapW, scaledBitmapH, offsetX, offsetY, destW, destH, startX, startY) {
-        if (startX === void 0) { startX = 0; }
-        if (startY === void 0) { startY = 0; }
-        var offset = offsetX + scaledBitmapW - destW;
-        if (offset > 0) {
-            scaledBitmapW -= offset;
-        }
-        offset = offsetY + scaledBitmapH - destH;
-        if (offset > 0) {
-            scaledBitmapH -= offset;
-        }
-        node.drawImage(bitmapX, bitmapY, scaledBitmapW / scale, scaledBitmapH / scale, startX + offsetX, startY + offsetY, scaledBitmapW, scaledBitmapH);
-    }
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -4081,7 +3965,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -4177,7 +4061,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -4316,7 +4200,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -4409,7 +4293,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -4486,7 +4370,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -4557,7 +4441,8 @@ var egret;
             }
             this.$setFlags(flags);
             var children = this.$children;
-            for (var i = 0; i < children.length; i++) {
+            var length = children.length;
+            for (var i = 0; i < length; i++) {
                 children[i].$propagateFlagsDown(flags);
             }
         };
@@ -5389,7 +5274,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -5563,26 +5448,24 @@ var egret;
          * @language en_US
          * Specifies a gradient fill used by subsequent calls to other Graphics methods (such as lineTo() or drawCircle()) for the object.
          * Calling the clear() method clears the fill.
-         * Note: Only support on Canvas
          * @param type A value from the GradientType class that specifies which gradient type to use: GradientType.LINEAR or GradientType.RADIAL.
          * @param colors An array of RGB hexadecimal color values used in the gradient; for example, red is 0xFF0000, blue is 0x0000FF, and so on. You can specify up to 15 colors. For each color, specify a corresponding value in the alphas and ratios parameters.
          * @param alphas An array of alpha values for the corresponding colors in the colors array;
          * @param ratios An array of color distribution ratios; valid values are 0-255.
          * @param matrix A transformation matrix as defined by the egret.Matrix class. The egret.Matrix class includes a createGradientBox() method, which lets you conveniently set up the matrix for use with the beginGradientFill() method.
-         * @platform Web
+         * @platform Web,Native
          * @version Egret 2.4
          */
         /**
          * @language zh_CN
-         * 指定一种简单的单一颜色填充，在绘制时该填充将在随后对其他 Graphics 方法（如 lineTo() 或 drawCircle()）的调用中使用。
+         * 指定一种渐变填充，用于随后调用对象的其他 Graphics 方法（如 lineTo() 或 drawCircle()）。
          * 调用 clear() 方法会清除填充。
-         * 注：该方法目前仅支持H5 Canvas
          * @param type 用于指定要使用哪种渐变类型的 GradientType 类的值：GradientType.LINEAR 或 GradientType.RADIAL。
          * @param colors 渐变中使用的 RGB 十六进制颜色值的数组（例如，红色为 0xFF0000，蓝色为 0x0000FF，等等）。对于每种颜色，请在 alphas 和 ratios 参数中指定对应值。
          * @param alphas colors 数组中对应颜色的 alpha 值数组。
          * @param ratios 颜色分布比率的数组。有效值为 0 到 255。
          * @param matrix 一个由 egret.Matrix 类定义的转换矩阵。egret.Matrix 类包括 createGradientBox() 方法，通过该方法可以方便地设置矩阵，以便与 beginGradientFill() 方法一起使用
-         * @platform Web
+         * @platform Web,Native
          * @version Egret 2.4
          */
         p.beginGradientFill = function (type, colors, alphas, ratios, matrix) {
@@ -5982,8 +5865,8 @@ var egret;
             else {
                 this.arcBounds(x, y, radius, startAngle, endAngle);
             }
-            var endX = x + egret.$cos(endAngle) * radius;
-            var endY = y + egret.$sin(endAngle) * radius;
+            var endX = x + Math.cos(endAngle) * radius;
+            var endY = y + Math.sin(endAngle) * radius;
             this.updatePosition(endX, endY);
             this.$renderNode.dirtyRender = true;
         };
@@ -6053,7 +5936,6 @@ var egret;
             this.minY = Infinity;
             this.maxX = -Infinity;
             this.maxY = -Infinity;
-            this.$renderNode.dirtyRender = true;
         };
         /**
          * @private
@@ -6128,7 +6010,7 @@ var egret;
             var matrix = egret.Matrix.create();
             matrix.identity();
             matrix.translate(1 - localX, 1 - localY);
-            egret.sys.systemRenderer.drawNodeToBuffer(node, buffer, matrix, true);
+            egret.sys.canvasRenderer.drawNodeToBuffer(node, buffer, matrix, true);
             egret.Matrix.release(matrix);
             try {
                 var data = buffer.getPixel(1, 1);
@@ -6148,7 +6030,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -6241,7 +6123,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -6353,7 +6235,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -6384,34 +6266,28 @@ var egret;
     /**
      * OrientationMode 类为舞台初始旋转模式提供值。
      */
-    var OrientationMode = (function () {
-        function OrientationMode() {
-        }
-        var d = __define,c=OrientationMode,p=c.prototype;
+    egret.OrientationMode = {
         /**
          * 适配屏幕
          */
-        OrientationMode.AUTO = "auto";
+        AUTO: "auto",
         /**
          * 默认竖屏
          */
-        OrientationMode.PORTRAIT = "portrait";
+        PORTRAIT: "portrait",
         /**
          * 默认横屏，舞台顺时针旋转90度
          */
-        OrientationMode.LANDSCAPE = "landscape";
+        LANDSCAPE: "landscape",
         /**
          * 默认横屏，舞台逆时针旋转90度
          */
-        OrientationMode.LANDSCAPE_FLIPPED = "landscapeFlipped";
-        return OrientationMode;
-    }());
-    egret.OrientationMode = OrientationMode;
-    egret.registerClass(OrientationMode,'egret.OrientationMode');
+        LANDSCAPE_FLIPPED: "landscapeFlipped"
+    };
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -6825,7 +6701,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -6952,7 +6828,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -7057,7 +6933,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -7196,7 +7072,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -7376,7 +7252,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -7759,7 +7635,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -8504,7 +8380,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -8532,7 +8408,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -8633,7 +8509,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -8717,7 +8593,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -8849,7 +8725,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -8877,7 +8753,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -8985,7 +8861,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -9044,7 +8920,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -9103,7 +8979,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -9268,7 +9144,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -9378,7 +9254,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -9495,7 +9371,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -9676,7 +9552,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10055,7 +9931,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10426,7 +10302,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10457,7 +10333,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10485,7 +10361,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10561,7 +10437,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10610,20 +10486,30 @@ var egret;
         /**
          * @language en_US
          * Initializes a BlurFilter object.
+         * @param blurX {number} The amount of horizontal blur. Valid values are 0 to 255 (floating point).
+         * @param blurY {number} The amount of vertical blur. Valid values are 0 to 255 (floating point).
+         * @param quality {number} The number of times to apply the filter.
          * @version Egret 3.1.0
          * @platform Web
          */
         /**
          * @language zh_CN
          * 创建一个 BlurFilter 对象。
+         * @param blurX {number} 水平模糊量。有效值为 0 到 255（浮点）。
+         * @param blurY {number} 垂直模糊量。有效值为 0 到 255（浮点）。
+         * @param quality {number} 应用滤镜的次数。暂未实现。
          * @version Egret 3.1.0
          * @platform Web
          */
-        function BlurFilter(blurX, blurY) {
+        function BlurFilter(blurX, blurY, quality) {
+            if (blurX === void 0) { blurX = 4; }
+            if (blurY === void 0) { blurY = 4; }
+            if (quality === void 0) { quality = 1; }
             _super.call(this);
             this.type = "blur";
-            this.blurX = blurX;
-            this.blurY = blurY;
+            this.$blurX = blurX;
+            this.$blurY = blurY;
+            this.$quality = quality;
         }
         var d = __define,c=BlurFilter,p=c.prototype;
         d(p, "blurX"
@@ -10681,7 +10567,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10779,16 +10665,23 @@ var egret;
             }
             ,function (value) {
                 this.setMatrix(value);
+                this.invalidate();
             }
         );
         /**
          * @private
          */
         p.setMatrix = function (value) {
-            for (var i = 0; i < 20; i++) {
-                this.$matrix[i] = (value && value[i]) || 0;
+            if (value) {
+                for (var i = 0; i < 20; i++) {
+                    this.$matrix[i] = value[i];
+                }
             }
-            this.invalidate();
+            else {
+                for (var i = 0; i < 20; i++) {
+                    this.$matrix[i] = (i == 0 || i == 6 || i == 12 || i == 18) ? 1 : 0;
+                }
+            }
         };
         return ColorMatrixFilter;
     }(egret.Filter));
@@ -10797,7 +10690,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10830,13 +10723,28 @@ var egret;
      * @classdesc
      * 使用 GlowFilter 类可以对显示对象应用发光效果。在投影滤镜的 distance 和 angle 属性设置为 0 时，发光滤镜与投影滤镜极为相似。
      * @extends egret.Filter
-     * @private
-     * @version Egret 2.4
+     * @version Egret 3.1.4
      * @platform Web,Native
      */
     var GlowFilter = (function (_super) {
         __extends(GlowFilter, _super);
         /**
+         * @language en_US
+         * Initializes a new GlowFilter instance.
+         * @method egret.GlowFilter#constructor
+         * @param color {number} The color of the glow. Valid values are in the hexadecimal format 0xRRGGBB. The default value is 0xFF0000.
+         * @param alpha {number} The alpha transparency value for the color. Valid values are 0 to 1. For example, .25 sets a transparency value of 25%. The default value is 1.
+         * @param blurX {number} The amount of horizontal blur. Valid values are 0 to 255 (floating point).
+         * @param blurY {number} The amount of vertical blur. Valid values are 0 to 255 (floating point).
+         * @param strength {number} The strength of the imprint or spread. The higher the value, the more color is imprinted and the stronger the contrast between the glow and the background. Valid values are 0 to 255.
+         * @param quality {number} The number of times to apply the filter.
+         * @param inner {boolean} Specifies whether the glow is an inner glow. The value true indicates an inner glow. The default is false, an outer glow (a glow around the outer edges of the object).
+         * @param knockout {number} Specifies whether the object has a knockout effect. A value of true makes the object's fill transparent and reveals the background color of the document. The default value is false (no knockout effect).
+         * @version Egret 3.1.4
+         * @platform Web
+         */
+        /**
+         * @language zh_CN
          * 初始化 GlowFilter 对象
          * @method egret.GlowFilter#constructor
          * @param color {number} 光晕颜色，采用十六进制格式 0xRRGGBB。默认值为 0xFF0000。
@@ -10844,11 +10752,11 @@ var egret;
          * @param blurX {number} 水平模糊量。有效值为 0 到 255（浮点）。
          * @param blurY {number} 垂直模糊量。有效值为 0 到 255（浮点）。
          * @param strength {number} 印记或跨页的强度。该值越高，压印的颜色越深，而且发光与背景之间的对比度也越强。有效值为 0 到 255。
-         * @param quality {number} 应用滤镜的次数。
-         * @param inner {boolean} 指定发光是否为内侧发光。值 true 指定发光是内侧发光。值 false 指定发光是外侧发光（对象外缘周围的发光）。暂未实现。
-         * @param knockout {number} 指定对象是否具有挖空效果。值为 true 将使对象的填充变为透明，并显示文档的背景颜色。暂未实现。
-         * @version Egret 2.4
-         * @platform Web,Native
+         * @param quality {number} 应用滤镜的次数。暂未实现。
+         * @param inner {boolean} 指定发光是否为内侧发光。值 true 指定发光是内侧发光。值 false 指定发光是外侧发光（对象外缘周围的发光）。
+         * @param knockout {number} 指定对象是否具有挖空效果。值为 true 将使对象的填充变为透明，并显示文档的背景颜色。
+         * @version Egret 3.1.4
+         * @platform Web
          */
         function GlowFilter(color, alpha, blurX, blurY, strength, quality, inner, knockout) {
             if (color === void 0) { color = 0xFF0000; }
@@ -10860,20 +10768,215 @@ var egret;
             if (inner === void 0) { inner = false; }
             if (knockout === void 0) { knockout = false; }
             _super.call(this);
-            this.color = color;
-            this.alpha = alpha;
-            this.blurX = blurX;
-            this.blurY = blurY;
-            this.strength = strength;
-            this.quality = quality;
-            this.inner = inner;
-            this.knockout = knockout;
             this.type = "glow";
+            this.$color = color;
             this.$blue = color & 0x0000FF;
             this.$green = (color & 0x00ff00) >> 8;
             this.$red = color >> 16;
+            this.$alpha = alpha;
+            this.$blurX = blurX;
+            this.$blurY = blurY;
+            this.$strength = strength;
+            this.$quality = quality;
+            this.$inner = inner;
+            this.$knockout = knockout;
         }
         var d = __define,c=GlowFilter,p=c.prototype;
+        d(p, "color"
+            /**
+             * @language en_US
+             * The color of the glow.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 光晕颜色。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$color;
+            }
+            ,function (value) {
+                if (this.$color == value) {
+                    return;
+                }
+                this.$color = value;
+                this.$blue = value & 0x0000FF;
+                this.$green = (value & 0x00ff00) >> 8;
+                this.$red = value >> 16;
+                this.invalidate();
+            }
+        );
+        d(p, "alpha"
+            /**
+             * @language en_US
+             * The alpha transparency value for the color.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 颜色的 Alpha 透明度值。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$alpha;
+            }
+            ,function (value) {
+                if (this.$alpha == value) {
+                    return;
+                }
+                this.$alpha = value;
+                this.invalidate();
+            }
+        );
+        d(p, "blurX"
+            /**
+             * @language en_US
+             * The amount of horizontal blur.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 水平模糊量。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$blurX;
+            }
+            ,function (value) {
+                if (this.$blurX == value) {
+                    return;
+                }
+                this.$blurX = value;
+                this.invalidate();
+            }
+        );
+        d(p, "blurY"
+            /**
+             * @language en_US
+             * The amount of vertical blur.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 垂直模糊量。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$blurY;
+            }
+            ,function (value) {
+                if (this.$blurY == value) {
+                    return;
+                }
+                this.$blurY = value;
+                this.invalidate();
+            }
+        );
+        d(p, "strength"
+            /**
+             * @language en_US
+             * The strength of the imprint or spread.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 印记或跨页的强度。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$strength;
+            }
+            ,function (value) {
+                if (this.$strength == value) {
+                    return;
+                }
+                this.$strength = value;
+                this.invalidate();
+            }
+        );
+        d(p, "quality"
+            /**
+             * @language en_US
+             * The number of times to apply the filter.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 应用滤镜的次数。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$quality;
+            }
+            ,function (value) {
+                if (this.$quality == value) {
+                    return;
+                }
+                this.$quality = value;
+                this.invalidate();
+            }
+        );
+        d(p, "inner"
+            /**
+             * @language en_US
+             * Specifies whether the glow is an inner glow.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 指定发光是否为内侧发光。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$inner;
+            }
+            ,function (value) {
+                if (this.$inner == value) {
+                    return;
+                }
+                this.$inner = value;
+                this.invalidate();
+            }
+        );
+        d(p, "knockout"
+            /**
+             * @language en_US
+             * Specifies whether the object has a knockout effect.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 指定对象是否具有挖空效果。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$knockout;
+            }
+            ,function (value) {
+                if (this.$knockout == value) {
+                    return;
+                }
+                this.$knockout = value;
+                this.invalidate();
+            }
+        );
         return GlowFilter;
     }(egret.Filter));
     egret.GlowFilter = GlowFilter;
@@ -10881,7 +10984,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10914,27 +11017,46 @@ var egret;
      * @classdesc
      * 可使用 DropShadowFilter 类向显示对象添加投影。
      * @extends egret.GlowFilter
-     * @private
-     * @version Egret 2.4
+     * @version Egret 3.1.4
      * @platform Web,Native
      */
     var DropShadowFilter = (function (_super) {
         __extends(DropShadowFilter, _super);
         /**
+         * @language en_US
+         * Initializes a new DropShadowFilter instance.
+         * @method egret.DropShadowFilter#constructor
+         * @param distance {number} The offset distance of the bevel. Valid values are in pixels (floating point).
+         * @param angle {number} The angle of the bevel. Valid values are from 0 to 360°.
+         * @param color {number} The color of the glow. Valid values are in the hexadecimal format 0xRRGGBB. The default value is 0xFF0000.
+         * @param alpha {number} The alpha transparency value for the color. Valid values are 0 to 1. For example, .25 sets a transparency value of 25%. The default value is 1.
+         * @param blurX {number} The amount of horizontal blur. Valid values are 0 to 255 (floating point).
+         * @param blurY {number} The amount of vertical blur. Valid values are 0 to 255 (floating point).
+         * @param strength {number} The strength of the imprint or spread. The higher the value, the more color is imprinted and the stronger the contrast between the glow and the background. Valid values are 0 to 255.
+         * @param quality {number} The number of times to apply the filter.
+         * @param inner {boolean} Specifies whether the glow is an inner glow. The value true indicates an inner glow. The default is false, an outer glow (a glow around the outer edges of the object).
+         * @param knockout {number} Specifies whether the object has a knockout effect. A value of true makes the object's fill transparent and reveals the background color of the document. The default value is false (no knockout effect).
+         * @param hideObject {number} Indicates whether or not the object is hidden. The value true indicates that the object itself is not drawn; only the shadow is visible. The default is false, meaning that the object is shown.
+         * @version Egret 3.1.4
+         * @platform Web
+         */
+        /**
+         * @language zh_CN
          * 初始化 DropShadowFilter 对象
-         * @method egret.GlowFilter#constructor
+         * @method egret.DropShadowFilter#constructor
          * @param distance {number} 阴影的偏移距离，以像素为单位。
          * @param angle {number} 阴影的角度，0 到 360 度（浮点）。
          * @param color {number} 光晕颜色，采用十六进制格式 0xRRGGBB。默认值为 0xFF0000。
          * @param alpha {number} 颜色的 Alpha 透明度值。有效值为 0 到 1。例如，0.25 设置透明度值为 25%。
          * @param blurX {number} 水平模糊量。有效值为 0 到 255（浮点）。
          * @param blurY {number} 垂直模糊量。有效值为 0 到 255（浮点）。
-         * @param strength {number} 印记或跨页的强度。该值越高，压印的颜色越深，而且发光与背景之间的对比度也越强。有效值为 0 到 255。暂未实现。
-         * @param quality {number} 应用滤镜的次数。
-         * @param inner {boolean} 指定发光是否为内侧发光。值 true 指定发光是内侧发光。值 false 指定发光是外侧发光（对象外缘周围的发光）。暂未实现。
-         * @param knockout {number} 指定对象是否具有挖空效果。值为 true 将使对象的填充变为透明，并显示文档的背景颜色。暂未实现。
-         * @version Egret 2.4
-         * @platform Web,Native
+         * @param strength {number} 印记或跨页的强度。该值越高，压印的颜色越深，而且发光与背景之间的对比度也越强。有效值为 0 到 255。
+         * @param quality {number} 应用滤镜的次数。暂未实现。
+         * @param inner {boolean} 指定发光是否为内侧发光。值 true 指定发光是内侧发光。值 false 指定发光是外侧发光（对象外缘周围的发光）。
+         * @param knockout {number} 指定对象是否具有挖空效果。值为 true 将使对象的填充变为透明，并显示文档的背景颜色。
+         * @param hideObject {number} 表示是否隐藏对象。如果值为 true，则表示没有绘制对象本身，只有阴影是可见的。默认值为 false（显示对象）。
+         * @version Egret 3.1.4
+         * @platform Web
          */
         function DropShadowFilter(distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject) {
             if (distance === void 0) { distance = 4.0; }
@@ -10949,10 +11071,83 @@ var egret;
             if (knockout === void 0) { knockout = false; }
             if (hideObject === void 0) { hideObject = false; }
             _super.call(this, color, alpha, blurX, blurY, strength, quality, inner, knockout);
-            this.distance = distance;
-            this.angle = angle;
+            this.$distance = distance;
+            this.$angle = angle;
+            this.$hideObject = hideObject;
         }
         var d = __define,c=DropShadowFilter,p=c.prototype;
+        d(p, "distance"
+            /**
+             * @language en_US
+             * The offset distance of the bevel.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 阴影的偏移距离，以像素为单位。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$distance;
+            }
+            ,function (value) {
+                if (this.$distance == value) {
+                    return;
+                }
+                this.$distance = value;
+                this.invalidate();
+            }
+        );
+        d(p, "angle"
+            /**
+             * @language en_US
+             * The angle of the bevel.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 阴影的角度。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$angle;
+            }
+            ,function (value) {
+                if (this.$angle == value) {
+                    return;
+                }
+                this.$angle = value;
+                this.invalidate();
+            }
+        );
+        d(p, "hideObject"
+            /**
+             * @language en_US
+             * Indicates whether or not the object is hidden.
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            /**
+             * @language zh_CN
+             * 表示是否隐藏对象。
+             * @version Egret 3.1.4
+             * @platform Web
+             */
+            ,function () {
+                return this.$hideObject;
+            }
+            ,function (value) {
+                if (this.$hideObject == value) {
+                    return;
+                }
+                this.$hideObject = value;
+                this.invalidate();
+            }
+        );
         return DropShadowFilter;
     }(egret.GlowFilter));
     egret.DropShadowFilter = DropShadowFilter;
@@ -10960,7 +11155,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -10989,54 +11184,8 @@ var egret;
 var egret;
 (function (egret) {
     var PI = Math.PI;
-    var HalfPI = PI / 2;
-    var PacPI = PI + HalfPI;
     var TwoPI = PI * 2;
-    var DEG_TO_RAD = Math.PI / 180;
-    /**
-     * @private
-     */
-    function cos(angle) {
-        switch (angle) {
-            case HalfPI:
-            case -PacPI:
-                return 0;
-            case PI:
-            case -PI:
-                return -1;
-            case PacPI:
-            case -HalfPI:
-                return 0;
-            default:
-                return Math.cos(angle);
-        }
-    }
-    /**
-     * @private
-     */
-    function sin(angle) {
-        switch (angle) {
-            case HalfPI:
-            case -PacPI:
-                return 1;
-            case PI:
-            case -PI:
-                return 0;
-            case PacPI:
-            case -HalfPI:
-                return -1;
-            default:
-                return Math.sin(angle);
-        }
-    }
-    /**
-     * @private
-     */
-    egret.$cos = cos;
-    /**
-     * @private
-     */
-    egret.$sin = sin;
+    var DEG_TO_RAD = PI / 180;
     var matrixPool = [];
     /**
      * @language en_US
@@ -11304,8 +11453,9 @@ var egret;
         p.rotate = function (angle) {
             angle = +angle;
             if (angle !== 0) {
-                var u = cos(angle);
-                var v = sin(angle);
+                angle = angle / DEG_TO_RAD;
+                var u = egret.NumberUtils.cos(angle);
+                var v = egret.NumberUtils.sin(angle);
                 var ta = this.a;
                 var tb = this.b;
                 var tc = this.c;
@@ -11749,15 +11899,17 @@ var egret;
                 this.d = scaleY;
                 return;
             }
-            var u = cos(skewX);
-            var v = sin(skewX);
+            skewX = skewX / DEG_TO_RAD;
+            skewY = skewY / DEG_TO_RAD;
+            var u = egret.NumberUtils.cos(skewX);
+            var v = egret.NumberUtils.sin(skewX);
             if (skewX == skewY) {
                 this.a = u * scaleX;
                 this.b = v * scaleX;
             }
             else {
-                this.a = cos(skewY) * scaleX;
-                this.b = sin(skewY) * scaleX;
+                this.a = egret.NumberUtils.cos(skewY) * scaleX;
+                this.b = egret.NumberUtils.sin(skewY) * scaleX;
             }
             this.c = -v * scaleY;
             this.d = u * scaleY;
@@ -11848,6 +12000,7 @@ var egret;
     locale_strings[1046] = "BitmapText no corresponding characters: {0}, please check the configuration file";
     locale_strings[1047] = "egret.localStorage.setItem save failed,key={0}&value={1}";
     locale_strings[1048] = "Video loading failed";
+    locale_strings[1049] = "In the absence of sound is not allowed to play after loading";
     //gui  3000-3099
     locale_strings[3000] = "Theme configuration file failed to load: {0}";
     locale_strings[3001] = "Cannot find the skin name which is configured in Theme: {0}";
@@ -11863,7 +12016,7 @@ var egret;
     locale_strings[3011] = "Index:\"{0}\" is out of the visual element index range";
     locale_strings[3012] = "This method is not available in Scroller component!";
     locale_strings[3013] = "UIStage is GUI root container, and only one such instant is in the display list！";
-    locale_strings[3014] = "Webkit fullscreen error";
+    locale_strings[3014] = "set fullscreen error";
     //socket 3100-3199
     locale_strings[3100] = "Current browser does not support WebSocket";
     locale_strings[3101] = "Please connect Socket firstly";
@@ -11876,7 +12029,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -11994,6 +12147,7 @@ var egret;
     locale_strings[1046] = "BitmapText 找不到对应字符:{0}，请检查配置文件";
     locale_strings[1047] = "egret.localStorage.setItem保存失败,key={0}&value={1}";
     locale_strings[1048] = "视频加载失败";
+    locale_strings[1049] = "声音在没有加载完之前不允许播放";
     //gui  3000-3099
     locale_strings[3000] = "主题配置文件加载失败: {0}";
     locale_strings[3001] = "找不到主题中所配置的皮肤类名: {0}";
@@ -12022,7 +12176,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12061,7 +12215,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12108,7 +12262,7 @@ var egret;
          */
         function $popSoundChannel(channel) {
             var index = usingChannel.indexOf(channel);
-            if (index < 0) {
+            if (index >= 0) {
                 usingChannel.splice(index, 1);
                 return true;
             }
@@ -12122,7 +12276,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12150,7 +12304,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12181,7 +12335,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12209,7 +12363,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12387,7 +12541,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12468,7 +12622,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12499,7 +12653,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12578,7 +12732,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12609,7 +12763,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12830,7 +12984,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -12950,7 +13104,7 @@ var egret;
              * @private
              * 更新对象在舞台上的显示区域和透明度,返回显示区域是否发生改变。
              */
-            p.$update = function () {
+            p.$update = function (dirtyRegionPolicy) {
                 var target = this.root;
                 //当cache对象的显示列表已经加入dirtyList，对象又取消cache的时候，root为空
                 if (target == null) {
@@ -12961,28 +13115,45 @@ var egret;
                 //这里不需要更新node.renderAlpha。因为alpha已经写入到缓存的内部
                 //必须在访问moved属性前调用以下两个方法，因为moved属性在以下两个方法内重置。
                 var concatenatedMatrix = target.$getConcatenatedMatrix();
-                var bounds = target.$getOriginalBounds();
-                var displayList = target.$parentDisplayList;
-                var region = node.renderRegion;
-                if (this.needUpdateRegions) {
-                    this.updateDirtyRegions();
+                if (dirtyRegionPolicy == egret.DirtyRegionPolicy.OFF) {
+                    var displayList = target.$parentDisplayList;
+                    if (this.needUpdateRegions) {
+                        this.updateDirtyRegions();
+                    }
+                    if (!displayList) {
+                        return false;
+                    }
+                    var matrix = node.renderMatrix;
+                    matrix.copyFrom(concatenatedMatrix);
+                    var root = displayList.root;
+                    if (root !== target.$stage) {
+                        target.$getConcatenatedMatrixAt(root, matrix);
+                    }
                 }
-                if (!displayList) {
-                    region.setTo(0, 0, 0, 0);
+                else {
+                    var bounds = target.$getOriginalBounds();
+                    var displayList = target.$parentDisplayList;
+                    var region = node.renderRegion;
+                    if (this.needUpdateRegions) {
+                        this.updateDirtyRegions();
+                    }
+                    if (!displayList) {
+                        region.setTo(0, 0, 0, 0);
+                        node.moved = false;
+                        return false;
+                    }
+                    if (!node.moved) {
+                        return false;
+                    }
                     node.moved = false;
-                    return false;
+                    var matrix = node.renderMatrix;
+                    matrix.copyFrom(concatenatedMatrix);
+                    var root = displayList.root;
+                    if (root !== target.$stage) {
+                        target.$getConcatenatedMatrixAt(root, matrix);
+                    }
+                    region.updateRegion(bounds, matrix);
                 }
-                if (!node.moved) {
-                    return false;
-                }
-                node.moved = false;
-                var matrix = node.renderMatrix;
-                matrix.copyFrom(concatenatedMatrix);
-                var root = displayList.root;
-                if (root !== target.$stage) {
-                    target.$getConcatenatedMatrixAt(root, matrix);
-                }
-                region.updateRegion(bounds, matrix);
                 return true;
             };
             /**
@@ -13034,7 +13205,7 @@ var egret;
                                 node.needRedraw = true;
                             }
                         }
-                        var moved = display.$update();
+                        var moved = display.$update(this.$dirtyRegionPolicy);
                         if (node.renderAlpha > 0 && node.renderVisible && (moved || !node.needRedraw)) {
                             if (dirtyRegion.addRegion(node.renderRegion)) {
                                 node.needRedraw = true;
@@ -13045,7 +13216,7 @@ var egret;
                         if (dirtyRegion.addRegion(node.renderRegion)) {
                             node.needRedraw = true;
                         }
-                        var moved = display.$update();
+                        var moved = display.$update(this.$dirtyRegionPolicy);
                         if (moved || !node.needRedraw) {
                             if (dirtyRegion.addRegion(node.renderRegion)) {
                                 node.needRedraw = true;
@@ -13131,7 +13302,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -13162,7 +13333,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -13193,7 +13364,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -13589,7 +13760,7 @@ var egret;
                         costRender: lastCostRender
                     });
                     this.totalTick = 0;
-                    this.totalTime = this.totalTime % 500;
+                    this.totalTime = this.totalTime % 1000;
                     this.drawCalls = 0;
                     this.dirtyRatio = 0;
                     this.costDirty = 0;
@@ -13634,7 +13805,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -13662,7 +13833,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -13943,7 +14114,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -13977,7 +14148,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14005,7 +14176,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14033,7 +14204,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14160,7 +14331,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14301,7 +14472,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14335,7 +14506,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14405,14 +14576,7 @@ var egret;
                  * 全局帧率
                  */
                 this.$frameRate = 30;
-                /**
-                 * @private
-                 */
-                this.frameInterval = 2000;
-                /**
-                 * @private
-                 */
-                this.lastCount = 2000;
+                this.lastTimeStamp = 0;
                 /**
                  * @private
                  * ticker 花销的时间
@@ -14422,6 +14586,8 @@ var egret;
                     egret.$error(1008, "egret.sys.SystemTicker");
                 }
                 sys.$START_TIME = Date.now();
+                this.frameDeltaTime = 1000 / this.$frameRate;
+                this.lastCount = this.frameInterval = Math.round(60000 / this.$frameRate);
             }
             var d = __define,c=SystemTicker,p=c.prototype;
             /**
@@ -14520,6 +14686,7 @@ var egret;
                     egret_native.setFrameRate(value);
                     value = 60;
                 }
+                this.frameDeltaTime = 1000 / value;
                 //这里用60*1000来避免浮点数计算不准确的问题。
                 this.lastCount = this.frameInterval = Math.round(60000 / value);
                 return true;
@@ -14540,15 +14707,22 @@ var egret;
                         requestRenderingFlag = true;
                     }
                 }
-                this.lastCount -= 1000;
                 var t2 = egret.getTimer();
-                if (this.lastCount > 0) {
-                    if (requestRenderingFlag) {
-                        this.render(false, this.costEnterFrame + t2 - t1);
-                    }
-                    return;
+                var deltaTime = timeStamp - this.lastTimeStamp;
+                if (deltaTime >= this.frameDeltaTime) {
+                    this.lastCount = this.frameInterval;
                 }
-                this.lastCount += this.frameInterval;
+                else {
+                    this.lastCount -= 1000;
+                    if (this.lastCount > 0) {
+                        if (requestRenderingFlag) {
+                            this.render(false, this.costEnterFrame + t2 - t1);
+                        }
+                        return;
+                    }
+                    this.lastCount += this.frameInterval;
+                }
+                this.lastTimeStamp = timeStamp;
                 this.render(true, this.costEnterFrame + t2 - t1);
                 var t3 = egret.getTimer();
                 this.broadcastEnterFrame();
@@ -14620,7 +14794,7 @@ if (DEBUG) {
 }
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14766,7 +14940,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14858,7 +15032,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -14926,6 +15100,147 @@ var egret;
                 this.image = null;
                 this.matrix = null;
             };
+            BitmapNode.$updateTextureData = function (node, image, bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH, sourceWidth, sourceHeight, scale9Grid, fillMode, smoothing) {
+                if (!image) {
+                    return;
+                }
+                var scale = egret.$TextureScaleFactor;
+                node.smoothing = smoothing;
+                node.image = image;
+                node.imageWidth = sourceWidth;
+                node.imageHeight = sourceHeight;
+                if (scale9Grid) {
+                    BitmapNode.$updateTextureDataWithScale9Grid(node, scale9Grid, bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH);
+                }
+                else if (fillMode == egret.BitmapFillMode.SCALE) {
+                    var tsX = destW / textureWidth;
+                    var tsY = destH / textureHeight;
+                    node.drawImage(bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX * tsX, offsetY * tsY, tsX * bitmapWidth, tsY * bitmapHeight);
+                }
+                else if (fillMode == egret.BitmapFillMode.CLIP) {
+                    var displayW = Math.min(textureWidth, destW);
+                    var displayH = Math.min(textureHeight, destH);
+                    var scaledBitmapW = bitmapWidth * scale;
+                    var scaledBitmapH = bitmapHeight * scale;
+                    BitmapNode.drawClipImage(node, scale, bitmapX, bitmapY, scaledBitmapW, scaledBitmapH, offsetX, offsetY, displayW, displayH);
+                }
+                else {
+                    var scaledBitmapW = bitmapWidth * scale;
+                    var scaledBitmapH = bitmapHeight * scale;
+                    for (var startX = 0; startX < destW; startX += textureWidth) {
+                        for (var startY = 0; startY < destH; startY += textureHeight) {
+                            var displayW = Math.min(destW - startX, textureWidth);
+                            var displayH = Math.min(destH - startY, textureHeight);
+                            BitmapNode.drawClipImage(node, scale, bitmapX, bitmapY, scaledBitmapW, scaledBitmapH, offsetX, offsetY, displayW, displayH, startX, startY);
+                        }
+                    }
+                }
+            };
+            /**
+             * @private
+             * 绘制九宫格位图
+             */
+            BitmapNode.$updateTextureDataWithScale9Grid = function (node, scale9Grid, bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH) {
+                var imageWidth = bitmapWidth;
+                var imageHeight = bitmapHeight;
+                destW = destW - (textureWidth - bitmapWidth * egret.$TextureScaleFactor);
+                destH = destH - (textureHeight - bitmapHeight * egret.$TextureScaleFactor);
+                var targetW0 = scale9Grid.x - offsetX;
+                var targetH0 = scale9Grid.y - offsetY;
+                var sourceW0 = targetW0 / egret.$TextureScaleFactor;
+                var sourceH0 = targetH0 / egret.$TextureScaleFactor;
+                var sourceW1 = scale9Grid.width / egret.$TextureScaleFactor;
+                var sourceH1 = scale9Grid.height / egret.$TextureScaleFactor;
+                //防止空心的情况出现。
+                if (sourceH1 == 0) {
+                    sourceH1 = 1;
+                    if (sourceH0 >= imageHeight) {
+                        sourceH0--;
+                    }
+                }
+                if (sourceW1 == 0) {
+                    sourceW1 = 1;
+                    if (sourceW0 >= imageWidth) {
+                        sourceW0--;
+                    }
+                }
+                var sourceX0 = bitmapX;
+                var sourceX1 = sourceX0 + sourceW0;
+                var sourceX2 = sourceX1 + sourceW1;
+                var sourceW2 = imageWidth - sourceW0 - sourceW1;
+                var sourceY0 = bitmapY;
+                var sourceY1 = sourceY0 + sourceH0;
+                var sourceY2 = sourceY1 + sourceH1;
+                var sourceH2 = imageHeight - sourceH0 - sourceH1;
+                var targetW2 = sourceW2 * egret.$TextureScaleFactor;
+                var targetH2 = sourceH2 * egret.$TextureScaleFactor;
+                if ((sourceW0 + sourceW2) * egret.$TextureScaleFactor > destW || (sourceH0 + sourceH2) * egret.$TextureScaleFactor > destH) {
+                    node.drawImage(bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, destW, destH);
+                    return;
+                }
+                var targetX0 = offsetX;
+                var targetX1 = targetX0 + targetW0;
+                var targetX2 = targetX0 + (destW - targetW2);
+                var targetW1 = destW - targetW0 - targetW2;
+                var targetY0 = offsetY;
+                var targetY1 = targetY0 + targetH0;
+                var targetY2 = targetY0 + destH - targetH2;
+                var targetH1 = destH - targetH0 - targetH2;
+                //
+                //             x0     x1     x2
+                //          y0 +------+------+------+
+                //             |      |      |      | h0
+                //             |      |      |      |
+                //          y1 +------+------+------+
+                //             |      |      |      | h1
+                //             |      |      |      |
+                //          y2 +------+------+------+
+                //             |      |      |      | h2
+                //             |      |      |      |
+                //             +------+------+------+
+                //                w0     w1     w2
+                //
+                if (sourceH0 > 0) {
+                    if (sourceW0 > 0)
+                        node.drawImage(sourceX0, sourceY0, sourceW0, sourceH0, targetX0, targetY0, targetW0, targetH0);
+                    if (sourceW1 > 0)
+                        node.drawImage(sourceX1, sourceY0, sourceW1, sourceH0, targetX1, targetY0, targetW1, targetH0);
+                    if (sourceW2 > 0)
+                        node.drawImage(sourceX2, sourceY0, sourceW2, sourceH0, targetX2, targetY0, targetW2, targetH0);
+                }
+                if (sourceH1 > 0) {
+                    if (sourceW0 > 0)
+                        node.drawImage(sourceX0, sourceY1, sourceW0, sourceH1, targetX0, targetY1, targetW0, targetH1);
+                    if (sourceW1 > 0)
+                        node.drawImage(sourceX1, sourceY1, sourceW1, sourceH1, targetX1, targetY1, targetW1, targetH1);
+                    if (sourceW2 > 0)
+                        node.drawImage(sourceX2, sourceY1, sourceW2, sourceH1, targetX2, targetY1, targetW2, targetH1);
+                }
+                if (sourceH2 > 0) {
+                    if (sourceW0 > 0)
+                        node.drawImage(sourceX0, sourceY2, sourceW0, sourceH2, targetX0, targetY2, targetW0, targetH2);
+                    if (sourceW1 > 0)
+                        node.drawImage(sourceX1, sourceY2, sourceW1, sourceH2, targetX1, targetY2, targetW1, targetH2);
+                    if (sourceW2 > 0)
+                        node.drawImage(sourceX2, sourceY2, sourceW2, sourceH2, targetX2, targetY2, targetW2, targetH2);
+                }
+            };
+            /**
+      * @private
+      */
+            BitmapNode.drawClipImage = function (node, scale, bitmapX, bitmapY, scaledBitmapW, scaledBitmapH, offsetX, offsetY, destW, destH, startX, startY) {
+                if (startX === void 0) { startX = 0; }
+                if (startY === void 0) { startY = 0; }
+                var offset = offsetX + scaledBitmapW - destW;
+                if (offset > 0) {
+                    scaledBitmapW -= offset;
+                }
+                offset = offsetY + scaledBitmapH - destH;
+                if (offset > 0) {
+                    scaledBitmapH -= offset;
+                }
+                node.drawImage(bitmapX, bitmapY, scaledBitmapW / scale, scaledBitmapH / scale, startX + offsetX, startY + offsetY, scaledBitmapW, scaledBitmapH);
+            };
             return BitmapNode;
         }(sys.RenderNode));
         sys.BitmapNode = BitmapNode;
@@ -14934,7 +15249,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15075,6 +15390,7 @@ var egret;
              */
             p.clear = function () {
                 this.drawData.length = 0;
+                this.dirtyRender = true;
             };
             /**
              * 覆盖父类方法，不自动清空缓存的绘图数据，改为手动调用clear()方法清空。
@@ -15089,7 +15405,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15159,7 +15475,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15239,7 +15555,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15298,66 +15614,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    var sys;
-    (function (sys) {
-        /**
-         * @private
-         * 位图渲染节点
-         */
-        var SetTransformNode = (function (_super) {
-            __extends(SetTransformNode, _super);
-            function SetTransformNode() {
-                _super.call(this);
-                this.type = 5 /* SetTransformNode */;
-            }
-            var d = __define,c=SetTransformNode,p=c.prototype;
-            /**
-             * 绘制一次位图
-             */
-            p.setTransform = function (a, b, c, d, tx, ty) {
-                if (this.drawData.length != 0) {
-                    this.drawData.length = 0;
-                }
-                this.drawData.push(a, b, c, d, tx, ty);
-                this.renderCount++;
-            };
-            return SetTransformNode;
-        }(sys.RenderNode));
-        sys.SetTransformNode = SetTransformNode;
-        egret.registerClass(SetTransformNode,'egret.sys.SetTransformNode');
-    })(sys = egret.sys || (egret.sys = {}));
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15385,7 +15642,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15480,7 +15737,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15778,7 +16035,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15827,7 +16084,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15876,7 +16133,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -15926,7 +16183,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -16382,9 +16639,6 @@ var egret;
                 case 4 /* GroupNode */:
                     drawCalls = this.renderGroup(node, context);
                     break;
-                case 5 /* SetTransformNode */:
-                    context.setTransform(node.drawData[0], node.drawData[1], node.drawData[2], node.drawData[3], node.drawData[4], node.drawData[5]);
-                    break;
                 case 6 /* SetAlphaNode */:
                     context.globalAlpha = node.drawData[0];
                     break;
@@ -16631,7 +16885,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -16983,7 +17237,7 @@ egret.Capabilities.$isMobile = testDeviceType();
 egret.Capabilities.$runtimeType = testRuntimeType() ? egret.RuntimeType.WEB : egret.RuntimeType.NATIVE;
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -17011,7 +17265,7 @@ egret.Capabilities.$runtimeType = testRuntimeType() ? egret.RuntimeType.WEB : eg
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -17122,6 +17376,15 @@ var egret;
         };
         /**
          * @private
+         */
+        p.getConfig = function (name, key) {
+            if (!this.charList[name]) {
+                return 0;
+            }
+            return this.charList[name][key];
+        };
+        /**
+         * @private
          *
          * @returns
          */
@@ -17174,6 +17437,7 @@ var egret;
                 c["h"] = this.getConfigByKey(charText, "height");
                 c["offX"] = this.getConfigByKey(charText, "xoffset");
                 c["offY"] = this.getConfigByKey(charText, "yoffset");
+                c["xadvance"] = this.getConfigByKey(charText, "xadvance");
             }
             return chars;
         };
@@ -17324,6 +17588,7 @@ var egret;
          * @private
          */
         p.$setText = function (value) {
+            value = String(value);
             var values = this.$BitmapText;
             if (value == values[2 /* text */])
                 return false;
@@ -17593,7 +17858,7 @@ var egret;
                     node.imageWidth = texture._sourceWidth;
                     node.imageHeight = texture._sourceHeight;
                     node.drawImage(texture._bitmapX, texture._bitmapY, bitmapWidth, bitmapHeight, xPos + texture._offsetX, yPos + texture._offsetY, texture.$getScaleBitmapWidth(), texture.$getScaleBitmapHeight());
-                    xPos += texture.$getTextureWidth() + values[4 /* letterSpacing */];
+                    xPos += bitmapFont.getConfig(character, "xadvance") || (texture.$getTextureWidth() + values[4 /* letterSpacing */]);
                 }
                 yPos += lineHeight + values[3 /* lineSpacing */];
             }
@@ -17732,11 +17997,23 @@ var egret;
                         line = line.substring(j);
                         len = line.length;
                         j = 0;
-                        xPos = texureWidth;
+                        //最后一个字符要计算纹理宽度，而不是xadvance
+                        if (j == len - 1) {
+                            xPos = texureWidth;
+                        }
+                        else {
+                            xPos = bitmapFont.getConfig(character, "xadvance") || texureWidth;
+                        }
                         lineHeight = textureHeight;
                         continue;
                     }
-                    xPos += texureWidth;
+                    //最后一个字符要计算纹理宽度，而不是xadvance
+                    if (j == len - 1) {
+                        xPos += texureWidth;
+                    }
+                    else {
+                        xPos += bitmapFont.getConfig(character, "xadvance") || texureWidth;
+                    }
                     lineHeight = Math.max(textureHeight, lineHeight);
                 }
                 if (textFieldHeight && i > 0 && textHeight > textFieldHeight) {
@@ -17810,7 +18087,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -17938,7 +18215,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -18197,7 +18474,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -18225,7 +18502,7 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -18494,7 +18771,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -18525,7 +18802,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -19788,9 +20065,9 @@ var egret;
             this.$invalidateContentBounds();
             this.$TextField[18 /* textLinesChanged */] = true;
         };
-        p.$update = function (bounds) {
+        p.$update = function (dirtyRegionPolicy, bounds) {
             var tmpBounds = this.$getRenderBounds();
-            var result = _super.prototype.$update.call(this, tmpBounds);
+            var result = _super.prototype.$update.call(this, dirtyRegionPolicy, tmpBounds);
             egret.Rectangle.release(tmpBounds);
             return result;
         };
@@ -20262,7 +20539,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -20352,7 +20629,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -20429,7 +20706,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -20650,7 +20927,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -20684,7 +20961,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -20808,7 +21085,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -21920,7 +22197,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22085,7 +22362,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22160,6 +22437,9 @@ var egret;
             var valueFloor = Math.floor(value);
             var valueCeil = valueFloor + 1;
             var resultFloor = NumberUtils.sinInt(valueFloor);
+            if (valueFloor == value) {
+                return resultFloor;
+            }
             var resultCeil = NumberUtils.sinInt(valueCeil);
             return (value - valueFloor) * resultCeil + (valueCeil - value) * resultFloor;
         };
@@ -22174,16 +22454,7 @@ var egret;
             if (value < 0) {
                 value += 360;
             }
-            if (value < 90) {
-                return egret_sin_map[value];
-            }
-            if (value < 180) {
-                return egret_cos_map[value - 90];
-            }
-            if (value < 270) {
-                return -egret_sin_map[value - 180];
-            }
-            return -egret_cos_map[value - 270];
+            return egret_sin_map[value];
         };
         /**
          * @language en_US
@@ -22205,6 +22476,9 @@ var egret;
             var valueFloor = Math.floor(value);
             var valueCeil = valueFloor + 1;
             var resultFloor = NumberUtils.cosInt(valueFloor);
+            if (valueFloor == value) {
+                return resultFloor;
+            }
             var resultCeil = NumberUtils.cosInt(valueCeil);
             return (value - valueFloor) * resultCeil + (valueCeil - value) * resultFloor;
         };
@@ -22219,16 +22493,7 @@ var egret;
             if (value < 0) {
                 value += 360;
             }
-            if (value < 90) {
-                return egret_cos_map[value];
-            }
-            if (value < 180) {
-                return -egret_sin_map[value - 90];
-            }
-            if (value < 270) {
-                return -egret_cos_map[value - 180];
-            }
-            return egret_sin_map[value - 270];
+            return egret_cos_map[value];
         };
         return NumberUtils;
     }());
@@ -22238,10 +22503,16 @@ var egret;
 var egret_sin_map = {};
 var egret_cos_map = {};
 var DEG_TO_RAD = Math.PI / 180;
-for (var NumberUtils_i = 0; NumberUtils_i <= 90; NumberUtils_i++) {
+for (var NumberUtils_i = 0; NumberUtils_i < 360; NumberUtils_i++) {
     egret_sin_map[NumberUtils_i] = Math.sin(NumberUtils_i * DEG_TO_RAD);
     egret_cos_map[NumberUtils_i] = Math.cos(NumberUtils_i * DEG_TO_RAD);
 }
+egret_sin_map[90] = 1;
+egret_cos_map[90] = 0;
+egret_sin_map[180] = 0;
+egret_cos_map[180] = -1;
+egret_sin_map[270] = -1;
+egret_cos_map[270] = 0;
 //对未提供bind的浏览器实现bind机制
 if (!Function.prototype.bind) {
     Function.prototype.bind = function (oThis) {
@@ -22262,7 +22533,7 @@ if (!Function.prototype.bind) {
 }
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22356,6 +22627,10 @@ var egret;
              * @private
              */
             this.lastCount = 1000;
+            /**
+             * @private
+             */
+            this.lastTimeStamp = 0;
             this.delay = delay;
             this.repeatCount = +repeatCount | 0;
         }
@@ -22457,6 +22732,7 @@ var egret;
             if (this._running)
                 return;
             this.lastCount = this.updateInterval;
+            this.lastTimeStamp = egret.getTimer();
             egret.sys.$ticker.$startTick(this.$update, this);
             this._running = true;
         };
@@ -22484,11 +22760,18 @@ var egret;
          * Ticker以60FPS频率刷新此方法
          */
         p.$update = function (timeStamp) {
-            this.lastCount -= 1000;
-            if (this.lastCount > 0) {
-                return false;
+            var deltaTime = timeStamp - this.lastTimeStamp;
+            if (deltaTime >= this._delay) {
+                this.lastCount = this.updateInterval;
             }
-            this.lastCount += this.updateInterval;
+            else {
+                this.lastCount -= 1000;
+                if (this.lastCount > 0) {
+                    return false;
+                }
+                this.lastCount += this.updateInterval;
+            }
+            this.lastTimeStamp = timeStamp;
             this._currentCount++;
             var complete = (this.repeatCount > 0 && this._currentCount >= this.repeatCount);
             egret.TimerEvent.dispatchTimerEvent(this, egret.TimerEvent.TIMER);
@@ -22509,7 +22792,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22540,7 +22823,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22642,7 +22925,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22778,7 +23061,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22856,7 +23139,7 @@ var egret;
 var __global = __global || this;
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22887,7 +23170,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -22966,7 +23249,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -23039,7 +23322,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -23090,7 +23373,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -23148,7 +23431,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -23226,7 +23509,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -23284,7 +23567,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -23341,7 +23624,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -23405,7 +23688,7 @@ var egret;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
