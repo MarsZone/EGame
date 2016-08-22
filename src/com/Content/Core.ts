@@ -20,7 +20,7 @@ module Content {
                 this.player.moveRight = false;
                 this.player.disableKeyboardNpcTalk = false;
                 this.renderer.setCore(this);
-                this.init("",this.started_callback);    
+                this.init();    
             }
             
             map:Gmap.Map;
@@ -150,7 +150,7 @@ module Content {
                 this.pathfinder = pathfinder;
             }
             dotest;
-            init(action="",started_callback){
+            init(){
                 var self = this;
                 //egret.startTick(this.update,this);
                 //
@@ -180,13 +180,18 @@ module Content {
                         //self.initPlayer();
                         self.setCursor("hand");
 
-                        self.connect(action, started_callback);
+                        //self.connect(action, started_callback);
 
                         clearInterval(wait);
                     }
-                }, 100);    
-                   
+                }, 100);
 
+            }
+            login():void{
+                //this.connect("create", started_callback);
+            }
+            create():void{
+                //this.connect("login", started_callback);
             }
             addItem(item, x, y) {
                 item.setSprite(this.sprites[item.getSpriteName()]);
@@ -462,10 +467,12 @@ module Content {
                 self.started = true;
                 if(action === 'create') {
                     //self.client.sendCreate(self.player);
+                    self.net.sendCreate();
                 } else {
                     //self.client.sendLogin(self.player);
+                    self.net.sendLogin();
                 }
-                self.net.sendLogin();
+                //self.net.sendLogin();
             });
             this.net.onEntityList(function(list) {
                 var entityIds = _.pluck(self.entities, 'id'),

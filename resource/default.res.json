@@ -1,11 +1,11 @@
 {
 	"groups": [
 		{
-			"keys": "bgImage,egretIcon,ic_keyboard_arrow_right_48px_png",
+			"keys": "ic_keyboard_arrow_right_48px_png,login_bg_jpg",
 			"name": "preload"
 		},
 		{
-			"keys": "talk_png,wood3_png,bgImage,villager_png,villagegirl_png,egretIcon,wizard_png,achievements_png,agent_png,axe_png,barsheet_png,bat_png,beachnpc_png,bluesword_png,border_png,boss_png,chest_png,clotharmor_png,coder_png,crab_png,death_png,deathknight_png,desertnpc_png,eye_png,firefox_png,forestnpc_png,goblin_png,goldenarmor_png,goldensword_png,guard_png,hand_png,item-axe_png,item-bluesword_png,item-burger_png,item-cake_png,item-clotharmor_png,item-firepotion_png,item-flask_png,item-goldenarmor_png,item-goldensword_png,item-leatherarmor_png,item-mailarmor_png,item-morningstar_png,item-platearmor_png,item-redarmor_png,item-redsword_png,item-sword1_png,item-sword2_png,king_png,lavanpc_png,leatherarmor_png,loot_png,mailarmor_png,morningstar_png,nyan_png,octocat_png,ogre_png,platearmor_png,priest_png,rat_png,redarmor_png,redsword_png,rick_png,scientist_png,shadow16_png,skeleton_png,skeleton2_png,snake_png,sorcerer_png,sparks_png,spectre_png,spritesheet_png,target_png,tilesheet_png,sword2_png,sword_png,wood2_png,wood_png,sword1_png",
+			"keys": "talk_png,wood3_png,villager_png,villagegirl_png,wizard_png,achievements_png,agent_png,axe_png,barsheet_png,bat_png,beachnpc_png,bluesword_png,border_png,boss_png,chest_png,clotharmor_png,coder_png,crab_png,death_png,deathknight_png,desertnpc_png,eye_png,firefox_png,forestnpc_png,goblin_png,goldenarmor_png,goldensword_png,guard_png,hand_png,item-axe_png,item-bluesword_png,item-burger_png,item-cake_png,item-clotharmor_png,item-firepotion_png,item-flask_png,item-goldenarmor_png,item-goldensword_png,item-leatherarmor_png,item-mailarmor_png,item-morningstar_png,item-platearmor_png,item-redarmor_png,item-redsword_png,item-sword1_png,item-sword2_png,king_png,lavanpc_png,leatherarmor_png,loot_png,mailarmor_png,morningstar_png,nyan_png,octocat_png,ogre_png,platearmor_png,priest_png,rat_png,redarmor_png,redsword_png,rick_png,scientist_png,shadow16_png,skeleton_png,skeleton2_png,snake_png,sorcerer_png,sparks_png,spectre_png,spritesheet_png,target_png,tilesheet_png,sword2_png,sword_png,wood2_png,wood_png,sword1_png",
 			"name": "image"
 		},
 		{
@@ -14,16 +14,6 @@
 		}
 	],
 	"resources": [
-		{
-			"url": "assets/bg.jpg",
-			"type": "image",
-			"name": "bgImage"
-		},
-		{
-			"url": "assets/egret_icon.png",
-			"type": "image",
-			"name": "egretIcon"
-		},
 		{
 			"url": "config/description.json",
 			"type": "sound",
@@ -778,6 +768,17 @@
 			"url": "assets/world_client.json",
 			"type": "json",
 			"name": "world_client_json"
+		},
+		{
+			"url": "assets/login_bg.jpg",
+			"type": "image",
+			"name": "login_bg_jpg"
+		},
+		{
+			"url": "assets/common/Blue-button.png",
+			"type": "image",
+			"name": "Blue-button_png",
+			"scale9grid": "58,66,491,62"
 		}
 	]
 }

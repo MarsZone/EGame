@@ -3,7 +3,7 @@
  * @author 
  *
  */
-
+//import io = require('socket.io-client');
 module NetWork{
     export class Net extends egret.EventDispatcher{
         //webSocket:egret.WebSocket = new egret.WebSocket();
@@ -15,7 +15,7 @@ module NetWork{
             this.entityFactory=new Tools.EntityFactory();
             this.commands = new NetWork.Commands();
         }
-        connection;
+        connection:SocketIOClient.Socket;
         commands:NetWork.Commands;
         fail_callback=null;
         spawn_callback = null;
@@ -240,7 +240,13 @@ module NetWork{
             var user=new Model.User();
             user.setData("mars","123456");
             Model.ModelBase.instance.user = user;
-            this.sendMessage([Types.Messages.LOGIN,user.name,user.pw]);
+            this.sendMessage([Types.Messages.LOGIN,Model.ModelBase.instance.user.name,Model.ModelBase.instance.user.pw]);
+        }
+        sendCreate() {
+            this.sendMessage([Types.Messages.CREATE,
+                              Model.ModelBase.instance.user.name,
+                              Model.ModelBase.instance.user.pw,
+                              Model.ModelBase.instance.user.email]);
         }
         connected_callback = null;
         onConnected(callback) {

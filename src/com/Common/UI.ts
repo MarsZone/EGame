@@ -5,8 +5,8 @@ module Common {
 	 *
 	 */
 	export class UI extends egret.Sprite{
-		
-    	public constructor() {
+    	public loginView:LoginView;
+		public constructor() {
     		super();
 			this.width = Main.StageWidth;
 			this.height = Main.StageHeight;
@@ -14,14 +14,24 @@ module Common {
 		}
 		arrow:egret.Sprite;
 		init():void{
-			//for test
-			// this.arrow=new egret.Sprite();
-			// this.arrow.addChild(Main.createBitmapByName("ic_keyboard_arrow_right_48px_png"));
-			// this.arrow.x=0;
-			// this.arrow.y = this.height-this.arrow.height;
-			// this.addChild(this.arrow);
-			// this.arrow.touchEnabled=true;
-			// this.arrow.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onArrowTouch,this);
+			this.loginView = new LoginView();
+			this.addChild(this.loginView);
+			//this.drawScreenMask();
+		}
+		downMask:egret.Sprite;
+		upMask:egret.Sprite;
+		drawScreenMask():void{
+			this.upMask = new egret.Sprite();
+			this.downMask = new egret.Sprite();
+			this.initMask(this.upMask);
+			this.initMask(this.downMask);
+			this.downMask.y = Number(Main.StageHeight - Content.Game.GameLayerOffsetY);
+		}
+		initMask(sp:egret.Sprite):void{
+			this.addChild(sp);
+			sp.graphics.beginFill(0x424242,1);
+			sp.graphics.drawRect(0,0,Main.StageWidth,Content.Game.GameLayerOffsetY);
+			sp.graphics.endFill();
 		}
 		onArrowTouch(e:egret.TouchEvent):void{
 			Main.debugView.log("OnTouch","UI");
