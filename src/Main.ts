@@ -38,7 +38,7 @@ class Main extends egret.DisplayObjectContainer {
     public static StageHeight: number;
     public static debugView: Tools.DebugView;
     //public static host:string="http://192.168.18.152:8000/";
-    public static host:string="192.168.18.152:8000";
+    public static host:string="127.0.0.1:8000";
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);

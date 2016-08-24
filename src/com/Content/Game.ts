@@ -30,7 +30,7 @@ module Content {
             this.render.x += Game.GameLayerOffsetX;
             this.render.y += Game.GameLayerOffsetY;
             //UI层
-            var ui:Common.UI = new Common.UI();
+            var ui:Common.UI = new Common.UI(this.core);
             this.addChild(ui);
             //this.core.start();
         }

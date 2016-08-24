@@ -6,15 +6,17 @@ module Common {
 	 */
 	export class UI extends egret.Sprite{
     	public loginView:LoginView;
-		public constructor() {
+		core:Content.Core;
+		public constructor(core) {
     		super();
 			this.width = Main.StageWidth;
 			this.height = Main.StageHeight;
+			this.core = core;
 			this.init();
 		}
 		arrow:egret.Sprite;
 		init():void{
-			this.loginView = new LoginView();
+			this.loginView = new LoginView(this.core,this);
 			this.addChild(this.loginView);
 			//this.drawScreenMask();
 		}

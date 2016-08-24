@@ -97,36 +97,8 @@ module Content {
          
         public static CoreSrcName: string = "Core";
 
-        started_callback(result){
-                if(result.success === true) {
-                //this.start();
-                } else {
-                    //self.setPlayButtonState(true);
-                    switch(result.reason) {
-                        case 'invalidlogin':
-                            // Login information was not correct (either username or password)
-                            //self.addValidationError(null, 'The username or password you entered is incorrect.');
-                            break;
-                        case 'userexists':
-                            // Attempted to create a new user, but the username was taken
-                            //self.addValidationError(self.getUsernameField(), 'The username you entered is not available.');
-                            break;
-                        case 'invalidusername':
-                            // The username contains characters that are not allowed (rejected by the sanitizer)
-                            //self.addValidationError(self.getUsernameField(), 'The username you entered contains invalid characters.');
-                            break;
-                        case 'loggedin':
-                            // Attempted to log in with the same user multiple times simultaneously
-                            //self.addValidationError(self.getUsernameField(), 'A player with the specified username is already logged in.');
-                            break;
-                        default:
-                            //self.addValidationError(null, 'Failed to launch the game: ' + (result.reason ? result.reason : '(reason unknown)'));
-                            break;
-                    }
-                    Main.debugView.log("started_callback:"+result,Core.CoreSrcName);
-                }
-            }
-            setSpriteScale(scale) {
+        
+        setSpriteScale(scale) {
                 var self = this;
 
                 if(Render.upscaledRendering) {
@@ -449,12 +421,12 @@ module Content {
             }
         }
 
-        connect(action, started_callback){
+        connect(action, started_callback:Common.LoginView){
             var self = this;            
             this.connecting = false; // always in dispatcher mode in the build version
             this.net.connect(this.host, this.port);
             this.net.fail_callback = function(reason){
-                started_callback({
+                started_callback.started_callback({
                     success: false,
                     reason: reason
                 });
@@ -1154,7 +1126,7 @@ module Content {
                 //self.gamestart_callback();
                 if(self.hasNeverStarted) {
                     self.start();
-                    started_callback({success: true});
+                    started_callback.started_callback({success: true});
                 }
             });
         }

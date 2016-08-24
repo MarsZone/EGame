@@ -153,7 +153,7 @@ var Main = (function (_super) {
         textfield.textFlow = textFlow;
     };
     //public static host:string="http://192.168.18.152:8000/";
-    Main.host = "192.168.18.152:8000";
+    Main.host = "127.0.0.1:8000";
     return Main;
 }(egret.DisplayObjectContainer));
 egret.registerClass(Main,'Main');

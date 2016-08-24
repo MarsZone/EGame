@@ -49,6 +49,9 @@ module NetWork{
                     return;
                 }
                 if(e === 'invalidlogin' || e === 'userexists' || e === 'loggedin' || e === 'invalidusername'){
+                    if(self.fail_callback){
+                       self.fail_callback(e);
+                    }
                     return;
                 }
 
@@ -237,9 +240,9 @@ module NetWork{
         }
 
         sendLogin() {
-            var user=new Model.User();
-            user.setData("mars","123456");
-            Model.ModelBase.instance.user = user;
+            // var user=new Model.User();
+            // user.setData("mars","123456");
+            //Model.ModelBase.instance.user = user;
             this.sendMessage([Types.Messages.LOGIN,Model.ModelBase.instance.user.name,Model.ModelBase.instance.user.pw]);
         }
         sendCreate() {
