@@ -50,7 +50,8 @@ module Content {
 			this.foreground.graphics.endFill();
 			this.foreground.touchEnabled=true;
 			this.foreground.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onTouch,this);
-			this.foreground.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.onTouchMove,this)
+			this.foreground.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.onTouchMove,this);
+			this.foreground.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouchMove,this);
 		}
 		FPS;
 		initFPS() {
@@ -176,10 +177,30 @@ module Content {
             }
 		}
 		drawOccupiedCells(){
+			var positions = this.core.entityGrid;
 
+            if(positions) {
+                for(var i=0; i < positions.length; i += 1) {
+                    for(var j=0; j < positions[i].length; j += 1) {
+                        if(!_.isNull(positions[i][j])) {
+                            this.drawCellHighlight(i, j, 0x3232FF,0.5);
+                        }
+                    }
+                }
+            }
 		}
 		drawPathingCells(){
+			var grid = this.core.pathingGrid;
 
+            if(grid && this.core.debugPathing) {
+                for(var y=0; y < grid.length; y += 1) {
+                    for(var x=0; x < grid[y].length; x += 1) {
+                        if(grid[y][x] === 1 && this.core.camera.isVisiblePosition(x, y)) {
+                            this.drawCellHighlight(x, y, 0x3232FF,0.5);
+                        }
+                    }
+                }
+            }
 		}
 		lastTargetPos;
 		drawSelectedCell(){
@@ -427,7 +448,7 @@ module Content {
 			//this.drawTerrain();
 
 			this.drawSelectedCell();
-			//this.drawTargetCell();
+			this.drawTargetCell();
 
 			//this.drawOccupiedCells();
 			this.drawPathingCells();

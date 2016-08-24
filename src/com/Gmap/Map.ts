@@ -5,7 +5,7 @@ module Gmap {
 		}
 		public mapLoaded = false;
 		grid;
-		plateauGrid = false;
+		plateauGrid;
 		isLoaded=false;
 		tilesetsLoaded = false;
 		init():void{
@@ -20,7 +20,8 @@ module Gmap {
 			this.initMap(worker.mapData);
 			this.grid = worker.mapData.grid;
 			this.plateauGrid = worker.mapData.plateauGrid;
-            
+            this._generateCollisionGrid();
+            this._generatePlateauGrid();
 		}
 		width;
 		height;
@@ -110,6 +111,52 @@ module Gmap {
         }
 		getTileAnimationLength(id) {
             return this.animated[id+1].l;
+        }
+
+        _generateCollisionGrid() {
+            var tileIndex = 0,
+                self = this;
+
+            this.grid = [];
+            for(var j, i = 0; i < this.height; i++) {
+                this.grid[i] = [];
+                for(j = 0; j < this.width; j++) {
+                    this.grid[i][j] = 0;
+                }
+            }
+
+             _.each(this.collisions, function(tileIndex) {
+                var tindex:Number = Number(tileIndex)+1;
+                var pos = self.tileIndexToGridPosition(tindex);
+                self.grid[pos.y][pos.x] = 1;
+            });
+
+            _.each(this.blocking, function(tileIndex) {
+                var tindex:Number = Number(tileIndex)+1;
+                var pos = self.tileIndexToGridPosition((tindex));
+                if(self.grid[pos.y] !== undefined) {
+                    self.grid[pos.y][pos.x] = 1;
+                }
+            });
+            Main.debugView.log("Collision grid generated.","Map");
+        }
+
+        _generatePlateauGrid() {
+            var tileIndex = 0;
+
+            this.plateauGrid = [];
+            for(var j, i = 0; i < this.height; i++) {
+                this.plateauGrid[i] = [];
+                for(j = 0; j < this.width; j++) {
+                    if(_.include(this.plateau, tileIndex)) {
+                        this.plateauGrid[i][j] = 1;
+                    } else {
+                        this.plateauGrid[i][j] = 0;
+                    }
+                    tileIndex += 1;
+                }
+            }
+            Main.debugView.log("Plateau grid generated.","Map");
         }
 
 		/**
