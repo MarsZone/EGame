@@ -1,12 +1,23 @@
 # EGame
+
+-2016/8/26
+*声音问题
+*血条UI
+*聊天框-聊天按钮
+
+-2016/8/25
+增加地图不可行动区域
+增加不可移动格子红色方格
+增加NPC对话
+
 -2016/7/6
 地图加载实现.
 Render.
 Cammer done;
 
 -2016/6/22
-Before Finished Net Work(只是通信初始部分.多数命令还没实现)...And Object Display Render.
-Next Should be the map and player.
+Net Work Done
+Map, player Done.
 
 -More
 随机地图 Random Map.

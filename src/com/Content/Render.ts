@@ -15,6 +15,7 @@ module Content {
 		context:egret.Sprite; //entities
         backGound:egret.Sprite;
 		foreground:egret.Sprite;
+		bubbleContainer:egret.Sprite;
 		map:Gmap.Map;
 		camera:Content.Camera;
 		static mobile:boolean=false;
@@ -32,9 +33,11 @@ module Content {
 			this.backGound=new egret.Sprite();
 			this.context = new egret.Sprite();
 			this.foreground = new egret.Sprite();
+			this.bubbleContainer = new egret.Sprite();
 			this.addSP(this.backGound,Main.StageWidth,Main.StageHeight);
 			this.addSP(this.context,Main.StageWidth,Main.StageHeight);
 			this.addSP(this.foreground,Main.StageWidth,Main.StageHeight);
+			this.addSP(this.bubbleContainer,Main.StageWidth,Main.StageHeight)
 			//this.addRole();
 			//this.renderStaticCanvases();
 			this.camera =new Content.Camera(this);

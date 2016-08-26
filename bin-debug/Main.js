@@ -28,6 +28,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 var Main = (function (_super) {
     __extends(Main, _super);
+    //public static host:string="127.0.0.1:8000";
     function Main() {
         _super.call(this);
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
@@ -153,7 +154,7 @@ var Main = (function (_super) {
         textfield.textFlow = textFlow;
     };
     //public static host:string="http://192.168.18.152:8000/";
-    Main.host = "127.0.0.1:8000";
+    Main.host = "119.29.66.119:8000";
     return Main;
 }(egret.DisplayObjectContainer));
 egret.registerClass(Main,'Main');

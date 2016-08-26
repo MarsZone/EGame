@@ -10,8 +10,8 @@ module Content {
                 this.renderer = render;
                 this.map = map;
                 this.net = net;
-                var bubbleSp = new egret.Sprite();
-                this.bubbleManager = new Tools.BubbleManager(bubbleSp);
+                this.bubbleContainer = this.renderer.bubbleContainer;
+                this.bubbleManager = new Tools.BubbleManager(this.bubbleContainer);
                 // Player
                 this.player = new Role.Warrior("player", "");
                 this.player.moveUp = false;
@@ -22,7 +22,7 @@ module Content {
                 this.renderer.setCore(this);
                 this.init();    
             }
-            
+            bubbleContainer:egret.Sprite;
             map:Gmap.Map;
             net:NetWork.Net;
             renderer:Content.Render;
@@ -610,11 +610,11 @@ module Content {
                         }
 
                         if(dest.portal) {
-                            self.audioManager.playSound("teleport");
+                            //self.audioManager.playSound("teleport");
                         }
 
                         if(!self.player.isDead) {
-                            self.audioManager.updateMusic();
+                            //self.audioManager.updateMusic();
                         }
                     }
 
@@ -1838,8 +1838,9 @@ module Content {
                 var s = this.renderer.scale,
                     t = 16 * s, // tile size
                     x = ((character.x - this.camera.x) * s),
-                    w = parseInt(bubble.element.css('width')) + 24,
-                    offset = (w / 2) - (t / 2),
+                    //w = parseInt(bubble.element.css('width')) + 24,
+                    w = bubble.width + 24,
+                    offset = (w / 2) - (t / 2) -16,
                     offsetY,
                     y;
 
@@ -1859,8 +1860,11 @@ module Content {
 
                 y = ((character.y - this.camera.y) * s) - (t * 2) - offsetY;
 
-                bubble.element.css('left', x - offset + 'px');
-                bubble.element.css('top', y + 'px');
+                //bubble.element.css('left', x - offset + 'px');
+                //bubble.element.css('top', y + 'px');
+                Main.debugView.log("Bubble:"+x+"|y:"+y+"|offset"+offset,"Bubble");
+                bubble.x = x -offset;
+                bubble.y = y;
             }
         }
         username="";
@@ -2129,10 +2133,10 @@ module Content {
                 if(msg) {
                     this.createBubble(npc.id, msg);
                     this.assignBubbleTo(npc);
-                    this.audioManager.playSound("npc");
+                    //this.audioManager.playSound("npc");
                 } else {
                     this.destroyBubble(npc.id);
-                    this.audioManager.playSound("npc-end");
+                    //this.audioManager.playSound("npc-end");
                 }
             }
         }

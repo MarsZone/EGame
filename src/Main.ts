@@ -38,7 +38,8 @@ class Main extends egret.DisplayObjectContainer {
     public static StageHeight: number;
     public static debugView: Tools.DebugView;
     //public static host:string="http://192.168.18.152:8000/";
-    public static host:string="127.0.0.1:8000";
+    public static host:string="119.29.66.119:8000";
+    //public static host:string="127.0.0.1:8000";
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
@@ -126,6 +127,7 @@ class Main extends egret.DisplayObjectContainer {
         //this.stage.frameRate = 30;//能被60整除的数
         this.stage.scaleMode = egret.StageScaleMode.FIXED_WIDTH;
         this.stage.orientation = egret.OrientationMode.LANDSCAPE;
+
         Main.StageWidth = egret.MainContext.instance.stage.stageWidth;
         Main.StageHeight = egret.MainContext.instance.stage.stageHeight;
         

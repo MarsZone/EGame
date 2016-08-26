@@ -78,9 +78,9 @@ module Common {
 			this.UpassText = new egret.TextField();
 			this.EmailText = new egret.TextField();
 			this.UnameText.inputType = egret.TextFieldInputType.TEXT;
-			this.UnameText.text = "mars";
+			this.UnameText.text = "";
 			this.UpassText.inputType = egret.TextFieldInputType.PASSWORD;
-			this.UpassText.text = "123456";
+			this.UpassText.text = "";
 			this.UpassText.width=120;
 			this.EmailText.inputType = egret.TextFieldInputType.TEXT;
 			this.EmailText.text = "";
