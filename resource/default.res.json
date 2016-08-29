@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "ic_keyboard_arrow_right_48px_png,login_bg_jpg",
+			"keys": "ic_keyboard_arrow_right_48px_png,login_bg_jpg,beach_mp3,boss_mp3,cave_mp3,desert_mp3,forest_mp3,lavaland_mp3,village_mp3,achievement_mp3,chat_mp3,chest_mp3,death_mp3,firefox_mp3,heal_mp3,hit1_mp3,hit2_mp3,hurt_mp3,kill1_mp3,kill2_mp3,loot_mp3,noloot_mp3,npc-end_mp3,npc_mp3,npctalk_mp3,revive_mp3,teleport_mp3",
 			"name": "preload"
 		},
 		{
@@ -11,6 +11,14 @@
 		{
 			"keys": "item-mailarmor_json,agent_json,arrow_json,axe_json,bat_json,beachnpc_json,bluesword_json,boss_json,chest_json,clotharmor_json,coder_json,crab_json,death_json,deathknight_json,desertnpc_json,eye_json,firefox_json,forestnpc_json,goblin_json,goldenarmor_json,goldensword_json,guard_json,hand_json,impact_json,item-axe_json,item-bluesword_json,item-burger_json,item-cake_json,item-clotharmor_json,item-firepotion_json,item-flask_json,item-goldenarmor_json,item-goldensword_json,item-leatherarmor_json,redarmor_json,item-morningstar_json,item-platearmor_json,item-redarmor_json,item-redsword_json,item-sword1_json,item-sword2_json,king_json,lavanpc_json,leatherarmor_json,loot_json,mailarmor_json,morningstar_json,nyan_json,octocat_json,ogre_json,platearmor_json,priest_json,rat_json,sparks_json,redsword_json,rick_json,scientist_json,shadow16_json,skeleton_json,skeleton2_json,snake_json,sorcerer_json,talk_json,spectre_json,sword_json,sword1_json,sword2_json,villagegirl_json,target_json,villager_json,wizard_json,world_client_json",
 			"name": "json"
+		},
+		{
+			"keys": "teleport_mp3,revive_mp3,npctalk_mp3,npc_mp3,npc-end_mp3,noloot_mp3,loot_mp3,kill2_mp3,kill1_mp3,hurt_mp3,hit2_mp3,hit1_mp3,heal_mp3,firefox_mp3,death_mp3,chest_mp3,chat_mp3,achievement_mp3",
+			"name": "sounds"
+		},
+		{
+			"keys": "village_mp3,lavaland_mp3,forest_mp3,desert_mp3,cave_mp3,boss_mp3,beach_mp3",
+			"name": "music"
 		}
 	],
 	"resources": [
@@ -779,6 +787,131 @@
 			"type": "image",
 			"name": "Blue-button_png",
 			"scale9grid": "58,66,491,62"
+		},
+		{
+			"url": "assets/audio/music/beach.mp3",
+			"type": "sound",
+			"name": "beach_mp3"
+		},
+		{
+			"url": "assets/audio/music/boss.mp3",
+			"type": "sound",
+			"name": "boss_mp3"
+		},
+		{
+			"url": "assets/audio/music/cave.mp3",
+			"type": "sound",
+			"name": "cave_mp3"
+		},
+		{
+			"url": "assets/audio/music/desert.mp3",
+			"type": "sound",
+			"name": "desert_mp3"
+		},
+		{
+			"url": "assets/audio/music/forest.mp3",
+			"type": "sound",
+			"name": "forest_mp3"
+		},
+		{
+			"url": "assets/audio/music/lavaland.mp3",
+			"type": "sound",
+			"name": "lavaland_mp3"
+		},
+		{
+			"url": "assets/audio/music/village.mp3",
+			"type": "sound",
+			"name": "village_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/achievement.mp3",
+			"type": "sound",
+			"name": "achievement_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/chat.mp3",
+			"type": "sound",
+			"name": "chat_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/chest.mp3",
+			"type": "sound",
+			"name": "chest_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/death.mp3",
+			"type": "sound",
+			"name": "death_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/firefox.mp3",
+			"type": "sound",
+			"name": "firefox_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/heal.mp3",
+			"type": "sound",
+			"name": "heal_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/hit1.mp3",
+			"type": "sound",
+			"name": "hit1_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/hit2.mp3",
+			"type": "sound",
+			"name": "hit2_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/hurt.mp3",
+			"type": "sound",
+			"name": "hurt_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/kill1.mp3",
+			"type": "sound",
+			"name": "kill1_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/kill2.mp3",
+			"type": "sound",
+			"name": "kill2_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/loot.mp3",
+			"type": "sound",
+			"name": "loot_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/noloot.mp3",
+			"type": "sound",
+			"name": "noloot_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/npc-end.mp3",
+			"type": "sound",
+			"name": "npc-end_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/npc.mp3",
+			"type": "sound",
+			"name": "npc_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/npctalk.mp3",
+			"type": "sound",
+			"name": "npctalk_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/revive.mp3",
+			"type": "sound",
+			"name": "revive_mp3"
+		},
+		{
+			"url": "assets/audio/sounds/teleport.mp3",
+			"type": "sound",
+			"name": "teleport_mp3"
 		}
 	]
 }

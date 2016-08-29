@@ -28,7 +28,6 @@
 //////////////////////////////////////////////////////////////////////////////////////
 var Main = (function (_super) {
     __extends(Main, _super);
-    //public static host:string="127.0.0.1:8000";
     function Main() {
         _super.call(this);
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
@@ -53,8 +52,9 @@ var Main = (function (_super) {
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-        RES.loadGroup("preload", 3);
-        RES.loadGroup("image", 2);
+        RES.loadGroup("preload", 4);
+        RES.loadGroup("image", 3);
+        RES.loadGroup("sounds", 2);
         RES.loadGroup("json", 1);
     };
     /**
@@ -154,7 +154,8 @@ var Main = (function (_super) {
         textfield.textFlow = textFlow;
     };
     //public static host:string="http://192.168.18.152:8000/";
-    Main.host = "119.29.66.119:8000";
+    //public static host:string="119.29.66.119:8000";
+    Main.host = "127.0.0.1:8000";
     return Main;
 }(egret.DisplayObjectContainer));
 egret.registerClass(Main,'Main');

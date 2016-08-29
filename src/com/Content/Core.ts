@@ -137,7 +137,9 @@ module Content {
                     if(self.map.isLoaded) {
                         self.ready = true;
                         Main.debugView.log('All sprites loaded.',Core.CoreSrcName);
-                        
+                        self.loadAudio();
+
+                        self.initMusicAreas();
                         self.initCursors();
                         self.initAnimations();
                         self.initShadows();
@@ -610,7 +612,7 @@ module Content {
                         }
 
                         if(dest.portal) {
-                            //self.audioManager.playSound("teleport");
+                            self.audioManager.playSound("teleport");
                         }
 
                         if(!self.player.isDead) {
@@ -669,7 +671,7 @@ module Content {
                     });
 
                     //self.audioManager.fadeOutCurrentMusic();
-                    //self.audioManager.playSound("death");
+                    self.audioManager.playSound("death");
                 });
 
                 self.player.onHasMoved(function(player) {
@@ -846,7 +848,7 @@ module Content {
                                         self.removeFromPathingGrid(entity.gridX, entity.gridY);
 
                                         if(self.camera.isVisible(entity)) {
-                                            //self.audioManager.playSound("kill"+Math.floor(Math.random()*2+1));
+                                            self.audioManager.playSound("kill"+Math.floor(Math.random()*2+1));
                                         }
 
                                         self.updateCursor();
@@ -1037,7 +1039,7 @@ module Content {
                         if(isHurt) {
                             player.hurt();
                             self.infoManager.addDamageInfo(diff, player.x, player.y - 15, "received");
-                            //self.audioManager.playSound("hurt");
+                            self.audioManager.playSound("hurt");
                             //self.storage.addDamage(-diff);
                             //self.tryUnlockingAchievement("MEATSHIELD");
                             if(self.playerhurt_callback) {
@@ -1446,6 +1448,17 @@ module Content {
             }
         }
 
+        loadAudio() {
+            this.audioManager = new Tools.AudioManager(this);
+        }
+
+        initMusicAreas() {
+            var self = this;
+            _.each(this.map.musicAreas, function(area:any) {
+                self.audioManager.addArea(area.x, area.y, area.w, area.h, area.id);
+            });
+        }
+
         addToRenderingGrid(entity, x, y) {
             if(!this.map.isOutOfBounds(x, y)) {
                 this.renderingGrid[y][x][entity.id] = entity;
@@ -1587,7 +1600,7 @@ module Content {
                         }
 
                         if(character instanceof Player && this.camera.isVisible(character)) {
-                            //this.audioManager.playSound("hit"+Math.floor(Math.random()*2+1));
+                            this.audioManager.playSound("hit"+Math.floor(Math.random()*2+1));
                         }
 
                         if(character.hasTarget() && character.target.id === this.playerId && this.player && !this.player.invincible) {
@@ -1803,14 +1816,14 @@ module Content {
                 this.removeItem(item);
                 this.showNotification(item.getLootMessage());
                 if(Types.isHealingItem(item.kind)) {
-                    //this.audioManager.playSound("heal");
+                    this.audioManager.playSound("heal");
                 } else {
-                    //this.audioManager.playSound("loot");
+                    this.audioManager.playSound("loot");
                 }
             } catch(e) {
                 if(e instanceof Exceptions.LootException) {
                     this.showNotification(e.message);
-                    //this.audioManager.playSound("noloot");
+                    this.audioManager.playSound("noloot");
                 } else {
                     throw e;
                 }
@@ -2133,10 +2146,10 @@ module Content {
                 if(msg) {
                     this.createBubble(npc.id, msg);
                     this.assignBubbleTo(npc);
-                    //this.audioManager.playSound("npc");
+                    this.audioManager.playSound("npc");
                 } else {
                     this.destroyBubble(npc.id);
-                    //this.audioManager.playSound("npc-end");
+                    this.audioManager.playSound("npc-end");
                 }
             }
         }

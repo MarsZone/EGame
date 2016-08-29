@@ -38,8 +38,8 @@ class Main extends egret.DisplayObjectContainer {
     public static StageHeight: number;
     public static debugView: Tools.DebugView;
     //public static host:string="http://192.168.18.152:8000/";
-    public static host:string="119.29.66.119:8000";
-    //public static host:string="127.0.0.1:8000";
+    //public static host:string="119.29.66.119:8000";
+    public static host:string="127.0.0.1:8000";
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
@@ -66,8 +66,9 @@ class Main extends egret.DisplayObjectContainer {
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-        RES.loadGroup("preload",3);
-        RES.loadGroup("image",2);
+        RES.loadGroup("preload",4);
+        RES.loadGroup("image",3);
+        RES.loadGroup("sounds",2)
         RES.loadGroup("json",1);
     }
 

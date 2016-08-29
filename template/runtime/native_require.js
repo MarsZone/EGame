@@ -54,6 +54,7 @@ var game_file_list = [
 	"bin-debug/com/Role/npcs.js",
 	"bin-debug/com/Role/Warrior.js",
 	"bin-debug/com/Tools/AStar.js",
+	"bin-debug/com/Tools/AudioManager.js",
 	"bin-debug/com/Tools/Bubble.js",
 	"bin-debug/com/Tools/DebugView.js",
 	"bin-debug/com/Tools/EntityFactory.js",

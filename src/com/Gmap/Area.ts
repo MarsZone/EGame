@@ -8,6 +8,7 @@ module Gmap {
 		world;
 		entities;
 		hasCompletelyRespawned;
+		musicName;
 		public constructor(id,x, y, width, height,world=null) {
 			this.id = id;
 			this.x = x;
