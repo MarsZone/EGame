@@ -28,7 +28,7 @@ module Tools {
                         counter -= 1;
                         if(counter === 0) {
                             //if(!Detect.isSafari()) { // Disable music on Safari - See bug 738008
-                                //loadMusicFiles();
+                                loadMusicFiles();
                             //}
                         }
                     });
@@ -42,7 +42,7 @@ module Tools {
                     self.loadMusic(self.musicNames.shift(), function() {
                         // Then, load all the other music files
                         _.each(self.musicNames, function(name) {
-                            //self.loadMusic(name);
+                            self.loadMusic(name);
                         });
                     });
                 }
@@ -76,15 +76,32 @@ module Tools {
         load(basePath, name, loaded_callback, channels,sounds?) {
 			if(sounds)
 			{
+                //load sound
 				var sound:egret.Sound = RES.getRes(name+"_mp3");
 				if(loaded_callback) {
                      loaded_callback();
                  }
 				 this.sounds[name] = sound;
-			}
-            // var path = basePath + name + "." + this.extension,
-            //     sound = document.createElement('audio'),
-            //     self = this;
+			}else{
+                //load Music
+                var path = basePath + name + "." + "mp3";
+                var music:egret.Sound = new egret.Sound();
+                
+                music.addEventListener(egret.Event.COMPLETE, function loadOver(event:egret.Event) {
+                    Main.debugView.log(path + " is ready to play.","Audio");
+                    if(loaded_callback) {
+                        loaded_callback();
+                    }
+                    this.sounds[name] = music;
+                    //music.play();
+                }, this);
+                music.addEventListener(egret.IOErrorEvent.IO_ERROR, function loadError(event:egret.IOErrorEvent) {
+                    console.log("loaded error!");
+                }, this);
+
+                music.load(path);
+            }
+           
 
             // sound.addEventListener('canplaythrough', function (e) {
             //     this.removeEventListener('canplaythrough', arguments.callee, false);
@@ -113,11 +130,11 @@ module Tools {
             this.load("", name, handleLoaded, 4,true);
         }
 
-        loadMusic(name, handleLoaded) {
-            // this.load("audio/music/", name, handleLoaded, 1,false);
-            // var music = this.sounds[name][0];
-            // music.loop = true;
-            // music.addEventListener('ended', function() { music.play() }, false);
+        loadMusic(name, handleLoaded?) {
+            this.load("resource/assets/audio/music/", name, handleLoaded, 1,false);
+            //var music = this.sounds[name][0];
+            //music.loop = true;
+            //music.addEventListener('ended', function() { music.play() }, false);
         }
 
         getSound(name):egret.Sound {
@@ -188,7 +205,8 @@ module Tools {
                     this.fadeInMusic(music);
                 } else {
                     music.sound.volume = 1;
-                    music.sound.play();
+                    var channel:egret.SoundChannel =music.sound.play();
+                    music.channel=channel;
                 }
                 this.currentMusic = music;
             }
@@ -207,12 +225,12 @@ module Tools {
                 this.clearFadeIn(music);
                 music.sound.fadingOut = setInterval(function() {
                     var step = 0.02,
-                        volume = music.sound.volume - step;
+                        volume = music.channel.volume - step;
 
                     if(self.enabled && volume >= step) {
-                        music.sound.volume = volume;
+                        music.channel.volume = volume;
                     } else {
-                        music.sound.volume = 0;
+                        music.channel.volume = 0;
                         self.clearFadeOut(music);
                         ended_callback(music);
                     }
@@ -226,12 +244,12 @@ module Tools {
                 this.clearFadeOut(music);
                 music.sound.fadingIn = setInterval(function() {
                     var step = 0.01,
-                        volume = music.sound.volume + step;
+                        volume = music.channel.volume + step;
 
                     if(self.enabled && volume < 1 - step) {
-                        music.sound.volume = volume;
+                        music.channel.volume = volume;
                     } else {
-                        music.sound.volume = 1;
+                        music.channel.volume = 1;
                         self.clearFadeIn(music);
                     }
                 }, 30);

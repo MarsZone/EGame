@@ -488,7 +488,7 @@ module Content {
                 self.updateExpBar();
                 self.resetCamera();
                 self.updatePlateauMode();
-                //self.audioManager.updateMusic();
+                self.audioManager.updateMusic();
 
                 self.addEntity(self.player);
                 self.showNotification("Welcome to BrowserQuest!");
@@ -562,7 +562,7 @@ module Content {
                     self.updatePlayerCheckpoint();
 
                     if(!self.player.isDead) {
-                        //self.audioManager.updateMusic();
+                        self.audioManager.updateMusic();
                     }
                 });
 
@@ -616,7 +616,7 @@ module Content {
                         }
 
                         if(!self.player.isDead) {
-                            //self.audioManager.updateMusic();
+                            self.audioManager.updateMusic();
                         }
                     }
 
