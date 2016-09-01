@@ -11,6 +11,7 @@ module Common {
 		
 		bitmapBG:egret.Bitmap;
 		inputArea:egret.Bitmap;
+		logoImage:egret.Bitmap;
 		loginPanel:egret.Sprite;
 		registerView:RegistView;
 
@@ -18,14 +19,12 @@ module Common {
 		UpassText:egret.TextField;
 
 		ReturnText:egret.TextField;
-		init():void{
-			this.loadBG();
-		}
+		
 		btnLogin:BtnBase;
 		btncreate:BtnBase;
 		resLogText:egret.TextField;
-		
-		loadBG():void{
+
+		init():void{
 			this.bitmapBG =Main.createBitmapByName("BackGround_png");
 			this.bitmapBG.width = Main.StageWidth;
 			this.bitmapBG.height = Main.StageHeight;
@@ -64,6 +63,11 @@ module Common {
 			this.addChild(this.registerView);
 			this.showRegistView(false);
 
+			this.logoImage = Main.createBitmapByName("logo_png");
+			//this.logoImage.scaleX = this.logoImage.scaleY=0.2;
+			this.logoImage.x = Main.StageWidth/2 -this.logoImage.width/2;
+			this.logoImage.y +=50;
+			this.addChild(this.logoImage);
 			this.addEvent();
 		}
 		initTextInput(){

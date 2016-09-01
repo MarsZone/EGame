@@ -21,7 +21,7 @@
 			"name": "music"
 		},
 		{
-			"keys": "RegistPanel_png,Regist_png,LoginBtn_png,InputArea_png,Confirm_png,CancelBtn_png,BackGround_png",
+			"keys": "RegistPanel_png,Regist_png,LoginBtn_png,InputArea_png,Confirm_png,CancelBtn_png,BackGround_png,logo_png",
 			"name": "loginView"
 		}
 	],
@@ -953,9 +953,9 @@
 			"name": "RegistPanel_png"
 		},
 		{
-			"url": "assets/loginView/title.png",
+			"url": "assets/loginView/logo.png",
 			"type": "image",
-			"name": "title_png"
+			"name": "logo_png"
 		}
 	]
 }
