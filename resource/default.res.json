@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "ic_keyboard_arrow_right_48px_png,login_bg_jpg,beach_mp3,boss_mp3,cave_mp3,desert_mp3,forest_mp3,lavaland_mp3,village_mp3,achievement_mp3,chat_mp3,chest_mp3,death_mp3,firefox_mp3,heal_mp3,hit1_mp3,hit2_mp3,hurt_mp3,kill1_mp3,kill2_mp3,loot_mp3,noloot_mp3,npc-end_mp3,npc_mp3,npctalk_mp3,revive_mp3,teleport_mp3",
+			"keys": "ic_keyboard_arrow_right_48px_png,beach_mp3,boss_mp3,cave_mp3,desert_mp3,forest_mp3,lavaland_mp3,village_mp3,achievement_mp3,chat_mp3,chest_mp3,death_mp3,firefox_mp3,heal_mp3,hit1_mp3,hit2_mp3,hurt_mp3,kill1_mp3,kill2_mp3,loot_mp3,noloot_mp3,npc-end_mp3,npc_mp3,npctalk_mp3,revive_mp3,teleport_mp3",
 			"name": "preload"
 		},
 		{
@@ -19,6 +19,10 @@
 		{
 			"keys": "village_mp3,lavaland_mp3,forest_mp3,desert_mp3,cave_mp3,boss_mp3,beach_mp3",
 			"name": "music"
+		},
+		{
+			"keys": "RegistPanel_png,Regist_png,LoginBtn_png,InputArea_png,Confirm_png,CancelBtn_png,BackGround_png",
+			"name": "loginView"
 		}
 	],
 	"resources": [
@@ -778,11 +782,6 @@
 			"name": "world_client_json"
 		},
 		{
-			"url": "assets/login_bg.jpg",
-			"type": "image",
-			"name": "login_bg_jpg"
-		},
-		{
 			"url": "assets/common/Blue-button.png",
 			"type": "image",
 			"name": "Blue-button_png",
@@ -912,6 +911,51 @@
 			"url": "assets/audio/sounds/teleport.mp3",
 			"type": "sound",
 			"name": "teleport_mp3"
+		},
+		{
+			"url": "assets/loginView/在未按 输入框 时显示的提示.png",
+			"type": "image",
+			"name": "在未按 输入框 时显示的提示_png"
+		},
+		{
+			"url": "assets/loginView/CancelBtn.png",
+			"type": "image",
+			"name": "CancelBtn_png"
+		},
+		{
+			"url": "assets/loginView/LoginBtn.png",
+			"type": "image",
+			"name": "LoginBtn_png"
+		},
+		{
+			"url": "assets/loginView/BackGround.png",
+			"type": "image",
+			"name": "BackGround_png"
+		},
+		{
+			"url": "assets/loginView/Confirm.png",
+			"type": "image",
+			"name": "Confirm_png"
+		},
+		{
+			"url": "assets/loginView/InputArea.png",
+			"type": "image",
+			"name": "InputArea_png"
+		},
+		{
+			"url": "assets/loginView/Regist.png",
+			"type": "image",
+			"name": "Regist_png"
+		},
+		{
+			"url": "assets/loginView/RegistPanel.png",
+			"type": "image",
+			"name": "RegistPanel_png"
+		},
+		{
+			"url": "assets/loginView/title.png",
+			"type": "image",
+			"name": "title_png"
 		}
 	]
 }

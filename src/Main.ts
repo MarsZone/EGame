@@ -66,7 +66,8 @@ class Main extends egret.DisplayObjectContainer {
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-        RES.loadGroup("preload",4);
+        RES.loadGroup("preload",5);
+        RES.loadGroup("loginView",4);
         RES.loadGroup("image",3);
         RES.loadGroup("sounds",2)
         RES.loadGroup("json",1);
@@ -104,9 +105,9 @@ class Main extends egret.DisplayObjectContainer {
      * Loading process of preload resource group
      */
     private onResourceProgress(event:RES.ResourceEvent):void {
-        if (event.groupName == "preload") {
+        //if (event.groupName == "preload") {
             this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
-        }
+        //}
     }
 
     private textfield:egret.TextField;

@@ -52,7 +52,8 @@ var Main = (function (_super) {
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-        RES.loadGroup("preload", 4);
+        RES.loadGroup("preload", 5);
+        RES.loadGroup("loginView", 4);
         RES.loadGroup("image", 3);
         RES.loadGroup("sounds", 2);
         RES.loadGroup("json", 1);
@@ -87,9 +88,9 @@ var Main = (function (_super) {
      * Loading process of preload resource group
      */
     p.onResourceProgress = function (event) {
-        if (event.groupName == "preload") {
-            this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
-        }
+        //if (event.groupName == "preload") {
+        this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
+        //}
     };
     /**
      * 创建游戏场景
